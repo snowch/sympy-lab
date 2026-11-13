@@ -175,6 +175,7 @@ try:
                 no_overflow(page,(width,lesson['slug'],'closed'))
                 clipped=page.locator('.concept-figure svg:visible').evaluate_all("""svgs=>svgs.flatMap(svg=>{const frame=svg.getBoundingClientRect();return [...svg.querySelectorAll('text')].flatMap(t=>{const r=t.getBoundingClientRect();return r.left<frame.left-1||r.right>frame.right+1||r.top<frame.top-1||r.bottom>frame.bottom+1?[t.textContent]:[]})})""")
                 assert not clipped,('clipped diagram labels',width,lesson['slug'],clipped)
+                assert not page.locator('.concept-figure .math-display:visible').evaluate_all('els=>els.some(e=>e.scrollWidth>e.clientWidth+1)'),('reference equation needs reflow',width,lesson['slug'])
                 page.locator('#maths-refresher').evaluate('e=>e.open=true')
                 no_overflow(page,(width,lesson['slug'],'refresher open'))
                 assert page.locator('#maths-refresher .katex-error').count()==0

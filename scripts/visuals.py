@@ -36,6 +36,15 @@ GRAPHS = {
 50: (['12*x-9.81*x**2/2'],[0,24/9.81],[-.3,8.3],r'h(t)=12t-\tfrac12(9.81)t^2', 'Authored numerical illustration: launch speed 12 m/s, gravity 9.81 m/s², no drag. Horizontal: time (s); vertical: height (m). Only the physical flight is shown.'),
 51: (['5*(1-exp(-10*x))','2.5'],[0,.5],[-.2,5.6],r'v(t)=5(1-e^{-10t}),\quad t_{1/2}=\frac{\log2}{10}', 'Authored circuit illustration with RC = 0.1 s and V = 5 V. Horizontal: time (s); vertical: voltage (V). The amber line is the half-voltage threshold.')
 }
+NARROW_FORMULAS={
+19:r'\begin{gathered}f(g(x))=x^2+1\\g(f(x))=(x+1)^2\end{gathered}',
+27:r'\begin{gathered}x^2+y^2=25\\\frac{dy}{dx}=-\frac xy\quad(y\ne0)\end{gathered}',
+38:r'\begin{gathered}s(t)=t+\frac12t^2\\a=1,\;v_0=1,\;s_0=0\end{gathered}',
+41:r'\begin{gathered}f(x)=2x\quad(0\le x\le1)\\\int_0^1 f(x)\,dx=1\end{gathered}',
+48:r'\begin{gathered}V(x)=x(12-2x)^2\\0<x<6\end{gathered}',
+49:r'\begin{gathered}V(x)=x(12-2x)(8-2x)\\0<x<4\end{gathered}',
+51:r'\begin{gathered}v(t)=5(1-e^{-10t})\\t_{1/2}=\frac{\log2}{10}\end{gathered}'
+}
 MARKERS={7:[(-3,0,'−3'),(2,0,'2')],9:[(1,2,'excluded',True)],13:[(3,11,'(3, 11)')],15:[(6,4,'(6, 4)')],18:[(-1,0,''),(0,0,''),(1,0,'')],23:[(-2,0,''),(1,0,'')],25:[(0,1,'limit 1',True)],26:[(1,math.e,'')],37:[(4,24,'(4, 24)'),(5,25,'',True)],39:[(math.log(2),.5,'')],40:[(1,1-math.exp(-1),'')],51:[(math.log(2)/10,2.5,'')]}
 # A transformation diagram exposes mathematical relationships rather than pretending to be a plot.
 FLOWS={
@@ -49,7 +58,7 @@ FLOWS={
 35: ('Change coordinates, scale, return',[('Eigenvector coordinates',r'P^{-1}v'),('Scale coordinates',r'DP^{-1}v'),('Original coordinates',r'PDP^{-1}v=Av')], 'Columns of P are an eigenvector basis. This route requires an invertible P; not every matrix has such a basis.'),
 43: ('Argument order changes the value',[('Symbolic rule',r'a x^2+1'),('Input order (x, a)',r'(3,2)\mapsto19'),('Swapped inputs',r'(2,3)\mapsto13')], 'The same formula receives different assignments when arguments are swapped. Keep the argument order with the callable.'),
 45: ('Avoid subtracting nearly equal roots',[('Direct expression',r'\sqrt{x+1}-\sqrt{x}'),('Equivalent for x > 0',r'\frac1{\sqrt{x+1}+\sqrt{x}}'),('At x = 10¹⁶',r'\text{reference}\approx5\times10^{-9}')], 'The second form avoids subtracting two rounded square roots. Inspect the actual scalar calculations below; exact equivalence does not guarantee identical floating-point behaviour.'),
-46: ('Input construction comes first',[('Exact mathematical tenth',r'\operatorname{Rational}(1,10)=\frac1{10}'),('Python float error',r'\operatorname{float}(0.1)-\frac1{10}\approx5.55\times10^{-18}'),('Decimal text input',r'\operatorname{Float}(\text{“0.1”},50)')], 'Extra precision applied after a Python float retains its earlier rounding. A decimal string avoids that initial conversion but still creates a finite-precision value.'),
+46: ('Input construction comes first',[('Exact mathematical tenth',r'\operatorname{Rational}(1,10)=\frac1{10}'),('Python float error',r'\begin{gathered}\operatorname{float}(0.1)-\frac1{10}\\\approx5.55\times10^{-18}\end{gathered}'),('Decimal text input',r'\operatorname{Float}(\text{“0.1”},50)')], 'Extra precision applied after a Python float retains its earlier rounding. A decimal string avoids that initial conversion but still creates a finite-precision value.'),
 47: ('Code generation stops at source text',[('Derive in SymPy',r'x^2+\frac13'),('Generate C text',r'\texttt{pow(x, 2) + 1.0/3.0}'),('Next, outside this lab',r'\text{compile and validate}')], 'The build executes Python and prints C source. The C is not compiled, run or benchmarked here.')
 }
 
@@ -192,6 +201,6 @@ def illustration(index,namespace):
  if index in FLOWS:
   title,steps,caption=FLOWS[index];return {'kind':'flow','title':title,'steps':steps,'caption':caption,'mode':'parts' if index==8 else 'comparison' if index in (21,43,46) else 'sequence'}
  if index in GRAPHS:
-  spec=GRAPHS[index];return {'kind':'graph','title':'See the mathematics','caption':spec[4],'formula':spec[3],'legend':[sp.latex(sp.sympify(e).subs(sp.Symbol('x'),sp.Symbol('t'))) if index==51 else sp.latex(sp.sympify(e)) for e in spec[0]] if len(spec[0])>1 else [],**{key:graph(spec,w,index) for key,w in [('wide',640),('narrow',320)]}}
+  spec=GRAPHS[index];return {'kind':'graph','title':'See the mathematics','caption':spec[4],'formula':spec[3],'narrow_formula':NARROW_FORMULAS.get(index),'legend':[sp.latex(sp.sympify(e).subs(sp.Symbol('x'),sp.Symbol('t'))) if index==51 else sp.latex(sp.sympify(e)) for e in spec[0]] if len(spec[0])>1 else [],**{key:graph(spec,w,index) for key,w in [('wide',640),('narrow',320)]}}
  wide=special(index,640,namespace);narrow=special(index,320,namespace)
- return {'kind':'diagram','title':'See the mathematics','caption':wide['caption'],'formula':wide['formula'],'wide':wide['svg'],'narrow':narrow['svg']}
+ return {'kind':'diagram','title':'See the mathematics','caption':wide['caption'],'formula':wide['formula'],'narrow_formula':NARROW_FORMULAS.get(index),'wide':wide['svg'],'narrow':narrow['svg']}

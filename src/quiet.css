@@ -119,3 +119,6 @@
 .concept-svg .curve-1{stroke-dasharray:8 5}.concept-svg .curve-2{stroke-dasharray:2 5}
 .curve-legend{list-style:none;display:flex;flex-wrap:wrap;gap:6px 24px;margin:0 0 16px;padding:0}
 .curve-legend li{display:flex;align-items:center;gap:9px;min-width:0;max-width:100%}.curve-legend .math-display{font-size:1rem;margin:0;min-width:0}.curve-swatch{width:24px;flex:0 0 24px;border-top:3px solid var(--accent)}.swatch-1{border-top:3px dashed var(--plot-amber)}.swatch-2{border-top:3px dotted var(--plot-violet)}
+
+.concept-formula-narrow{display:none}
+@media(max-width:700px){.concept-formula-wide{display:none}.concept-formula-narrow{display:block}}
