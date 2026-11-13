@@ -1,0 +1,2293 @@
+{
+  "title": "SymPy Lab",
+  "modules": [
+    {
+      "title": "Think symbolically",
+      "description": "Build exact expressions and make assumptions explicit.",
+      "prerequisite": "Basic Python; optional algebra refreshers are included.",
+      "track": "core"
+    },
+    {
+      "title": "Shape an expression",
+      "description": "Choose the algebraic form that serves your question.",
+      "prerequisite": "Module 1: expressions, substitution and assumptions.",
+      "track": "core"
+    },
+    {
+      "title": "Solve and check",
+      "description": "State domains, find solutions and verify what they mean.",
+      "prerequisite": "Modules 1–2: exact expressions and transformations.",
+      "track": "core"
+    },
+    {
+      "title": "Work with functions",
+      "description": "Explore composition, identities, branches and discrete sums.",
+      "prerequisite": "Modules 1–3; each new mathematical idea has a refresher.",
+      "track": "core"
+    },
+    {
+      "title": "Explore calculus",
+      "description": "Understand change, accumulation and local approximation.",
+      "prerequisite": "Modules 1–4; calculus prerequisites are refreshed as needed.",
+      "track": "core"
+    },
+    {
+      "title": "Use symbolic linear algebra",
+      "description": "Read systems, transformations and eigenspaces exactly.",
+      "prerequisite": "Modules 1–3; matrix notation is introduced here.",
+      "track": "core"
+    },
+    {
+      "title": "Build mathematical models",
+      "description": "Derive small models and check their mathematical boundaries.",
+      "prerequisite": "Calculus from module 5; matrices for the final sensitivity lesson.",
+      "track": "core"
+    },
+    {
+      "title": "Connect symbols to numbers",
+      "description": "Build numerical functions and publish a checked investigation.",
+      "prerequisite": "The earlier modules relevant to your chosen application.",
+      "track": "core"
+    }
+  ],
+  "lessons": [
+    {
+      "slug": "your-first-symbolic-expression",
+      "title": "Your first symbolic expression",
+      "short": "Construct an expression and recognise its mathematical meaning.",
+      "goal": "Construct an expression and recognise its mathematical meaning.",
+      "explain": [
+        "A symbolic expression represents a calculation without requiring a numerical value for every quantity. SymPy keeps the symbol x inside the result, so you can transform the expression before choosing a value for x.",
+        "Python needs an explicit multiplication sign and uses two stars for a power. The expression (x+1)**2 therefore means the square of the entire sum. Parentheses determine what is squared. Importing sympy as sp gives a short, consistent prefix for its functions.",
+        "Run the example and compare the original expression with its expanded form. Both describe the same polynomial. The results dictionary simply labels the expressions displayed by this lab; the final loop also prints them when you download and run the file locally."
+      ],
+      "refresher": {
+        "title": "Squares and brackets",
+        "body": "Squaring a sum multiplies the whole sum by itself. The middle terms do not disappear.",
+        "tex": "(x+1)^2=(x+1)(x+1)=x^2+2x+1",
+        "example": "At x=2, both forms give 9. Squaring each term separately would give 5 and changes the expression."
+      },
+      "predict": "Will (x+1)**2 and x**2+1 expand to the same polynomial?",
+      "look": "The output contains a symbol rather than a guessed number. The two forms retain the cross term 2*x.",
+      "change": "Change 1 to 2 inside the brackets. Predict the middle and constant terms before running.",
+      "question": "Which Python expression means the square of the sum of x and 3?",
+      "options": [
+        "(x+3)**2",
+        "x+3**2",
+        "(x+3)^2"
+      ],
+      "correct": 0,
+      "feedback": "Parentheses group the sum and ** raises it to a power. Python ^ is a bitwise operator, not the power operator.",
+      "hints": [
+        "Decide what the exponent applies to.",
+        "Use ** after the complete bracketed sum."
+      ],
+      "limit": "Expansion changes form. It does not assign a value to x or solve an equation.",
+      "source": [
+        "SymPy · Gotchas",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/gotchas.html"
+      ],
+      "minutes": 6,
+      "kind": "Exact symbolic investigation",
+      "module": 0,
+      "code": "01-your-first-symbolic-expression.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "keep-numbers-exact",
+      "title": "Keep numbers exact",
+      "short": "Choose exact rational inputs before Python rounds a calculation.",
+      "goal": "Choose exact rational inputs before Python rounds a calculation.",
+      "explain": [
+        "A rational number is an exact ratio of integers. In ordinary Python, dividing two integers with / produces a floating-point approximation. If that division happens before SymPy receives the value, the exact fraction has already been replaced.",
+        "Use Rational(1,3) or S(1)/3 to construct an exact third. SymPy then carries the fraction through algebra without rounding. A Float can be useful for approximate measurements, but it represents a different kind of input from an exact rational.",
+        "Compare the two sums below. An approximate result may look convincingly like one on screen while retaining a small numerical difference internally. Choose exactness from the provenance of the input: a mathematical third can be exact; a measured decimal normally has its own uncertainty."
+      ],
+      "refresher": {
+        "title": "Fractions as numbers",
+        "body": "A fraction a/b means a divided by a nonzero b. Equivalent fractions represent the same number.",
+        "tex": "\\frac13+\\frac13+\\frac13=1",
+        "example": "Three exact thirds make one. Writing 0.333 three times instead gives 0.999; extra printed digits do not restore the discarded information."
+      },
+      "predict": "Does passing the already calculated Python value 1/3 to SymPy recover an exact third?",
+      "look": "The stored float corresponds to a nearby binary fraction. Converting that stored value back to an exact fraction exposes the difference; it does not recover the intended third.",
+      "change": "Compare sp.Rational(\"0.1\") with sp.Float(0.1,30). Explain why the longer Float cannot improve the original Python float.",
+      "question": "Which input best represents an exact mathematical two sevenths?",
+      "options": [
+        "sp.Float(2/7,50)",
+        "sp.Rational(2,7)",
+        "round(2/7,3)"
+      ],
+      "correct": 1,
+      "feedback": "Rational receives the exact integers before division. Increasing precision after Python division cannot recover lost input information.",
+      "hints": [
+        "Look for the point where division is first evaluated.",
+        "Pass the numerator and denominator separately."
+      ],
+      "limit": "Exact rational arithmetic does not make uncertain real-world observations exact.",
+      "source": [
+        "SymPy · Gotchas",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/gotchas.html"
+      ],
+      "minutes": 7,
+      "kind": "Exact symbolic investigation",
+      "module": 0,
+      "code": "02-keep-numbers-exact.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "a-symbol-is-an-object",
+      "title": "A symbol is an object",
+      "short": "Distinguish a symbol from a Python name and from its printed label.",
+      "goal": "Distinguish a symbol from a Python name and from its printed label.",
+      "explain": [
+        "A Python variable is a name referring to an object. A SymPy Symbol is an object representing an unspecified quantity. Reassigning the Python name later does not rewrite expressions already built from that symbol.",
+        "Symbols also carry assumptions. Two symbols can print with the same label but differ because one is positive and another has no such assumption. Mixing them accidentally can leave expressions that look simpler than their internal structure really is.",
+        "Construct symbols once and reuse those objects consistently. The example retains the original symbol in saved_x, then reassigns the Python name x. Inspect the expression’s free_symbols to identify the mathematical quantities that remain inside it."
+      ],
+      "refresher": {
+        "title": "Variables and values",
+        "body": "A mathematical variable can stand for many permitted values. A Python assignment binds a name now; it is not an equation to solve.",
+        "tex": "f(x)=x+2",
+        "example": "If f is built using a symbol x, later assigning the Python name x=10 does not replace x inside that already-built symbolic object."
+      },
+      "predict": "After x=10, will an earlier expression built from the symbol x automatically become a number?",
+      "look": "The printed symbol inside expression remains. Explicit substitution uses the saved symbol object.",
+      "change": "Use a different printed label for positive_x, then compare free_symbols and equality again.",
+      "question": "An expression unexpectedly contains two symbols printed as t. What should you inspect?",
+      "options": [
+        "Only the font used to print t.",
+        "Their assumptions and whether the same symbol objects were reused.",
+        "Whether Python assignment used spaces."
+      ],
+      "correct": 1,
+      "feedback": "Names on screen do not expose all symbol metadata. Consistent construction and free_symbols help diagnose mismatches.",
+      "hints": [
+        "A printed label is only part of a Symbol.",
+        "Compare assumptions and object equality."
+      ],
+      "limit": "This lesson addresses ordinary symbolic objects, not every advanced binding or scoping construct in SymPy.",
+      "source": [
+        "SymPy · Assumptions",
+        "https://docs.sympy.org/latest/guides/assumptions.html"
+      ],
+      "minutes": 7,
+      "kind": "Exact symbolic investigation",
+      "module": 0,
+      "code": "03-a-symbol-is-an-object.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "tell-sympy-what-a-symbol-means",
+      "title": "Tell SymPy what a symbol means",
+      "short": "Use domain assumptions to justify a square-root simplification.",
+      "goal": "Use domain assumptions to justify a square-root simplification.",
+      "explain": [
+        "An identity must hold for all values permitted by its assumptions. SymPy therefore cannot generally replace the square root of x squared by x. Negative real values already provide a counterexample.",
+        "With real=True, the expression becomes Abs(x), the nonnegative distance of x from zero. With positive=True, the symbol is strictly positive, so that absolute value reduces to the symbol itself. An unconstrained symbol can represent complex values and needs additional care.",
+        "Assumptions belong in the model before simplification. Do not add positivity merely to obtain a shorter answer. Compare the three outputs and substitute a negative real value into the real-symbol expression to see why the distinction matters."
+      ],
+      "refresher": {
+        "title": "Square roots and absolute value",
+        "body": "The principal square root of a nonnegative real number is nonnegative. Absolute value is a number’s distance from zero.",
+        "tex": "\\sqrt{x^2}=|x|\\quad(x\\in\\mathbb R)",
+        "example": "For x=-3, sqrt(x²)=sqrt(9)=3, while x itself is -3. For a positive x, |x| equals x."
+      },
+      "predict": "Should sqrt(x**2) simplify the same way for unrestricted, real and positive symbols?",
+      "look": "The different outputs preserve different sets of permitted inputs.",
+      "change": "Replace positive=True with nonnegative=True. Then try negative=True using a new symbol.",
+      "question": "A formula must work for any real displacement, including negative values. Which reduction is justified?",
+      "options": [
+        "sqrt(x**2) becomes x.",
+        "sqrt(x**2) becomes -x.",
+        "sqrt(x**2) becomes Abs(x)."
+      ],
+      "correct": 2,
+      "feedback": "Abs(x) covers both signs. A displacement’s sign cannot be discarded by assuming it is positive.",
+      "hints": [
+        "Test x=-1 and x=1.",
+        "Choose a form that is nonnegative in both cases."
+      ],
+      "limit": "Assumptions are mathematical restrictions supplied by you; SymPy does not establish their real-world truth.",
+      "source": [
+        "SymPy · Assumptions",
+        "https://docs.sympy.org/latest/guides/assumptions.html"
+      ],
+      "minutes": 7,
+      "kind": "Exact symbolic investigation",
+      "module": 0,
+      "code": "04-tell-sympy-what-a-symbol-means.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "substitute-deliberately",
+      "title": "Substitute deliberately",
+      "short": "Replace symbols explicitly and distinguish simultaneous substitution from sequential updates.",
+      "goal": "Replace symbols explicitly and distinguish simultaneous substitution from sequential updates.",
+      "explain": [
+        "Substitution replaces an expression or symbol inside another expression. It creates a new object; the original expression is unchanged. Use the symbol objects you actually used when constructing the expression.",
+        "Order matters when replacements depend on one another. Sequentially changing x to y and then y to x is not a reliable way to swap their original roles. simultaneous=True applies replacements together without using one replacement as input to another.",
+        "Inspect the original, ordinary sequential replacement and simultaneous swap below. This matters when renaming variables, changing coordinates or substituting several model inputs. Retain a copy of the symbolic formula before inserting particular numbers."
+      ],
+      "refresher": {
+        "title": "Functions with several inputs",
+        "body": "A formula can depend on more than one independent quantity. Replacing an input means evaluating or rewriting that particular role.",
+        "tex": "f(x,y)=x+2y,\\qquad f(y,x)=y+2x",
+        "example": "At x=1 and y=3, f(x,y)=7, whereas swapping the input roles gives f(y,x)=5."
+      },
+      "predict": "Will sequential replacements x→y and y→x necessarily swap the two original symbols?",
+      "look": "The original remains x+2*y. A simultaneous swap preserves the two distinct roles.",
+      "change": "Swap symbols in x/y. Compare sequential and simultaneous replacement without assuming the denominator is always nonzero.",
+      "question": "Which operation safely swaps the original roles of a and b?",
+      "options": [
+        "expr.subs(a,b).subs(b,a)",
+        "Assigning the Python name a=b.",
+        "expr.subs({a:b,b:a}, simultaneous=True)"
+      ],
+      "correct": 2,
+      "feedback": "Simultaneous replacement avoids cascading the first replacement into the second. Keep the expression’s domain restrictions too.",
+      "hints": [
+        "A swap must retain both original roles.",
+        "Use the simultaneous option."
+      ],
+      "limit": "Substitution does not automatically preserve or document every domain restriction of a transformed formula.",
+      "source": [
+        "SymPy · Introductory tutorial: basic operations",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/basic_operations.html"
+      ],
+      "minutes": 7,
+      "kind": "Exact symbolic investigation",
+      "module": 0,
+      "code": "05-substitute-deliberately.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "choose-when-to-approximate",
+      "title": "Choose when to approximate",
+      "short": "Evaluate an exact expression numerically at a chosen precision.",
+      "goal": "Evaluate an exact expression numerically at a chosen precision.",
+      "explain": [
+        "Exact forms such as sqrt(2) and pi preserve a mathematical definition. Numerical evaluation turns them into approximations with a requested number of significant digits. Use evalf or N when a decimal answer serves the question.",
+        "Precision means how many digits the arithmetic carries, not how much real-world evidence supports an input. A high-precision result from a low-precision measurement is still limited by that measurement. Avoid confusing the number of printed decimal places with significant digits.",
+        "The example retains an exact expression and evaluates it twice. Direct evalf with subs can also evaluate a formula using high-precision substitution more reliably than doing an early low-precision calculation. Later numerical lessons examine cancellation and input precision in more detail."
+      ],
+      "refresher": {
+        "title": "Exact values and decimal approximations",
+        "body": "Some numbers have no finite decimal representation. A symbolic definition can remain exact while any finite decimal is an approximation.",
+        "tex": "\\sqrt2\\approx1.41421356",
+        "example": "Rounding sqrt(2) to three significant digits gives 1.41. Squaring that rounded value does not give exactly 2."
+      },
+      "predict": "Does requesting 40 digits of an exact sqrt(2) require replacing it with a Python float first?",
+      "look": "The exact check is zero before numerical rounding. The two decimal displays approximate the same exact quantity.",
+      "change": "Compare sp.N(sp.pi,50) with sp.N(3.141592653589793,50). Explain the input information available in each.",
+      "question": "A sensor supplies about four reliable digits. What does printing 50 digits establish?",
+      "options": [
+        "Fifty reliable digits about the physical quantity.",
+        "Only a longer numerical representation; it adds no measurement information.",
+        "That the model assumptions are correct."
+      ],
+      "correct": 1,
+      "feedback": "Arithmetic precision and evidence precision are different. Preserve both in a report.",
+      "hints": [
+        "Ask where the input came from.",
+        "Printing cannot create new observations."
+      ],
+      "limit": "Numerical precision controls arithmetic representation, not measurement error or model validity.",
+      "source": [
+        "SymPy · Numerical evaluation",
+        "https://docs.sympy.org/latest/modules/evalf.html"
+      ],
+      "minutes": 7,
+      "kind": "Exact symbolic investigation",
+      "module": 0,
+      "code": "06-choose-when-to-approximate.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "expand-or-factor",
+      "title": "Expand or factor?",
+      "short": "Choose between a sum of terms and a product of factors.",
+      "goal": "Choose between a sum of terms and a product of factors.",
+      "explain": [
+        "Expanding distributes products and powers into a sum. Factoring seeks a product representation. Both can represent the same polynomial, but each makes different structure visible.",
+        "A product can reveal zeros: if a product of real or complex numbers is zero, at least one factor is zero. A sum of powers is often convenient for reading coefficients or differentiating term by term. Choose the form from the task.",
+        "The example starts with a quadratic whose factors are small integers. Verify that expanding the factored result recovers the polynomial. Successful factorisation here is over rational coefficients; other domains or extensions can produce different factorizations."
+      ],
+      "refresher": {
+        "title": "The distributive law",
+        "body": "Multiplication distributes over addition. Factoring applies that relationship in reverse.",
+        "tex": "(x-2)(x+3)=x^2+x-6",
+        "example": "The two cross terms are 3x and -2x, so the coefficient of x is 1. The constant term is -6."
+      },
+      "predict": "Which form will make the zeros x=2 and x=-3 easiest to see?",
+      "look": "The zero identity check verifies the algebraic transformation for this polynomial.",
+      "change": "Replace the polynomial by x**2+1. Compare factor with factor(..., extension=sp.I).",
+      "question": "You want to read the coefficient of x cubed. Which representation is usually useful?",
+      "options": [
+        "A fully expanded polynomial in x.",
+        "Only a decimal approximation at x=1.",
+        "Only a plot near zero."
+      ],
+      "correct": 0,
+      "feedback": "Expanded powers expose coefficients. Evaluation at one point cannot recover the whole polynomial structure.",
+      "hints": [
+        "A coefficient multiplies a power of the variable.",
+        "Write the expression as a sum of powers."
+      ],
+      "limit": "A factorisation depends on the coefficient domain. A polynomial irreducible over rationals may factor over complex numbers.",
+      "source": [
+        "SymPy · Simplification",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/simplification.html"
+      ],
+      "minutes": 7,
+      "kind": "Exact symbolic investigation",
+      "module": 1,
+      "code": "07-expand-or-factor.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "collect-the-terms-you-need",
+      "title": "Collect the terms you need",
+      "short": "Group an expression by powers of a chosen symbol.",
+      "goal": "Group an expression by powers of a chosen symbol.",
+      "explain": [
+        "An expression can contain several symbols. Collecting with respect to one of them groups its powers while treating the others as coefficients. This is useful when a model depends on both an independent variable and adjustable parameters.",
+        "Use collect after expansion when necessary. The result can expose how strongly each parameter or power contributes without substituting particular values. The coeff method extracts the coefficient of a specified power from an appropriate expanded expression.",
+        "Below, x is the grouping variable while a and b remain symbolic coefficients. Compare the full expression with the collected form and the coefficient of x. Grouping is a representation choice; it does not change the mathematical value."
+      ],
+      "refresher": {
+        "title": "Like terms",
+        "body": "Terms with the same power of a variable can be combined by adding their coefficients.",
+        "tex": "ax+bx=(a+b)x",
+        "example": "For a=2 and b=5, the two x terms become 7x. The parameters can remain symbolic while you perform the same grouping."
+      },
+      "predict": "When collecting in x, must a and b first be assigned numerical values?",
+      "look": "Changing the collection variable changes the visible grouping, not the expression’s value.",
+      "change": "Add b*x**2 and inspect the coefficient of x squared.",
+      "question": "In (a+b)*x+3, what is the coefficient of x?",
+      "options": [
+        "x",
+        "3",
+        "a+b"
+      ],
+      "correct": 2,
+      "feedback": "The whole expression a+b multiplies x. Coefficients can themselves depend on other symbols.",
+      "hints": [
+        "Treat a and b as fixed while grouping by x.",
+        "Identify the factor multiplying the first power of x."
+      ],
+      "limit": "coeff is a structural extraction tool; expansion or collection may be needed before asking for a particular coefficient.",
+      "source": [
+        "SymPy · Simplification",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/simplification.html"
+      ],
+      "minutes": 7,
+      "kind": "Exact symbolic investigation",
+      "module": 1,
+      "code": "08-collect-the-terms-you-need.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "cancel-with-the-domain-in-view",
+      "title": "Cancel with the domain in view",
+      "short": "Simplify a rational expression while retaining its original excluded inputs.",
+      "goal": "Simplify a rational expression while retaining its original excluded inputs.",
+      "explain": [
+        "Cancelling common factors can turn a complicated rational expression into a simpler formula. However, a factor that appears in the denominator excludes values where that denominator is zero. Removing its visible occurrence does not restore those inputs to the original problem.",
+        "For (x squared minus one) divided by (x minus one), cancellation produces x+1. The original expression is undefined at x=1; the simplified polynomial is defined there. The formulas agree wherever the original is defined.",
+        "Keep the original denominator or a separate domain note when transforming a model. Later, a limit can describe the value approached near an excluded point, but a limit is not the original expression’s value at that point. Domain bookkeeping is part of the answer."
+      ],
+      "refresher": {
+        "title": "Division by zero and removable holes",
+        "body": "A fraction requires a nonzero denominator. Cancelling a common factor preserves equality only where that factor was nonzero.",
+        "tex": "\\frac{x^2-1}{x-1}=x+1\\quad\\text{for }x\\ne1",
+        "example": "At x=2 both expressions equal 3. At x=1 the original becomes 0/0, while the polynomial equals 2."
+      },
+      "predict": "Does cancellation prove that the original fraction is defined at x=1?",
+      "look": "nan marks the indeterminate direct substitution here. The reduced expression supplies a continuation, not a repair of the original domain.",
+      "change": "Try (x**2-4)/(x-2), and record the excluded value before cancelling.",
+      "question": "A transformed expression agrees with the original except at a cancelled denominator zero. What should a report include?",
+      "options": [
+        "The simpler formula and the original exclusion.",
+        "Only the simpler formula, with every real input allowed.",
+        "A claim that division by zero is now valid."
+      ],
+      "correct": 0,
+      "feedback": "Algebraic convenience does not erase an original restriction. State the domain beside the transformed formula.",
+      "hints": [
+        "Inspect the denominator before cancellation.",
+        "Keep its zeros as exclusions."
+      ],
+      "limit": "SymPy expressions do not automatically retain a full history of removed domain restrictions.",
+      "source": [
+        "SymPy · Simplification",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/simplification.html"
+      ],
+      "minutes": 7,
+      "kind": "Exact symbolic investigation",
+      "module": 1,
+      "code": "09-cancel-with-the-domain-in-view.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "separate-partial-fractions",
+      "title": "Separate partial fractions",
+      "short": "Rewrite a rational function as a sum of simpler fractions.",
+      "goal": "Rewrite a rational function as a sum of simpler fractions.",
+      "explain": [
+        "Partial fractions decompose a rational function into simpler denominator pieces. This can expose contributions, poles or terms that are easier to integrate. The decomposition is an identity on the original domain.",
+        "Use apart with the intended variable. Treat other symbols as parameters only when the relevant coefficient assumptions support that interpretation. Repeated or irreducible factors can produce different kinds of terms from this first example.",
+        "Below, the denominator has factors x and x+1. Compare the decomposition with the original by bringing their difference to a common denominator. A zero result verifies the identity away from the poles; it does not make either expression defined at them."
+      ],
+      "refresher": {
+        "title": "Adding fractions in reverse",
+        "body": "Partial fractions reverse common-denominator addition. A rational function is a ratio of polynomials.",
+        "tex": "\\frac1{x(x+1)}=\\frac1x-\\frac1{x+1}",
+        "example": "Combining the right side gives ((x+1)-x)/(x(x+1))=1/(x(x+1)), for x different from 0 and -1."
+      },
+      "predict": "Will the decomposition preserve the excluded values x=0 and x=-1?",
+      "look": "The minus sign on the second term is essential. Inspect it before trusting a remembered pattern.",
+      "change": "Use 1/(x*(x+2)) and predict the coefficient of each simple fraction.",
+      "question": "Why might partial fractions be useful before integration?",
+      "options": [
+        "They always remove every singularity.",
+        "They can expose simpler terms with known antiderivatives.",
+        "They turn every rational function into a constant."
+      ],
+      "correct": 1,
+      "feedback": "The representation can make an operation easier while preserving the original domain restrictions.",
+      "hints": [
+        "Think about integrating a sum term by term.",
+        "A simple denominator may have a familiar antiderivative."
+      ],
+      "limit": "This example has distinct linear factors. Higher-degree and repeated factors need a more general decomposition.",
+      "source": [
+        "SymPy · Simplification",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/simplification.html"
+      ],
+      "minutes": 7,
+      "kind": "Exact symbolic investigation",
+      "module": 1,
+      "code": "10-separate-partial-fractions.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "build-a-common-denominator",
+      "title": "Build a common denominator",
+      "short": "Combine rational terms into one inspectable fraction.",
+      "goal": "Combine rational terms into one inspectable fraction.",
+      "explain": [
+        "Combining fractions is useful when you want a single numerator, denominator or residual. together constructs a common-denominator representation. It serves a different representation goal from partial-fraction decomposition.",
+        "Use fraction to inspect the resulting numerator and denominator. This makes it easier to analyse zeros and excluded inputs separately. A numerator zero is only a valid zero of the rational function where the denominator remains nonzero.",
+        "The example combines two terms that do not share a denominator. Verify the result algebraically and inspect the denominator before interpreting any subsequent solver output. Automated simplification can change visible form, so keep the original problem and its domain nearby."
+      ],
+      "refresher": {
+        "title": "Common denominators",
+        "body": "To add fractions, express them using the same denominator and add their numerators.",
+        "tex": "\\frac1x+\\frac1{x+1}=\\frac{2x+1}{x(x+1)}",
+        "example": "The new numerator is (x+1)+x. Values 0 and -1 remain excluded because the original terms are undefined there."
+      },
+      "predict": "Does the zero of the combined numerator automatically make every denominator input valid?",
+      "look": "fraction separates the representation you supplied. It is not a substitute for tracking the original domain.",
+      "change": "Combine 1/(x-1)+2/(x+1) and identify both excluded values.",
+      "question": "After combining fractions, what should you check before interpreting a numerator root?",
+      "options": [
+        "Whether the denominator is nonzero there and the original expression is defined.",
+        "Only the number of printed terms.",
+        "Whether the root is positive."
+      ],
+      "correct": 0,
+      "feedback": "The equation numerator=0 describes a rational zero only where division is allowed.",
+      "hints": [
+        "A fraction has both a numerator and a denominator.",
+        "Substitute the candidate into the original problem."
+      ],
+      "limit": "A convenient combined denominator can conceal removable factors if further cancellation is performed.",
+      "source": [
+        "SymPy · Simplification",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/simplification.html"
+      ],
+      "minutes": 7,
+      "kind": "Exact symbolic investigation",
+      "module": 1,
+      "code": "11-build-a-common-denominator.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "simplify-towards-a-goal",
+      "title": "Simplify towards a goal",
+      "short": "Select a targeted transformation and verify the relationship between forms.",
+      "goal": "Select a targeted transformation and verify the relationship between forms.",
+      "explain": [
+        "There is no single best-looking form of every expression. A factored polynomial, expanded sum and trigonometric identity may each suit a different task. simplify applies broad heuristics; targeted functions express a clearer intention.",
+        "Use trigsimp for trigonometric identities, factor for polynomial products and cancel for rational factors. Comparing structure with == asks whether objects have the same representation, not whether every algebraically equivalent pair is written identically.",
+        "For suitable expressions, simplifying their difference to zero is a useful identity check. Failure to reach zero is not a proof of inequality: symbolic equivalence is difficult in general. Combine the check with assumptions and domain reasoning, and distinguish identity from agreement at a few numerical points."
+      ],
+      "refresher": {
+        "title": "Identity versus one example",
+        "body": "An identity holds throughout a stated domain. Agreement at one input is weaker evidence.",
+        "tex": "(x+1)^2-(x^2+2x+1)=0",
+        "example": "The difference expands to zero for every x. In contrast, x²=x happens at x=0 and x=1 but is not an identity."
+      },
+      "predict": "Can two equivalent polynomial expressions compare unequal with structural ==?",
+      "look": "Structural comparison and mathematical equivalence answer different questions.",
+      "change": "Compare x**2 and x at several points, then examine sp.factor(x**2-x).",
+      "question": "Two formulas match at x=0 and x=1. What does that establish?",
+      "options": [
+        "An identity for all complex x.",
+        "Agreement at those tested points, requiring more work to establish an identity.",
+        "That their Python expression trees are identical."
+      ],
+      "correct": 1,
+      "feedback": "Finite examples can reveal a counterexample but do not generally establish a symbolic identity.",
+      "hints": [
+        "Consider x² and x.",
+        "A claim about all inputs needs a reason covering the domain."
+      ],
+      "limit": "No single simplification or numerical sampling strategy decides equivalence for all possible symbolic expressions.",
+      "source": [
+        "SymPy · Simplification",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/simplification.html"
+      ],
+      "minutes": 7,
+      "kind": "Exact symbolic investigation",
+      "module": 1,
+      "code": "12-simplify-towards-a-goal.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "write-an-equation-then-solve-it",
+      "title": "Write an equation, then solve it",
+      "short": "Represent an equality with Eq and verify a computed solution.",
+      "goal": "Represent an equality with Eq and verify a computed solution.",
+      "explain": [
+        "An expression is a mathematical object; an equation states that two expressions are equal. Python assignment binds a name, while Eq constructs a symbolic equation. Keep those roles separate when translating a word problem.",
+        "For a first algebraic equation, solve can return a list of candidate values for the specified symbol. Supply that symbol explicitly. The equation below is linear, so rearranging it by hand provides an independent check of the result.",
+        "Substitute each candidate into the original left and right sides, then simplify their difference. This makes verification visible rather than assuming that a printed answer meets every condition. Later lessons use solution sets to express domains and families more explicitly."
+      ],
+      "refresher": {
+        "title": "Keeping an equality balanced",
+        "body": "Applying the same reversible operation to both sides preserves the solutions of an equation.",
+        "tex": "3x+2=11\\;\\Longrightarrow\\;3x=9\\;\\Longrightarrow\\;x=3",
+        "example": "Subtract 2 from both sides, then divide both sides by the nonzero number 3. Substitution gives 3·3+2=11."
+      },
+      "predict": "Does assigning equation = ... itself ask Python to solve the equation?",
+      "look": "Eq records a relationship; solve performs the solving operation. The residuals check the original relationship.",
+      "change": "Change the coefficient 3 to 5 and the right side to 12. Predict the exact rational answer.",
+      "question": "Which object represents an equation without assigning a value to the symbol x?",
+      "options": [
+        "x = 3",
+        "sp.Eq(x+2,5)",
+        "x+2 == 5"
+      ],
+      "correct": 1,
+      "feedback": "Eq creates symbolic equality. Assignment rebinds a Python name; == tests structural equality.",
+      "hints": [
+        "Distinguish a relationship from a Python operation.",
+        "Use the symbolic equality constructor."
+      ],
+      "limit": "Checking an equation is necessary, but additional domain, sign or physical constraints may still exclude a candidate.",
+      "source": [
+        "SymPy · Solvers",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/solvers.html"
+      ],
+      "minutes": 7,
+      "kind": "Exact symbolic investigation",
+      "module": 2,
+      "code": "13-write-an-equation-then-solve-it.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "state-the-solution-domain",
+      "title": "State the solution domain",
+      "short": "Use solveset to distinguish real and complex solution sets.",
+      "goal": "Use solveset to distinguish real and complex solution sets.",
+      "explain": [
+        "A solving question includes its domain: the set of permitted values. A polynomial can have no real solutions but still have complex ones. State the domain explicitly instead of inferring it from how a symbol is printed.",
+        "solveset returns a mathematical set, such as FiniteSet, EmptySet or a more general set description. An empty real solution set means no real value satisfies the equation; it does not mean that the equation is meaningless or that no other domain has solutions.",
+        "Solve x squared plus one equal to zero over both reals and complexes. The imaginary unit I satisfies I squared equal to minus one. Future solvers can return ConditionSet when a general symbolic answer is unresolved; that is not the same as EmptySet."
+      ],
+      "refresher": {
+        "title": "Real and complex numbers",
+        "body": "Real numbers lie on a number line. Complex numbers include the imaginary unit i with i²=-1.",
+        "tex": "x^2+1=0\\quad\\Rightarrow\\quad x=\\pm i\\ \\text{over }\\mathbb C",
+        "example": "Every real square is nonnegative, so x²=-1 has no real solution. The values i and -i both square to -1."
+      },
+      "predict": "Will x**2+1=0 have the same solution set over reals and complexes?",
+      "look": "Passing an expression to solveset means solving that expression equal to zero.",
+      "change": "Replace +1 with -1, then compare the two domains again.",
+      "question": "What does EmptySet from a real-domain solve establish?",
+      "options": [
+        "No solution in the requested real domain.",
+        "No complex solution to any related equation.",
+        "That the solver failed to run."
+      ],
+      "correct": 0,
+      "feedback": "The domain is part of the claim. EmptySet and an unresolved ConditionSet carry different meanings.",
+      "hints": [
+        "Read the domain argument alongside the answer.",
+        "Restrict the conclusion to the set you asked about."
+      ],
+      "limit": "Symbolic solvers do not have closed-form answers for every equation; inspect the returned set and verify its interpretation.",
+      "source": [
+        "SymPy · Solveset",
+        "https://docs.sympy.org/latest/modules/solvers/solveset.html"
+      ],
+      "minutes": 7,
+      "kind": "Exact symbolic investigation",
+      "module": 2,
+      "code": "14-state-the-solution-domain.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "solve-a-linear-system",
+      "title": "Solve a linear system",
+      "short": "Interpret linsolve output as a jointly constrained tuple.",
+      "goal": "Interpret linsolve output as a jointly constrained tuple.",
+      "explain": [
+        "A system requires all its equations to hold at the same time. Solving each equation separately without connecting shared variables can produce incompatible values. linsolve handles linear systems and returns a set of ordered solution tuples.",
+        "State the variable order explicitly. A tuple for (x,y) gives the x value first and the y value second, regardless of a story’s naming conventions. Substitute the whole tuple into every original residual to check the system.",
+        "The invented ticket problem below has a total count and a total revenue constraint. Its unique solution is exact. Other systems can have no solutions or a family with free parameters; the output set communicates that structure rather than always yielding one pair."
+      ],
+      "refresher": {
+        "title": "Two equations together",
+        "body": "A solution of a system is an input combination satisfying every equation, not one equation at a time.",
+        "tex": "x+y=10,\\qquad2x+3y=24",
+        "example": "From the first equation x=10-y. Substitution gives 20+y=24, so y=4 and x=6."
+      },
+      "predict": "Does a pair satisfying only the total-count equation solve the full system?",
+      "look": "Each zero residual checks one original equation using the same pair.",
+      "change": "Change the revenue 24 to 25, then consider whether the result meets an additional integer ticket-count requirement.",
+      "question": "For linsolve(equations,(u,v)), how should a result tuple (2,5) be read?",
+      "options": [
+        "u=5 and v=2.",
+        "One answer for either variable, chosen later.",
+        "u=2 and v=5, jointly."
+      ],
+      "correct": 2,
+      "feedback": "The variable order defines the tuple positions. Both values belong to one joint solution.",
+      "hints": [
+        "Read the ordered symbol tuple in the call.",
+        "Keep the values paired during verification."
+      ],
+      "limit": "Linear algebra solves the mathematical system; integer counts and nonnegativity may impose additional modelling constraints.",
+      "source": [
+        "SymPy · Solveset",
+        "https://docs.sympy.org/latest/modules/solvers/solveset.html"
+      ],
+      "minutes": 7,
+      "kind": "Exact symbolic investigation",
+      "module": 2,
+      "code": "15-solve-a-linear-system.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "solve-a-nonlinear-system",
+      "title": "Solve a nonlinear system",
+      "short": "Keep all branches of a nonlinear system and verify complete candidate pairs.",
+      "goal": "Keep all branches of a nonlinear system and verify complete candidate pairs.",
+      "explain": [
+        "Nonlinear equations can have several isolated solutions or larger families. nonlinsolve returns sets of tuples so those joint branches remain visible. Do not select a convenient branch before stating which extra conditions justify the selection.",
+        "Intersect a circle with a line. Substituting the line relationship into the circle creates a quadratic, so two intersection points are plausible. The example checks both returned pairs against both original residuals.",
+        "A physical interpretation may require positive coordinates or a bounded region, but those are extra constraints. Include them explicitly and explain any excluded branch. General nonlinear systems can be much harder, and solver output may contain parameters or unresolved conditions."
+      ],
+      "refresher": {
+        "title": "Intersections of curves",
+        "body": "A common solution of two curve equations is a point lying on both curves.",
+        "tex": "x^2+y^2=5,\\quad y=x-1\\quad\\Rightarrow\\quad x\\in\\{-1,2\\}",
+        "example": "Substituting y=x-1 gives 2x²-2x-4=0. The points are (-1,-2) and (2,1)."
+      },
+      "predict": "Should a solver return only the intersection with positive coordinates when no sign constraint was supplied?",
+      "look": "Every candidate is a full coordinate pair. Both pairs satisfy the equations, even if a later application selects one.",
+      "change": "Replace the radius-squared value 5 with 1 and examine the changed intersections.",
+      "question": "A nonlinear solver finds two valid branches. A model permits only positive x. What next?",
+      "options": [
+        "Apply and document that additional constraint, then verify the retained branch.",
+        "Silently discard whichever answer prints second.",
+        "Average the two branches into a new solution."
+      ],
+      "correct": 0,
+      "feedback": "A stated model restriction can select a branch. Ordering or averaging is not a mathematical justification.",
+      "hints": [
+        "Separate the equations from extra admissibility conditions.",
+        "Check each candidate against the explicit condition."
+      ],
+      "limit": "This system has finite elementary solutions. General nonlinear solving can return parametric or incomplete symbolic descriptions.",
+      "source": [
+        "SymPy · Solveset",
+        "https://docs.sympy.org/latest/modules/solvers/solveset.html"
+      ],
+      "minutes": 7,
+      "kind": "Exact symbolic investigation",
+      "module": 2,
+      "code": "16-solve-a-nonlinear-system.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "solve-an-inequality-as-a-region",
+      "title": "Solve an inequality as a region",
+      "short": "Read an inequality solution as intervals with explicit endpoints.",
+      "goal": "Read an inequality solution as intervals with explicit endpoints.",
+      "explain": [
+        "An inequality describes a region, not usually a list of isolated roots. Its boundary depends on whether equality is included. Multiplying an inequality by an expression of unknown sign can reverse or invalidate a hand calculation.",
+        "reduce_inequalities can reduce suitable one-variable inequalities to logical conditions. The example combines a strict quadratic condition with a non-strict lower bound. Read the intersection of both requirements rather than treating the outputs as alternatives.",
+        "The real number line is the domain here. Test boundary points deliberately: x=1 satisfies both conditions, while x=3 fails the strict quadratic condition. Later, changing a strict sign changes which endpoints belong."
+      ],
+      "refresher": {
+        "title": "Intervals and strict boundaries",
+        "body": "An interval contains a range of real numbers. A strict inequality excludes equality at its boundary.",
+        "tex": "x^2<4\\quad\\Longleftrightarrow\\quad -2<x<2",
+        "example": "Combining x²<4 with x≥1 gives 1≤x<2. The value 2 is excluded, while 1 is included."
+      },
+      "predict": "Does x**2<9 include either endpoint -3 or 3?",
+      "look": "The strict upper boundary is preserved. Mathematical domains and endpoint inclusion are part of the result.",
+      "change": "Change <9 to <=9 and compare the boundary check at 3.",
+      "question": "What region satisfies x²<4 together with x≥1?",
+      "options": [
+        "-2<x<2 with no other restriction.",
+        "1≤x<2.",
+        "1<x≤2."
+      ],
+      "correct": 1,
+      "feedback": "Both conditions must hold. The non-strict lower bound includes 1; the strict quadratic bound excludes 2.",
+      "hints": [
+        "Intersect the two permitted regions.",
+        "Check each endpoint separately."
+      ],
+      "limit": "This lesson covers supported univariate real inequalities; coupled multivariate inequality systems require other methods.",
+      "source": [
+        "SymPy · Inequality solvers",
+        "https://docs.sympy.org/latest/modules/solvers/inequalities.html"
+      ],
+      "minutes": 7,
+      "kind": "Exact symbolic investigation",
+      "module": 2,
+      "code": "17-solve-an-inequality-as-a-region.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "a-numerical-root-needs-a-check",
+      "title": "A numerical root needs a check",
+      "short": "Use nsolve with a starting value and report its local numerical scope.",
+      "goal": "Use nsolve with a starting value and report its local numerical scope.",
+      "explain": [
+        "Some equations do not have a convenient elementary solution. nsolve approximates a root numerically from a starting value or suitable bracket. A returned root is not automatically a catalogue of all roots.",
+        "The residual measures how nearly the original equation is satisfied at the computed value. A small residual is useful evidence, but its relationship to root accuracy depends on sensitivity and conditioning. Verify denominator restrictions and real-world admissibility as well.",
+        "The cubic below has three simple roots, so several starting guesses expose the local nature of the calculation. In harder problems, nearby guesses can converge to the same root, fail or encounter singularities. Report the equation, precision, guesses and verification rather than claiming completeness from one run."
+      ],
+      "refresher": {
+        "title": "Roots and residuals",
+        "body": "A root makes f(x)=0. A residual is the value f(candidate), which should be close to zero for a numerical candidate.",
+        "tex": "f(x)=x^3-x=x(x-1)(x+1)",
+        "example": "The exact roots are -1, 0 and 1. One numerical search need not reveal all three."
+      },
+      "predict": "Will one starting guess necessarily find every root of x**3-x?",
+      "look": "The deliberately separated guesses find different roots in this example. That is a demonstration, not a general completeness strategy.",
+      "change": "Try cos(x)-x from a starting guess of 1. Check the residual at increased precision.",
+      "question": "A single nsolve call finds a root. Which claim is justified?",
+      "options": [
+        "It found a numerical candidate from that setup, subject to verification.",
+        "It proved there are no other roots anywhere.",
+        "The starting value has no effect on numerical solving."
+      ],
+      "correct": 0,
+      "feedback": "Numerical root finding is local and algorithm-dependent. Separate a verified candidate from a complete solution set.",
+      "hints": [
+        "Identify what information the call actually searched.",
+        "Check the original residual and domain."
+      ],
+      "limit": "A small residual alone is not a universal root-error bound, and one successful search does not establish completeness.",
+      "source": [
+        "SymPy · Solvers",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/solvers.html"
+      ],
+      "minutes": 8,
+      "kind": "Exact symbolic investigation",
+      "module": 2,
+      "code": "18-a-numerical-root-needs-a-check.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "compose-functions-in-the-right-order",
+      "title": "Compose functions in the right order",
+      "short": "Use Lambda to represent a rule and distinguish two orders of composition.",
+      "goal": "Use Lambda to represent a rule and distinguish two orders of composition.",
+      "explain": [
+        "A function maps permitted inputs to outputs. Composing functions means applying one rule to the result of another. The order matters: f(g(x)) usually differs from g(f(x)).",
+        "SymPy Lambda represents a symbolic rule with explicit arguments. Calling it with an expression substitutes that expression into its argument position. This makes composition inspectable without creating a numerical Python function yet.",
+        "The example compares adding one then squaring with squaring then adding one. Evaluate both at the same input and compare their formulas. Keep a function’s domain in mind: a formal composition may require an output of the inner function to lie inside the outer function’s permitted inputs."
+      ],
+      "refresher": {
+        "title": "Function notation",
+        "body": "f(x) means the output of the rule f at input x. Composition feeds an output into another rule.",
+        "tex": "f(x)=x+1,\\quad g(x)=x^2,\\quad g(f(x))=(x+1)^2",
+        "example": "At x=2, g(f(2))=9 while f(g(2))=5. Function order changes the result."
+      },
+      "predict": "Do “add one, then square” and “square, then add one” define the same rule?",
+      "look": "Read nested calls from the inside outward. Both rules are defined for all real inputs in this example.",
+      "change": "Replace f with x→2*x and repeat. Find an input where the two compositions differ.",
+      "question": "In h(k(x)), which rule receives x first?",
+      "options": [
+        "h",
+        "Both simultaneously.",
+        "k"
+      ],
+      "correct": 2,
+      "feedback": "The inner call k(x) is evaluated as the input expression for h. That order is part of the definition.",
+      "hints": [
+        "Start at the innermost parentheses.",
+        "Track the output passed to the next rule."
+      ],
+      "limit": "This example uses polynomial rules. Compositions involving roots or logarithms need explicit domain checks.",
+      "source": [
+        "SymPy · Introductory tutorial: basic operations",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/basic_operations.html"
+      ],
+      "minutes": 7,
+      "kind": "Exact symbolic investigation",
+      "module": 3,
+      "code": "19-compose-functions-in-the-right-order.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "use-a-trigonometric-identity",
+      "title": "Use a trigonometric identity",
+      "short": "Apply trigsimp and keep angle units explicit.",
+      "goal": "Apply trigsimp and keep angle units explicit.",
+      "explain": [
+        "Sine and cosine connect an angle with coordinates on the unit circle. SymPy’s trigonometric functions use radians. An exact angle such as pi/6 preserves identities that may be obscured by an early decimal approximation.",
+        "trigsimp can recognise combinations of trigonometric functions. In the example, the Pythagorean identity reduces a sum of squares to one. This is a mathematical identity, unlike the empirical observation that a few numerical evaluations happen to match.",
+        "Convert degrees explicitly when needed by multiplying by pi/180. The plain number 30 means thirty radians to sin, not thirty degrees. Keep the angle unit attached to input descriptions, especially when connecting a symbolic expression to external data or a numerical array."
+      ],
+      "refresher": {
+        "title": "Radians and the unit circle",
+        "body": "A full turn is 2π radians or 360 degrees. On the unit circle, sine and cosine give coordinates whose squared lengths add to one.",
+        "tex": "\\sin^2\\theta+\\cos^2\\theta=1,\\qquad30^\\circ=\\frac\\pi6",
+        "example": "sin(π/6)=1/2 exactly. Passing the number 30 without conversion asks for sin(30 radians)."
+      },
+      "predict": "Will sp.sin(30) mean sine of thirty degrees?",
+      "look": "The exact angle gives an exact half. Radian conversion is part of the input model.",
+      "change": "Calculate cos(60 degrees) exactly and compare with cos(60 radians).",
+      "question": "A table gives angles in degrees. What should happen before using SymPy sin?",
+      "options": [
+        "Convert each angle to radians explicitly.",
+        "Assume sin detects the unit from its magnitude.",
+        "Round every angle to an integer."
+      ],
+      "correct": 0,
+      "feedback": "Trigonometric functions do not infer units from values. Explicit conversion keeps the calculation meaningful.",
+      "hints": [
+        "One full turn has two common numerical descriptions.",
+        "Multiply degrees by π/180."
+      ],
+      "limit": "Symbolic identities do not compensate for incorrect angle units or an unsuitable geometric model.",
+      "source": [
+        "SymPy · Simplification",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/simplification.html"
+      ],
+      "minutes": 7,
+      "kind": "Exact symbolic investigation",
+      "module": 3,
+      "code": "20-use-a-trigonometric-identity.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "respect-logarithm-branches",
+      "title": "Respect logarithm branches",
+      "short": "Use positivity assumptions when expanding logarithms and identify a complex counterexample.",
+      "goal": "Use positivity assumptions when expanding logarithms and identify a complex counterexample.",
+      "explain": [
+        "A logarithm reverses exponentiation, but its domain and branch matter. For positive real inputs, log(a*b)=log(a)+log(b). Extending that rule carelessly to complex values can change the answer by multiples of 2*pi*I.",
+        "SymPy uses the principal complex logarithm. expand_log applies transformations justified by available assumptions. Positive symbols allow a product to split; an unrestricted complex symbol does not justify every familiar school-algebra rewrite.",
+        "The counterexample uses a=b=-1. The product is one, whose principal log is zero, while each principal log of -1 is I*pi. Avoid force=True unless you have separately justified the missing conditions and are prepared to preserve them in the result."
+      ],
+      "refresher": {
+        "title": "Inverse rules have conditions",
+        "body": "For positive real numbers, exponentials and logarithms obey familiar inverse rules. Complex logarithms require a branch convention.",
+        "tex": "\\log(ab)=\\log a+\\log b\\quad(a,b>0)",
+        "example": "For a=b=-1, log(a*b)=log(1)=0 but principal log(a)+log(b)=2πi. Positivity is doing real work in the identity."
+      },
+      "predict": "Is the real-positive product rule automatically valid for every complex pair?",
+      "look": "A shorter expression is not useful if it silently changes the branch or domain.",
+      "change": "Compare log(sqrt(z)) for unrestricted z with a positive symbol. State the assumptions beside any rewrite.",
+      "question": "What justifies splitting log(a*b) into log(a)+log(b) in this lesson?",
+      "options": [
+        "The expression contains only two factors.",
+        "Both a and b are known positive real numbers.",
+        "Calling a general simplifier several times."
+      ],
+      "correct": 1,
+      "feedback": "The assumptions support the identity. Repeated computation cannot supply a missing mathematical condition.",
+      "hints": [
+        "Test the negative pair in the example.",
+        "Identify which assumption rules that pair out."
+      ],
+      "limit": "Complex branch cuts are a larger topic; this example establishes why forced rewrites need explicit justification.",
+      "source": [
+        "SymPy · Simplification",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/simplification.html"
+      ],
+      "minutes": 8,
+      "kind": "Exact symbolic investigation",
+      "module": 3,
+      "code": "21-respect-logarithm-branches.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "define-a-piecewise-rule",
+      "title": "Define a piecewise rule",
+      "short": "Build Piecewise with an explicit boundary and fallback branch.",
+      "goal": "Build Piecewise with an explicit boundary and fallback branch.",
+      "explain": [
+        "A piecewise function uses different formulas in different regions. Conditions are evaluated in order, and the first applicable branch wins. A final True condition provides an otherwise branch.",
+        "The absolute-value example has a negative-input branch and a nonnegative fallback. The point x=0 falls in the fallback because the first condition is strict. Writing that boundary deliberately avoids gaps or double interpretations.",
+        "Piecewise can represent tariffs, thresholds and physical regimes, but the model must state the permitted inputs and any discontinuities. Inspect representative interior points and exact boundaries before differentiating, integrating or converting the rule into numerical code."
+      ],
+      "refresher": {
+        "title": "Rules on regions",
+        "body": "A piecewise definition states both the formula and the region where it applies. Boundary inclusion is part of the rule.",
+        "tex": "|x|=\\begin{cases}-x&x<0\\\\x&x\\ge0\\end{cases}",
+        "example": "At -2 use the first branch and obtain 2. At 0 use the second branch and obtain 0."
+      },
+      "predict": "Which branch will handle x=0 when the first condition is x<0?",
+      "look": "The fallback supplies a value at the boundary. The displayed Abs form expresses the same real function.",
+      "change": "Make a delivery tariff costing 5 for order value below 20 and zero otherwise. Test exactly 20.",
+      "question": "Two Piecewise conditions both match an input. Which branch is selected?",
+      "options": [
+        "The first applicable branch.",
+        "The last applicable branch.",
+        "Their average."
+      ],
+      "correct": 0,
+      "feedback": "Order matters. Design overlapping conditions intentionally or rewrite them into clear disjoint regions.",
+      "hints": [
+        "Read Piecewise from top to bottom.",
+        "Stop at the first true condition."
+      ],
+      "limit": "A piecewise rule needs its own domain and boundary checks; a symbolic definition alone does not validate a real tariff or regime change.",
+      "source": [
+        "SymPy · Introductory tutorial: basic operations",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/basic_operations.html"
+      ],
+      "minutes": 7,
+      "kind": "Exact symbolic investigation",
+      "module": 3,
+      "code": "22-define-a-piecewise-rule.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "read-a-polynomial-and-its-roots",
+      "title": "Read a polynomial and its roots",
+      "short": "Use Poly and roots to distinguish degree, coefficients and multiplicity.",
+      "goal": "Use Poly and roots to distinguish degree, coefficients and multiplicity.",
+      "explain": [
+        "A polynomial in x is a finite sum of nonnegative integer powers of x with coefficients. Poly makes the chosen polynomial variable explicit, which matters when other symbols act as parameters.",
+        "The degree is the highest power with a nonzero coefficient. A root can occur more than once: multiplicity records how many copies of its factor appear. The roots function returns a mapping from discovered roots to multiplicities for this tractable example.",
+        "Inspect the expanded coefficients, factored expression and root multiplicities together. A repeated root may touch rather than cross the horizontal axis in a real plot. General polynomial equations need not have simple radical forms, so do not assume a small explicit roots mapping always describes every possible problem."
+      ],
+      "refresher": {
+        "title": "Repeated factors",
+        "body": "A root r corresponds to a factor x-r. Repeating that factor creates a root with higher multiplicity.",
+        "tex": "(x-1)^2(x+2)=x^3-3x+2",
+        "example": "The polynomial has degree 3. Root 1 has multiplicity 2 and root -2 has multiplicity 1; the multiplicities total 3."
+      },
+      "predict": "Does a repeated root count only once towards the degree?",
+      "look": "all_coeffs includes zero coefficients for missing intermediate powers. Multiplicity carries information beyond the distinct root list.",
+      "change": "Replace the repeated factor by (x-1)**3 and predict the new degree and multiplicity.",
+      "question": "A degree-four polynomial has a root with multiplicity three. How much degree does that factor account for?",
+      "options": [
+        "One.",
+        "Three.",
+        "Four, regardless of all other factors."
+      ],
+      "correct": 1,
+      "feedback": "The factor (x-r)³ contributes three to the polynomial degree even though r is one distinct root value.",
+      "hints": [
+        "Expand the repeated factor as a power.",
+        "Multiplicity counts repeated linear factors."
+      ],
+      "limit": "Exact radical roots are not available for all polynomials; RootOf-style descriptions or numerical roots may be appropriate.",
+      "source": [
+        "SymPy · Polynomial tools",
+        "https://docs.sympy.org/latest/modules/polys/reference.html"
+      ],
+      "minutes": 7,
+      "kind": "Exact symbolic investigation",
+      "module": 3,
+      "code": "23-read-a-polynomial-and-its-roots.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "sum-a-family-of-terms",
+      "title": "Sum a family of terms",
+      "short": "Represent a finite symbolic sum and evaluate its closed form.",
+      "goal": "Represent a finite symbolic sum and evaluate its closed form.",
+      "explain": [
+        "A finite sum adds terms indexed by an integer. SymPy Sum can retain the summation object before evaluating it with doit. This separates the mathematical definition from the closed form a symbolic algorithm can obtain.",
+        "The upper endpoint is included in the sum below. Declaring n as a positive integer matches the intended finite-count model. Product uses an analogous notation for multiplication rather than addition.",
+        "Compare the symbolic formula with a small hand-checkable case. When moving to infinite sums, convergence becomes an additional mathematical requirement; a finite-sum identity should not be extended by simply replacing n with infinity without checking that requirement."
+      ],
+      "refresher": {
+        "title": "Sigma notation",
+        "body": "The symbol Σ instructs you to add one term for each integer index in the specified range, including both endpoints here.",
+        "tex": "\\sum_{k=1}^{n}k=\\frac{n(n+1)}2",
+        "example": "For n=4, the terms are 1+2+3+4=10, and the formula gives 4·5/2=10."
+      },
+      "predict": "Does Sum(k,(k,1,4)) include the term k=4?",
+      "look": "The sum is 10 at n=4, while the product is 24. Similar index notation can describe different operations.",
+      "change": "Sum k**2 from 1 to n and verify the formula at n=3.",
+      "question": "Before interpreting an infinite-series result, what extra question matters?",
+      "options": [
+        "Whether the sum has more than one symbol.",
+        "Whether convergence holds under the stated parameter conditions.",
+        "Whether the finite upper endpoint was even."
+      ],
+      "correct": 1,
+      "feedback": "An infinite process needs convergence analysis. Finite identities alone do not supply it.",
+      "hints": [
+        "Finite and infinite addition are different mathematical claims.",
+        "Check the conditions under which the infinite total exists."
+      ],
+      "limit": "This lesson establishes finite indexed operations; infinite-series convergence requires further analysis.",
+      "source": [
+        "SymPy · Sums and products",
+        "https://docs.sympy.org/latest/modules/concrete.html"
+      ],
+      "minutes": 7,
+      "kind": "Exact symbolic investigation",
+      "module": 3,
+      "code": "24-sum-a-family-of-terms.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "a-limit-is-not-a-substitution",
+      "title": "A limit is not a substitution",
+      "short": "Distinguish a limiting value from direct evaluation and compare one-sided limits.",
+      "goal": "Distinguish a limiting value from direct evaluation and compare one-sided limits.",
+      "explain": [
+        "A limit describes the value approached as an input moves towards a point through permitted nearby values. The function need not be defined at that point. This differs from directly substituting the point into the expression.",
+        "SymPy limit can specify approach from the right or left. A two-sided real limit requires those approaches to agree. Infinite one-sided limits with opposite signs do not combine into one finite value.",
+        "For sin(x)/x at zero, direct substitution gives an indeterminate expression while the limiting value is one. The reciprocal 1/x illustrates a different behaviour: its left and right limits diverge in opposite directions. Read the direction and domain beside every limit result."
+      ],
+      "refresher": {
+        "title": "Approaching versus arriving",
+        "body": "A limiting value concerns nearby inputs, not necessarily the formula’s value exactly at the point.",
+        "tex": "\\lim_{x\\to0}\\frac{\\sin x}{x}=1\\quad\\text{although direct substitution gives }0/0",
+        "example": "For small positive and negative x in radians, sin(x)/x approaches 1. The original fraction remains undefined at zero."
+      },
+      "predict": "Must an undefined direct substitution imply that no finite limit exists?",
+      "look": "The reciprocal limits disagree. The limit of sin(x)/x and its missing point are separate facts.",
+      "change": "Compute left and right limits of Abs(x)/x at zero and explain why there is no common two-sided value.",
+      "question": "A function’s left and right limits at a point are different. What follows?",
+      "options": [
+        "Their average is the two-sided limit.",
+        "The ordinary two-sided real limit does not exist.",
+        "Direct substitution must be zero."
+      ],
+      "correct": 1,
+      "feedback": "A common two-sided limit requires agreement. Averaging incompatible approaches changes the question.",
+      "hints": [
+        "Follow the input from each side.",
+        "Ask whether both approaches lead to the same value."
+      ],
+      "limit": "Limits depend on approach and domain; complex limits can require stronger path-independent reasoning.",
+      "source": [
+        "SymPy · Calculus tutorial",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/calculus.html"
+      ],
+      "minutes": 8,
+      "kind": "Exact symbolic investigation",
+      "module": 4,
+      "code": "25-a-limit-is-not-a-substitution.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "differentiate-a-composed-expression",
+      "title": "Differentiate a composed expression",
+      "short": "Calculate a derivative and interpret the chain-rule factor.",
+      "goal": "Calculate a derivative and interpret the chain-rule factor.",
+      "explain": [
+        "A derivative describes the local rate of change of a function with respect to a chosen variable. SymPy diff applies symbolic differentiation rules to an expression. State the variable explicitly, particularly when parameters appear in the formula.",
+        "For a composed function, the chain rule includes the derivative of the inner expression. Differentiating exp(x squared) therefore produces both an exponential factor and a 2*x factor. Omitting the inner derivative changes the rate.",
+        "The example also evaluates the derivative at a specific input. That number describes the slope there, not the function’s value. Units follow the ratio of output units to input units, and a symbolic derivative does not establish whether the original formula accurately models a measured process."
+      ],
+      "refresher": {
+        "title": "Slope and the chain rule",
+        "body": "A derivative measures local change. For a composition, multiply the outer derivative by the derivative of its input.",
+        "tex": "\\frac{d}{dx}e^{x^2}=e^{x^2}\\cdot2x",
+        "example": "At x=1, the function value is e but its derivative is 2e. These are different quantities."
+      },
+      "predict": "Will differentiating exp(x**2) give only exp(x**2)?",
+      "look": "The inner derivative 2*x is visible. A second derivative describes change in the slope.",
+      "change": "Change the inner expression to 3*x+1. Predict the new chain-rule factor.",
+      "question": "For sin(5*x), which factor comes from differentiating the inner expression?",
+      "options": [
+        "x",
+        "sin(x)",
+        "5"
+      ],
+      "correct": 2,
+      "feedback": "The derivative of 5*x with respect to x is 5, so the derivative is 5*cos(5*x).",
+      "hints": [
+        "Separate the outer rule from the inner expression.",
+        "Differentiate 5*x first."
+      ],
+      "limit": "Differentiation is conditional on the formula and variable assumptions; it does not validate a physical or statistical model.",
+      "source": [
+        "SymPy · Calculus tutorial",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/calculus.html"
+      ],
+      "minutes": 8,
+      "kind": "Exact symbolic investigation",
+      "module": 4,
+      "code": "26-differentiate-a-composed-expression.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "differentiate-an-implicit-curve",
+      "title": "Differentiate an implicit curve",
+      "short": "Obtain an implicit derivative and identify where its denominator vanishes.",
+      "goal": "Obtain an implicit derivative and identify where its denominator vanishes.",
+      "explain": [
+        "Some relationships define a curve without giving y as one global function of x. Implicit differentiation treats y as changing with x while preserving the relationship. SymPy idiff can calculate that derivative from an equation written as a zero residual.",
+        "On a circle, differentiating x squared plus y squared minus the radius squared gives 2*x+2*y*y-prime equal to zero. Solving for y-prime divides by y, so the resulting slope formula needs y nonzero.",
+        "Inspect slopes at two points on a radius-five circle, then note the missing boundary points where y=0. A vertical tangent can fail to have a finite dy/dx even though the curve itself remains well defined. Keep the derivative’s domain distinct from the curve’s domain."
+      ],
+      "refresher": {
+        "title": "An implicit relationship",
+        "body": "An equation can constrain x and y together without selecting one y for each x. A circle generally has an upper and a lower branch.",
+        "tex": "x^2+y^2=25\\quad\\Longrightarrow\\quad\\frac{dy}{dx}=-\\frac{x}{y}\\quad(y\\ne0)",
+        "example": "At (3,4) the slope is -3/4. At (5,0) this slope formula divides by zero, reflecting a vertical tangent."
+      },
+      "predict": "Does a division by y in dy/dx mean the circle itself disappears at y=0?",
+      "look": "The curve check at (5,0) is zero even though its dy/dx formula is not finite there.",
+      "change": "Use the ellipse x**2+4*y**2=16 and derive its implicit slope.",
+      "question": "What should accompany a slope formula containing division by y?",
+      "options": [
+        "A claim that every curve point is invalid.",
+        "A restriction y≠0 for that finite-slope formula and analysis of the omitted points.",
+        "An instruction to replace y=0 with y=1."
+      ],
+      "correct": 1,
+      "feedback": "The derivative representation has a local domain. Singular slope points deserve interpretation, not arbitrary substitution.",
+      "hints": [
+        "Locate the denominator.",
+        "Separate a valid curve point from the existence of a finite slope."
+      ],
+      "limit": "Implicit derivatives require local regularity; singular points and branch changes can need additional analysis.",
+      "source": [
+        "SymPy · Calculus tutorial",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/calculus.html"
+      ],
+      "minutes": 8,
+      "kind": "Exact symbolic investigation",
+      "module": 4,
+      "code": "27-differentiate-an-implicit-curve.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "take-one-partial-derivative-at-a-time",
+      "title": "Take one partial derivative at a time",
+      "short": "Build a gradient with an explicit order of input variables.",
+      "goal": "Build a gradient with an explicit order of input variables.",
+      "explain": [
+        "A function of several variables can change in several directions. A partial derivative changes one input while holding the others fixed. The gradient collects those partial derivatives in a stated variable order.",
+        "SymPy diff treats other independent symbols as constants when differentiating with respect to one symbol. Parameters are not automatically functions of that symbol; declare functional dependence explicitly if the model requires it.",
+        "The quadratic example has inputs x and y with a cross term. Compute each partial derivative, form a column vector and evaluate it at a point. A zero gradient is a candidate for an interior stationary point; it does not by itself prove a minimum, maximum or feasible solution."
+      ],
+      "refresher": {
+        "title": "Partial change",
+        "body": "A partial derivative varies one coordinate while the other independent inputs stay fixed.",
+        "tex": "f(x,y)=x^2+xy+y^2,\\qquad\\nabla f=\\begin{pmatrix}2x+y\\\\x+2y\\end{pmatrix}",
+        "example": "At (1,2), the gradient is (4,5). Its entries refer to x and y respectively."
+      },
+      "predict": "When taking the partial derivative of x*y with respect to x, does y also differentiate to one?",
+      "look": "Holding y fixed gives derivative y for x*y. The vector order must remain attached to its entries.",
+      "change": "Add 3*x*y and predict the change to both gradient components.",
+      "question": "A function has gradient zero at a point. What has been established?",
+      "options": [
+        "A stationary-point candidate, requiring classification and any constraint checks.",
+        "A global minimum in every possible domain.",
+        "That the function is constant everywhere."
+      ],
+      "correct": 0,
+      "feedback": "Vanishing first derivatives alone do not classify a point. Curvature, boundaries and constraints matter.",
+      "hints": [
+        "A flat slope can occur at a maximum or saddle as well as a minimum.",
+        "Separate finding candidates from classifying them."
+      ],
+      "limit": "This example assumes independent coordinates and smooth polynomial derivatives; constraints and nonsmooth points require care.",
+      "source": [
+        "SymPy · Calculus tutorial",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/calculus.html"
+      ],
+      "minutes": 8,
+      "kind": "Exact symbolic investigation",
+      "module": 4,
+      "code": "28-take-one-partial-derivative-at-a-time.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "integrate-and-check-by-differentiating",
+      "title": "Integrate and check by differentiating",
+      "short": "Distinguish an antiderivative family from a definite accumulated quantity.",
+      "goal": "Distinguish an antiderivative family from a definite accumulated quantity.",
+      "explain": [
+        "An antiderivative F of f has derivative f. Indefinite integration finds one representative, while adding an arbitrary constant describes the family on a suitable interval. Definite integration instead accumulates signed contributions between specified bounds.",
+        "SymPy integrate can perform either operation depending on the arguments. Integral retains an unevaluated mathematical object until doit is requested, which is useful for keeping the problem definition visible.",
+        "The example integrates a polynomial, differentiates the result to check it, and evaluates a bounded integral. The derivative check cannot determine an additive constant. For functions with singularities, inspect the integration interval and convergence rather than assuming a symbolic expression guarantees a finite ordinary integral."
+      ],
+      "refresher": {
+        "title": "Accumulation and antiderivatives",
+        "body": "Integration connects a rate with accumulation. Adding a constant to an antiderivative does not change its derivative.",
+        "tex": "\\int2x\\,dx=x^2+C,\\qquad\\int_0^3 2x\\,dx=9",
+        "example": "The definite result is x² evaluated at 3 minus x² evaluated at 0. The arbitrary constant cancels."
+      },
+      "predict": "Does the derivative check distinguish F from F+7?",
+      "look": "The constant belongs in the indefinite family. The definite integral is a number in this example.",
+      "change": "Integrate 3*x**2 between 0 and 2. Check the antiderivative separately.",
+      "question": "What does differentiating an antiderivative verify?",
+      "options": [
+        "Its additive constant uniquely.",
+        "That its derivative matches the integrand on the relevant domain.",
+        "That every improper integral of the integrand converges."
+      ],
+      "correct": 1,
+      "feedback": "A derivative verifies the local antiderivative relationship, while constants and improper bounds require separate information.",
+      "hints": [
+        "The derivative of every constant is zero.",
+        "Separate a derivative identity from a bounded or improper accumulation."
+      ],
+      "limit": "General integrals may remain unevaluated or require convergence conditions and piecewise domains.",
+      "source": [
+        "SymPy · Calculus tutorial",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/calculus.html"
+      ],
+      "minutes": 8,
+      "kind": "Exact symbolic investigation",
+      "module": 4,
+      "code": "29-integrate-and-check-by-differentiating.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "keep-the-remainder-in-a-series",
+      "title": "Keep the remainder in a series",
+      "short": "Interpret a Taylor polynomial as a local approximation with an order term.",
+      "goal": "Interpret a Taylor polynomial as a local approximation with an order term.",
+      "explain": [
+        "A Taylor expansion approximates a sufficiently smooth function near a chosen point using powers of the displacement from that point. The expansion point and retained order are part of the statement, not optional annotations.",
+        "SymPy series includes an Order term describing asymptotic remainder behaviour. removeO extracts a polynomial when you need to evaluate or plot it, but removing the notation does not eliminate the mathematical approximation error.",
+        "The sine example expands around zero through powers below seven. Compare its errors at a nearby and a farther input. A small error at one point is a useful check, not a global error bound. Keep the original function available when using a truncated approximation in a model."
+      ],
+      "refresher": {
+        "title": "Local approximation and big O",
+        "body": "A Taylor polynomial matches a function’s derivatives at a chosen point. O(x⁷) describes remainder scaling near zero, not an exact equality everywhere.",
+        "tex": "\\sin x=x-\\frac{x^3}{6}+\\frac{x^5}{120}+O(x^7)",
+        "example": "At small |x|, the first omitted powers can be small. Farther from zero, the same polynomial may be much less accurate."
+      },
+      "predict": "Does removeO make a Taylor polynomial exact for every x?",
+      "look": "The error grows between these chosen points. This comparison illustrates locality rather than proving a universal monotonic error law.",
+      "change": "Expand exp(x) around x=1 instead of zero. Identify powers of x-1 in the result.",
+      "question": "Which details belong beside a truncated series used in a calculation?",
+      "options": [
+        "Only the number of printed terms.",
+        "Only its value at zero.",
+        "Expansion point, retained order and a justified range or error assessment."
+      ],
+      "correct": 2,
+      "feedback": "The approximation is tied to a neighbourhood and truncation. Those details determine whether it suits the calculation.",
+      "hints": [
+        "Ask where the polynomial was constructed.",
+        "Track what was omitted and where its error is acceptable."
+      ],
+      "limit": "An asymptotic order term is not by itself a numerical error bound throughout an arbitrary interval.",
+      "source": [
+        "SymPy · Calculus tutorial",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/calculus.html"
+      ],
+      "minutes": 8,
+      "kind": "Exact symbolic investigation",
+      "module": 4,
+      "code": "30-keep-the-remainder-in-a-series.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "a-matrix-acts-on-a-vector",
+      "title": "A matrix acts on a vector",
+      "short": "Calculate a matrix-vector product and interpret its rows.",
+      "goal": "Calculate a matrix-vector product and interpret its rows.",
+      "explain": [
+        "A matrix is a rectangular arrangement of entries. Multiplying a matrix by a column vector forms one output per row by summing products. This represents a linear transformation when the entries are fixed.",
+        "SymPy Matrix uses * for matrix multiplication, unlike NumPy array * which is elementwise. Dimensions must agree: the matrix’s column count matches the vector’s row count. Keep the coordinate order attached to both input and output vectors.",
+        "The example shears a two-dimensional vector and then compares two orders of matrix transformations. In general A*B and B*A differ. An exact symbolic calculation can reveal that order dependence without any rounding or plotting ambiguity."
+      ],
+      "refresher": {
+        "title": "Rows times columns",
+        "body": "Each output entry is a dot product: multiply corresponding entries and add them.",
+        "tex": "\\begin{pmatrix}1&2\\\\0&1\\end{pmatrix}\\begin{pmatrix}3\\\\4\\end{pmatrix}=\\begin{pmatrix}11\\\\4\\end{pmatrix}",
+        "example": "The first row gives 1·3+2·4=11. The second gives 0·3+1·4=4."
+      },
+      "predict": "Will swapping two matrix transformations always leave the same result?",
+      "look": "The transformation nearest the vector acts first. SymPy Matrix multiplication preserves row-column structure.",
+      "change": "Replace v with each coordinate basis vector [1,0] and [0,1]. Relate the outputs to A’s columns.",
+      "question": "For a 2×3 matrix multiplied by a column vector, what input size is required?",
+      "options": [
+        "2×1.",
+        "3×1.",
+        "Any size if entries are numbers."
+      ],
+      "correct": 1,
+      "feedback": "Three matrix columns require three input entries. The output has two entries because there are two rows.",
+      "hints": [
+        "Match the inner dimensions.",
+        "The output size follows the number of matrix rows."
+      ],
+      "limit": "A matrix model needs meaningful coordinates and units; multiplication alone does not establish a real transformation’s validity.",
+      "source": [
+        "SymPy · Matrices tutorial",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/matrices.html"
+      ],
+      "minutes": 8,
+      "kind": "Exact symbolic investigation",
+      "module": 5,
+      "code": "31-a-matrix-acts-on-a-vector.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "rank-explains-a-family-of-solutions",
+      "title": "Rank explains a family of solutions",
+      "short": "Relate matrix rank to redundant and inconsistent linear constraints.",
+      "goal": "Relate matrix rank to redundant and inconsistent linear constraints.",
+      "explain": [
+        "The rank of a matrix counts independent row or column directions. Redundant equations do not contribute new independent information. Comparing the coefficient matrix with its augmented matrix helps distinguish redundancy from inconsistency.",
+        "In the example, the second coefficient row is twice the first. When its right-hand side also doubles, the system has a family of solutions. Changing that right-hand side breaks compatibility without increasing the coefficient rank.",
+        "Inspect both linsolve outputs and the ranks. A free parameter is meaningful information about what the equations fail to determine; it should not be silently replaced by zero. Additional evidence or constraints are needed to select one member of a family."
+      ],
+      "refresher": {
+        "title": "Redundant versus conflicting equations",
+        "body": "Two equations can say the same thing or contradict one another. Counting written equations is not the same as counting independent constraints.",
+        "tex": "x+y=3,\\quad2x+2y=6",
+        "example": "The second equation repeats the first. Replacing 6 by 7 makes the pair inconsistent, because doubling the first equation must give 6."
+      },
+      "predict": "Will two written equations in two unknowns necessarily determine one unique pair?",
+      "look": "The family and EmptySet describe different mathematical outcomes. Neither is a uniquely solved pair.",
+      "change": "Add an independent equation x-y=1 and solve the compatible system again.",
+      "question": "A solution family contains a free parameter. What does it mean?",
+      "options": [
+        "The supplied constraints leave a degree of freedom.",
+        "The parameter must automatically equal zero.",
+        "The solver necessarily encountered a numerical error."
+      ],
+      "correct": 0,
+      "feedback": "A family describes underdetermination in the mathematical problem. Selecting a value requires an additional reason.",
+      "hints": [
+        "Ask how many independent conditions the equations supply.",
+        "A symbol in a family records freedom rather than a mistake."
+      ],
+      "limit": "Exact rank can change discontinuously with parameter values; approximate numerical rank needs tolerances and conditioning analysis.",
+      "source": [
+        "SymPy · Matrices tutorial",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/matrices.html"
+      ],
+      "minutes": 8,
+      "kind": "Exact symbolic investigation",
+      "module": 5,
+      "code": "32-rank-explains-a-family-of-solutions.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "check-an-inverse-by-multiplication",
+      "title": "Check an inverse by multiplication",
+      "short": "Use a determinant and an exact product to establish invertibility in a small example.",
+      "goal": "Use a determinant and an exact product to establish invertibility in a small example.",
+      "explain": [
+        "A square matrix is invertible when its transformation can be undone uniquely. Its determinant is nonzero exactly when an inverse exists over the usual field of scalars. A zero determinant signals dependent directions.",
+        "For a small exact matrix, inv returns the inverse and multiplication checks that the composition is the identity. Perform the check with the original matrix rather than trusting the appearance of reciprocal-looking entries.",
+        "Computing an explicit inverse is not the default way to solve a large numerical system. Appropriate factorisation-based solvers usually serve that task better. Here, exact inversion is a compact way to understand reversibility, singularity and the meaning of the identity matrix."
+      ],
+      "refresher": {
+        "title": "The identity transformation",
+        "body": "The identity matrix leaves every compatible vector unchanged. An inverse undoes another matrix’s action.",
+        "tex": "A^{-1}A=I",
+        "example": "Multiplying a vector by A and then by A⁻¹ restores that vector when the inverse exists. A zero determinant rules this out."
+      },
+      "predict": "Can a matrix with dependent rows have a two-sided inverse?",
+      "look": "The exact product is the identity matrix. The dependent-row example has determinant zero.",
+      "change": "Change A’s bottom-right entry to sp.Rational(1,2). Predict singularity before attempting inversion.",
+      "question": "What does a nonzero determinant establish for a square exact matrix?",
+      "options": [
+        "Every entry must be positive.",
+        "The matrix is invertible.",
+        "The matrix equals its transpose."
+      ],
+      "correct": 1,
+      "feedback": "Invertibility concerns independent directions, not positivity or symmetry of individual entries.",
+      "hints": [
+        "Connect determinant zero with collapsed directions.",
+        "A reversible square transformation has no lost direction."
+      ],
+      "limit": "Numerically tiny determinants alone are poor conditioning diagnostics; floating-point problems need scale-aware analysis.",
+      "source": [
+        "SymPy · Matrices tutorial",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/matrices.html"
+      ],
+      "minutes": 8,
+      "kind": "Exact symbolic investigation",
+      "module": 5,
+      "code": "33-check-an-inverse-by-multiplication.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "find-directions-that-keep-their-line",
+      "title": "Find directions that keep their line",
+      "short": "Interpret an eigenvector and verify its eigenvalue equation.",
+      "goal": "Interpret an eigenvector and verify its eigenvalue equation.",
+      "explain": [
+        "An eigenvector is a nonzero vector whose transformed result remains on the same line. Its eigenvalue is the scalar multiplying that vector. The scalar may stretch, shrink, reverse or, in complex settings, have a broader interpretation.",
+        "SymPy eigenvals reports eigenvalues with algebraic multiplicity. eigenvects also reports bases for the corresponding eigenspaces. An eigenvector’s scale is not unique: any nonzero scalar multiple represents the same direction.",
+        "The symmetric matrix below has two real eigenvalues. Check the chosen direction directly by calculating A*v-lambda*v. This zero-vector residual is clearer evidence than a picture alone. The zero vector is excluded from the definition because it would satisfy that equation for every scalar."
+      ],
+      "refresher": {
+        "title": "Scaling along a direction",
+        "body": "Multiplying a vector by a scalar changes its magnitude and possibly its sign without changing the line it lies on.",
+        "tex": "A\\begin{pmatrix}1\\\\1\\end{pmatrix}=3\\begin{pmatrix}1\\\\1\\end{pmatrix}",
+        "example": "For A=[[2,1],[1,2]], the vector (1,1) becomes (3,3). Its eigenvalue is 3, and (2,2) is another eigenvector on the same line."
+      },
+      "predict": "Must every eigenvector returned by another implementation have exactly the same scale?",
+      "look": "Compare eigenspaces or verified directions rather than requiring one particular vector normalisation.",
+      "change": "Verify the direction [1,-1] and identify its eigenvalue.",
+      "question": "Why is the zero vector excluded from the eigenvector definition?",
+      "options": [
+        "It has too many coordinates.",
+        "It is never a valid matrix input.",
+        "It satisfies A*v=λ*v for every λ and identifies no direction."
+      ],
+      "correct": 2,
+      "feedback": "A nonzero vector is needed to associate a meaningful direction with an eigenvalue.",
+      "hints": [
+        "Substitute v=0 into both sides.",
+        "No scalar can be distinguished that way."
+      ],
+      "limit": "Eigenvalue multiplicity and eigenspace dimension differ in general; not every square matrix has a full eigenvector basis.",
+      "source": [
+        "SymPy · Matrices tutorial",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/matrices.html"
+      ],
+      "minutes": 8,
+      "kind": "Exact symbolic investigation",
+      "module": 5,
+      "code": "34-find-directions-that-keep-their-line.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "use-a-different-coordinate-basis",
+      "title": "Use a different coordinate basis",
+      "short": "Verify diagonalisation before using it to compute a matrix power.",
+      "goal": "Verify diagonalisation before using it to compute a matrix power.",
+      "explain": [
+        "A diagonalisation writes A=P*D*P inverse, where D is diagonal and the columns of P form an eigenvector basis. In those coordinates, repeated applications reduce to powers of diagonal entries.",
+        "Not every square matrix is diagonalizable. Repeated eigenvalues do not by themselves decide the question; the number of independent eigenvectors matters. Check the reconstruction before using a diagonalisation to infer anything else.",
+        "The example reconstructs a small symmetric matrix and compares its fifth power with the diagonal-basis calculation. A second matrix demonstrates that diagonalisation is a property to establish rather than an operation guaranteed for every input. This exact example focuses on meaning, not a claim of numerical speed."
+      ],
+      "refresher": {
+        "title": "Changing coordinates",
+        "body": "A basis gives a set of independent coordinate directions. A change of basis describes the same transformation using different coordinates.",
+        "tex": "A=PDP^{-1}\\quad\\Longrightarrow\\quad A^n=PD^nP^{-1}",
+        "example": "The middle P⁻¹P factors cancel in repeated multiplication. The formula requires an invertible P and a valid decomposition."
+      },
+      "predict": "Can you use a diagonal-power formula without first establishing a valid eigenvector basis?",
+      "look": "Both residual matrices are exactly zero. The Jordan-style example does not admit a complete eigenvector basis.",
+      "change": "Change the power to 10 and keep the reconstruction check. Then inspect J.eigenvects().",
+      "question": "A repeated eigenvalue appears. What is needed before claiming diagonalizability?",
+      "options": [
+        "A full set of independent eigenvectors.",
+        "Only a nonzero top-left entry.",
+        "Only a square matrix shape."
+      ],
+      "correct": 0,
+      "feedback": "An invertible eigenvector basis supplies P. Algebraic multiplicity alone does not guarantee enough independent directions.",
+      "hints": [
+        "P must be invertible.",
+        "Count independent eigenvectors, not just repeated root labels."
+      ],
+      "limit": "Exact diagonalisation can be unsuitable or unstable for numerical work; specialised numerical methods may be preferable.",
+      "source": [
+        "SymPy · Matrices tutorial",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/matrices.html"
+      ],
+      "minutes": 8,
+      "kind": "Exact symbolic investigation",
+      "module": 5,
+      "code": "35-use-a-different-coordinate-basis.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "fit-a-small-line-exactly",
+      "title": "Fit a small line exactly",
+      "short": "Solve a least-squares problem and verify the residual’s orthogonality condition.",
+      "goal": "Solve a least-squares problem and verify the residual’s orthogonality condition.",
+      "explain": [
+        "An overdetermined linear system may have no exact solution. Least squares chooses coefficients that minimise the sum of squared residuals. For independent columns, the normal equations set A transpose times the residual to zero.",
+        "Use an exact, invented three-point example to keep the geometry inspectable. The coefficient order is intercept then slope. The fitted values need not equal every observation, but the residual vector should be orthogonal to each design column.",
+        "The normal-equation solve here is an educational exact calculation. For floating-point data, QR or SVD approaches usually provide better numerical behaviour. A fitted line does not itself establish causation, measurement quality or predictive uncertainty; those require a separate data and model analysis."
+      ],
+      "refresher": {
+        "title": "Residuals and squared error",
+        "body": "A residual is observed minus fitted. Least squares minimises the total of their squares rather than requiring each residual to vanish.",
+        "tex": "\\min_\\beta\\|b-A\\beta\\|^2,\\qquad A^T(b-A\\beta)=0",
+        "example": "If three points do not lie exactly on one line, a two-parameter line generally leaves nonzero residuals."
+      },
+      "predict": "Must every residual be zero at a least-squares solution?",
+      "look": "The residual can be nonzero while its projection onto each design column is zero.",
+      "change": "Change the observations to [1,2,3] and predict the residual and squared error.",
+      "question": "What does a zero A.T*residual establish in this full-column-rank example?",
+      "options": [
+        "The observations were measured without error.",
+        "The fitted coefficients satisfy the least-squares normal equations.",
+        "The fitted relationship is causal."
+      ],
+      "correct": 1,
+      "feedback": "It verifies an optimisation condition for the mathematical fit, not the provenance or interpretation of the data.",
+      "hints": [
+        "Separate an algebraic check from a scientific claim.",
+        "The condition refers to the chosen design matrix and objective."
+      ],
+      "limit": "Invented inputs and exact normal equations are used. Statistical uncertainty and robust numerical fitting are outside this small derivation.",
+      "source": [
+        "SymPy · Matrices tutorial",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/matrices.html"
+      ],
+      "minutes": 9,
+      "kind": "Exact fit to invented observations",
+      "module": 5,
+      "code": "36-fit-a-small-line-exactly.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "optimise-inside-the-permitted-region",
+      "title": "Optimise inside the permitted region",
+      "short": "Compare stationary candidates with feasible boundary values.",
+      "goal": "Compare stationary candidates with feasible boundary values.",
+      "explain": [
+        "Optimisation asks for the best value within a stated feasible region. Solving a derivative equal to zero finds interior stationary candidates, but those candidates may be infeasible or may fail to be the desired maximum or minimum.",
+        "For a smooth function on a closed bounded interval, examine feasible stationary points and the endpoints. The example maximises x*(10-x) on the teaching interval zero to four. Its unconstrained stationary point lies outside that interval.",
+        "Keep the objective, feasible domain and candidate evaluation together. A solver cannot infer an omitted budget or physical bound from the variable name. More complex constrained problems can need specialised optimisation methods, but this small case makes the boundary issue visible."
+      ],
+      "refresher": {
+        "title": "Interior points and boundaries",
+        "body": "An optimum can occur at a flat interior point or at an edge where movement is restricted.",
+        "tex": "f(x)=x(10-x),\\quad f^{\\prime}(x)=10-2x",
+        "example": "The stationary point is x=5. On 0≤x≤4 it is not feasible; comparing the feasible boundaries gives the maximum at x=4."
+      },
+      "predict": "Can the derivative-zero point be rejected because the model does not permit that input?",
+      "look": "A mathematically valid stationary point does not become a feasible decision automatically.",
+      "change": "Change the upper bound to 8 in both the candidate list and feasibility condition. Predict whether x=5 becomes relevant.",
+      "question": "An unconstrained optimum violates a physical bound. What should you report?",
+      "options": [
+        "The unconstrained point as the final decision anyway.",
+        "A feasible optimum found by considering the bound and other admissible candidates.",
+        "That optimisation is impossible for every bounded problem."
+      ],
+      "correct": 1,
+      "feedback": "Constraints define the decision problem. Retain their effect when selecting and reporting an optimum.",
+      "hints": [
+        "Check whether each candidate belongs to the permitted region.",
+        "Include boundaries when the domain includes them."
+      ],
+      "limit": "This closed-interval polynomial permits a complete candidate check; general constrained optimisation can be much harder.",
+      "source": [
+        "SymPy · Calculus tutorial",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/calculus.html"
+      ],
+      "minutes": 8,
+      "kind": "Exact optimisation of an authored model",
+      "module": 6,
+      "code": "37-optimise-inside-the-permitted-region.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "derive-motion-from-an-acceleration",
+      "title": "Derive motion from an acceleration",
+      "short": "Integrate a constant acceleration model and verify its initial conditions.",
+      "goal": "Integrate a constant acceleration model and verify its initial conditions.",
+      "explain": [
+        "A model relates mathematical quantities under explicit assumptions. Constant acceleration means velocity changes linearly with time and position changes quadratically. Integrating introduces constants that are fixed by initial velocity and position.",
+        "Use separate symbols for time, acceleration and initial conditions. The derivation below constructs velocity and position, then checks both the second derivative and values at time zero. Those checks establish the mathematical consistency of the chosen model.",
+        "Units remain part of the interpretation: time in seconds, position in metres, velocity in metres per second and acceleration in metres per second squared. Plain symbols do not enforce dimensional consistency automatically. Changing acceleration, drag, collisions or coordinate conventions would change the model."
+      ],
+      "refresher": {
+        "title": "Position, velocity and acceleration",
+        "body": "Velocity is the derivative of position with respect to time. Acceleration is the derivative of velocity.",
+        "tex": "v(t)=v_0+at,\\qquad s(t)=s_0+v_0t+\\frac12at^2",
+        "example": "At t=0 the formulas give v₀ and s₀. Differentiating position twice returns a."
+      },
+      "predict": "Does integrating an acceleration determine the initial position without extra information?",
+      "look": "The integration constants encode conditions that acceleration alone does not specify.",
+      "change": "Substitute s0=0, v0=5 and a=-2. Solve for the time when velocity first reaches zero, then check its admissible sign.",
+      "question": "Which information fixes both constants for this second-order position model?",
+      "options": [
+        "Only the units used for time.",
+        "Only the random seed.",
+        "An initial position and an initial velocity."
+      ],
+      "correct": 2,
+      "feedback": "Two integrations introduce two constants. Position and velocity conditions at a specified time determine them here.",
+      "hints": [
+        "Count how many integrations occur.",
+        "Each independent constant needs a corresponding condition."
+      ],
+      "limit": "The model assumes constant acceleration and consistent units. The symbolic checks do not establish that a real trajectory follows it.",
+      "source": [
+        "SymPy · Calculus tutorial",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/calculus.html"
+      ],
+      "minutes": 8,
+      "kind": "Exact derivation of an authored motion model",
+      "module": 6,
+      "code": "38-derive-motion-from-an-acceleration.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "solve-a-decay-equation",
+      "title": "Solve a decay equation",
+      "short": "Solve a first-order ODE with an initial condition and verify it.",
+      "goal": "Solve a first-order ODE with an initial condition and verify it.",
+      "explain": [
+        "An ordinary differential equation relates a function to its derivatives with respect to one independent variable. A decay law says the rate of change is proportional to the current amount, with a negative sign for loss.",
+        "SymPy Function represents the unknown function, and dsolve seeks a symbolic solution. An initial condition such as N(0)=N0 selects a member of the general solution family. Positive k makes this example decay as time increases.",
+        "Use checkodesol to substitute the returned function and its derivatives into the original differential equation. Also inspect the initial value. These mathematical checks do not establish that a constant decay rate is a suitable description of an actual population, stock or concentration."
+      ],
+      "refresher": {
+        "title": "Rate proportional to what remains",
+        "body": "Exponential decay removes a constant fraction per unit time rather than a constant absolute amount.",
+        "tex": "\\frac{dN}{dt}=-kN,\\quad N(0)=N_0\\quad\\Rightarrow\\quad N(t)=N_0e^{-kt}",
+        "example": "For k>0, the half-life is log(2)/k. Doubling N₀ doubles the trajectory but leaves that half-life unchanged."
+      },
+      "predict": "Will a positive decay rate k make the solution grow or shrink for positive time?",
+      "look": "The check reports whether substitution satisfies the ODE. The initial condition supplies separate information.",
+      "change": "Double k and compare the symbolic half-life and amount at a fixed positive time.",
+      "question": "A general ODE solution contains an arbitrary constant. What typically selects a particular trajectory here?",
+      "options": [
+        "An initial value at a stated time.",
+        "A prettier printing format.",
+        "Changing the name of the function."
+      ],
+      "correct": 0,
+      "feedback": "The initial condition constrains the otherwise free constant. Labels and rendering do not supply that information.",
+      "hints": [
+        "Many exponential curves satisfy the same proportional-rate law.",
+        "Identify which one passes through the specified starting point."
+      ],
+      "limit": "A first-order constant-rate model omits changing rates, external inputs and measurement uncertainty.",
+      "source": [
+        "SymPy · Solve an ordinary differential equation",
+        "https://docs.sympy.org/latest/guides/solving/solve-ode.html"
+      ],
+      "minutes": 9,
+      "kind": "Exact solution of an authored decay model",
+      "module": 6,
+      "code": "39-solve-a-decay-equation.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "derive-a-charging-response",
+      "title": "Derive a charging response",
+      "short": "Solve a forced linear ODE and interpret its time constant and limiting value.",
+      "goal": "Solve a forced linear ODE and interpret its time constant and limiting value.",
+      "explain": [
+        "An RC charging model balances the input voltage with the capacitor voltage and a derivative term. Under an ideal constant-voltage input, R*C sets the characteristic time scale. The zero initial voltage supplies the starting condition.",
+        "Represent the unknown voltage as a function of time and solve the first-order ODE. Positive resistance and capacitance support the expected stable response. Check the solution against the equation, its initial value and its long-time limit.",
+        "This is an idealised model with authored symbolic parameters, not an electrical measurement. Real components have tolerances, nonideal behaviour and operating limits. A symbolic solution is useful because it exposes which parameter combinations govern the response, while leaving validation of the circuit model as a separate task."
+      ],
+      "refresher": {
+        "title": "Approaching an equilibrium",
+        "body": "A stable first-order response can approach a target exponentially. A time constant is the time scale in the exponential’s denominator.",
+        "tex": "RC\\,v\\prime(t)+v(t)=V,\\qquad v(t)=V\\left(1-e^{-t/(RC)}\\right)",
+        "example": "At t=0 the voltage is 0. At t=RC it reaches V(1-e⁻¹), about 63.2% of the final value."
+      },
+      "predict": "Will the ideal long-time capacitor voltage depend on R if V is held fixed?",
+      "look": "R*C changes how quickly the response approaches V. It does not change the ideal equilibrium in this model.",
+      "change": "Set a nonzero initial voltage in ics and inspect how the transient term changes.",
+      "question": "What does increasing R with C fixed change in the ideal model?",
+      "options": [
+        "Only the printed units.",
+        "The time constant and transient speed.",
+        "The constant input voltage V itself."
+      ],
+      "correct": 1,
+      "feedback": "The parameter product R*C controls the exponential time scale. The input V remains the stated external forcing.",
+      "hints": [
+        "Inspect the exponential denominator.",
+        "Keep the input definition separate from the system parameters."
+      ],
+      "limit": "This ideal lumped circuit excludes tolerances, parasitics, nonlinear components and any safety or hardware design assessment.",
+      "source": [
+        "SymPy · Solve an ordinary differential equation",
+        "https://docs.sympy.org/latest/guides/solving/solve-ode.html"
+      ],
+      "minutes": 9,
+      "kind": "Exact solution of an idealised circuit model",
+      "module": 6,
+      "code": "40-derive-a-charging-response.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "integrate-a-probability-density",
+      "title": "Integrate a probability density",
+      "short": "Check a density’s total mass and calculate an expectation on its stated support.",
+      "goal": "Check a density’s total mass and calculate an expectation on its stated support.",
+      "explain": [
+        "A continuous probability density assigns probability through integrals over intervals. Its height is not the probability of a single point. A valid density must be nonnegative and have total mass one over its support.",
+        "Use the authored density 2*x between zero and one, and zero elsewhere. Symbolic integration checks its normalisation and calculates its mean and variance. The integration limits encode the support and must not be discarded.",
+        "An expectation weights each value by the density before integrating. The variance is the second moment minus the square of the mean. These exact answers can later benchmark numerical integration or Monte Carlo, but they describe this chosen teaching distribution rather than measured population evidence."
+      ],
+      "refresher": {
+        "title": "Density versus probability",
+        "body": "Probabilities are areas under a density. A density can exceed one at a point while its total integral remains one.",
+        "tex": "\\int_0^1 2x\\,dx=1,\\qquad E[X]=\\int_0^1 x(2x)\\,dx=\\frac23",
+        "example": "The density reaches 2 at x=1, but the probability of an interval is its area, not that endpoint height."
+      },
+      "predict": "Does a density value of 2 necessarily make the probability model invalid?",
+      "look": "The function is being used as a density only on [0,1]. Outside that interval this model assigns density zero.",
+      "change": "Replace 2*x with c*x**2 and solve for c so the total mass on [0,1] equals one.",
+      "question": "How is P(a<X<b) obtained from a continuous density f?",
+      "options": [
+        "Read f(b) alone.",
+        "Multiply f(a) by f(b).",
+        "Integrate f from a to b within the support."
+      ],
+      "correct": 2,
+      "feedback": "The integral accumulates probability mass. Individual density heights are not point probabilities.",
+      "hints": [
+        "Think of area under the curve.",
+        "Use the relevant interval and support."
+      ],
+      "limit": "Nonnegativity and normalisation are mathematical checks; they do not validate an assumed distribution against real data.",
+      "source": [
+        "SymPy · Calculus tutorial",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/calculus.html"
+      ],
+      "minutes": 8,
+      "kind": "Exact calculation for an authored density",
+      "module": 6,
+      "code": "41-integrate-a-probability-density.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "propagate-small-input-uncertainty",
+      "title": "Propagate small input uncertainty",
+      "short": "Use a Jacobian for a first-order covariance approximation and state its limits.",
+      "goal": "Use a Jacobian for a first-order covariance approximation and state its limits.",
+      "explain": [
+        "A nonlinear model can transform uncertainty in several inputs into related output uncertainties. Near a nominal point, the Jacobian collects partial derivatives that describe the local linear response. Multiplying J*Sigma*J transpose propagates an input covariance matrix through that linear approximation.",
+        "The example uses rectangle length and width with independent, invented variances. Its outputs are area and perimeter. Even independent inputs can produce correlated outputs because both outputs depend on the same lengths.",
+        "Evaluate the Jacobian at the nominal input before applying the covariance formula. The result is first-order propagation, not an exact uncertainty law for every nonlinear transformation. Large spread, skewness, boundaries and dependence can make a simulation or richer analysis necessary."
+      ],
+      "refresher": {
+        "title": "Variance, covariance and local change",
+        "body": "Variance is squared spread. Covariance describes joint variation; it is not the same as standard deviation.",
+        "tex": "\\operatorname{Cov}(f(X))\\approx J\\,\\Sigma\\,J^T",
+        "example": "For one output y≈a*x+b, the variance is a² times the input variance. Multiple outputs can share covariance through common inputs."
+      },
+      "predict": "Can area and perimeter be correlated even if length and width errors are independent?",
+      "look": "The off-diagonal entry records shared output variation. All input variances and nominal dimensions are invented.",
+      "change": "Add a justified nonzero off-diagonal input covariance and compare the propagated area variance.",
+      "question": "When is this first-order result most in need of further checking?",
+      "options": [
+        "When nonlinear effects are substantial across the input uncertainty range.",
+        "Whenever exact fractions are printed.",
+        "Only when the two input names are the same length."
+      ],
+      "correct": 0,
+      "feedback": "The Jacobian describes local linear behaviour. It can miss curvature and distribution shape across a broad range.",
+      "hints": [
+        "Ask whether one local slope represents the whole uncertain region.",
+        "Compare with a suitable simulation when curvature matters."
+      ],
+      "limit": "This is a local approximation using invented independent input uncertainty, not a calibrated confidence interval for a measured rectangle.",
+      "source": [
+        "SymPy · Matrices tutorial",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/matrices.html"
+      ],
+      "minutes": 9,
+      "kind": "First-order propagation of invented input uncertainty",
+      "module": 6,
+      "code": "42-propagate-small-input-uncertainty.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "turn-a-formula-into-a-numerical-function",
+      "title": "Turn a formula into a numerical function",
+      "short": "Use lambdify with an explicit argument order and numerical backend.",
+      "goal": "Use lambdify with an explicit argument order and numerical backend.",
+      "explain": [
+        "A symbolic expression is useful for derivation; a numerical function is convenient for repeated evaluation. lambdify translates a SymPy expression into a callable using a selected numerical library. It does not compile or prove the model automatically.",
+        "State the argument order explicitly. A function created for (x,a) expects x first and a second. Choose a backend such as math for ordinary scalar calls or numpy for array work. Keep the symbolic expression as the derivation and verification record.",
+        "Compare the numerical result with exact symbolic substitution at a check point. The numerical function generally uses floating-point arithmetic, so agreement is approximate and precision follows that backend. Only lambdify expressions you trust; this translation uses generated executable code."
+      ],
+      "refresher": {
+        "title": "A rule and its implementation",
+        "body": "A formula defines an input-output relationship. A numerical function implements that rule with a particular argument order and arithmetic.",
+        "tex": "f(x,a)=ax^2+1,\\qquad f(3,2)=19",
+        "example": "Swapping the inputs gives f(2,3)=13. The same two numbers can produce a different answer when their roles change."
+      },
+      "predict": "Will the callable infer argument roles from the numeric values passed to it?",
+      "look": "The argument tuple is an interface contract. The backend determines which numerical operations the callable uses.",
+      "change": "Add a parameter b, update the argument tuple and verify a new check point by exact substitution.",
+      "question": "What should accompany a lambdified function in a reproducible calculation?",
+      "options": [
+        "Only the final decimal output.",
+        "Its symbolic source, argument order, backend and numerical checks.",
+        "An assumption that it uses exact rational arithmetic."
+      ],
+      "correct": 1,
+      "feedback": "Those details connect the callable to the mathematical rule and make numerical behaviour inspectable.",
+      "hints": [
+        "Write down what each positional input means.",
+        "Keep the generating expression and backend explicit."
+      ],
+      "limit": "lambdify uses code generation internally. Use trusted expressions and do not treat arbitrary external strings as safe executable mathematics.",
+      "source": [
+        "SymPy · lambdify",
+        "https://docs.sympy.org/latest/modules/utilities/lambdify.html"
+      ],
+      "minutes": 8,
+      "kind": "Exact symbolic investigation",
+      "module": 7,
+      "code": "43-turn-a-formula-into-a-numerical-function.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "evaluate-a-curve-on-an-array",
+      "title": "Evaluate a curve on an array",
+      "short": "Use a NumPy-backed symbolic function to plot a domain-labelled curve.",
+      "goal": "Use a NumPy-backed symbolic function to plot a domain-labelled curve.",
+      "explain": [
+        "A NumPy-backed lambdified function can evaluate many inputs in one call. This connects a symbolic derivation with numerical arrays and plots. Preserve the domain and units when selecting the input grid.",
+        "The example plots a known response exp(-x) for nonnegative x. The symbolic expression remains available for exact values, while the plotted samples are floating-point evaluations. A grid is a set of sampled locations, not the whole continuous function.",
+        "Plots are useful for interpretation and catching surprising behaviour, but a smooth-looking curve is not a proof of continuity, an identity or exhaustive root coverage. Check exact boundaries and singularities from the symbolic model rather than relying on a finite grid to reveal them."
+      ],
+      "refresher": {
+        "title": "A graph samples a function",
+        "body": "A graph places input on one axis and output on the other. A numerical grid evaluates only its selected inputs.",
+        "tex": "f(x)=e^{-x},\\qquad f(0)=1,\\qquad f(x)\\to0\\text{ as }x\\to\\infty",
+        "example": "Sampling between 0 and 4 shows part of the decay. It does not display every nonnegative input or prove a long-time limit."
+      },
+      "predict": "Does a plot on 200 points examine every input between the endpoints?",
+      "look": "The figure is generated from your actual numerical evaluation. The exact start value and sampled endpoint have different provenance.",
+      "change": "Plot sin(x) over zero to 2*pi. Label the x axis in radians and compare two grid sizes.",
+      "question": "A plotted curve seems to cross zero once. What further work supports a claim about all roots?",
+      "options": [
+        "Assume the finite grid has proved uniqueness.",
+        "Change only the line colour.",
+        "Analyse the mathematical domain and equation, with appropriate symbolic or numerical verification."
+      ],
+      "correct": 2,
+      "feedback": "Sampling can miss crossings, tangencies or narrow features. A root claim needs evidence suited to the full domain.",
+      "hints": [
+        "Think about what lies between grid points.",
+        "Use the formula and domain, not just the drawing."
+      ],
+      "limit": "Finite plotting grids can conceal singularities and narrow features; this smooth bounded example deliberately avoids those difficulties.",
+      "source": [
+        "SymPy · lambdify",
+        "https://docs.sympy.org/latest/modules/utilities/lambdify.html"
+      ],
+      "minutes": 8,
+      "kind": "Exact symbolic investigation",
+      "module": 7,
+      "code": "44-evaluate-a-curve-on-an-array.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "rewrite-a-cancellation-prone-calculation",
+      "title": "Rewrite a cancellation-prone calculation",
+      "short": "Compare equivalent formulas whose floating-point behaviour differs.",
+      "goal": "Compare equivalent formulas whose floating-point behaviour differs.",
+      "explain": [
+        "Subtracting nearly equal numbers can lose significant digits in floating-point arithmetic. Two exactly equivalent symbolic formulas can therefore behave very differently when evaluated numerically. Simplification for readability and reformulation for numerical stability are related but distinct tasks.",
+        "For sqrt(x+1)-sqrt(x) at large positive x, the two square roots are close. Multiplying by the conjugate gives 1/(sqrt(x+1)+sqrt(x)), which avoids subtracting those nearly equal values. The real-positive domain justifies the manipulation here.",
+        "Compare both ordinary scalar implementations with a high-precision reference built from an exact integer input. A successful example demonstrates this specific instability; it is not a general guarantee that every algebraic rewrite improves every calculation. Retain the identity and the numerical check together."
+      ],
+      "refresher": {
+        "title": "Rationalising a difference",
+        "body": "Multiplying by a conjugate can replace a small difference with a product identity. Denominators must remain valid.",
+        "tex": "\\sqrt{x+1}-\\sqrt{x}=\\frac1{\\sqrt{x+1}+\\sqrt{x}}\\quad(x>0)",
+        "example": "The numerator after multiplying by the conjugate is (x+1)-x=1. The new denominator adds positive quantities instead of subtracting nearly equal ones."
+      },
+      "predict": "Can two mathematically equal formulas produce different ordinary floating-point answers?",
+      "look": "The direct float calculation can lose the small difference entirely. High-precision evaluation uses the exact input and a separate arithmetic strategy.",
+      "change": "Compare inputs 10**4, 10**8 and 10**16. Identify when the direct result becomes unreliable.",
+      "question": "A symbolic identity is established. What remains to check before choosing a numerical implementation?",
+      "options": [
+        "Floating-point conditioning, stability and the input range.",
+        "Only whether both expressions print in one line.",
+        "Nothing; exact equivalence guarantees identical rounding."
+      ],
+      "correct": 0,
+      "feedback": "Mathematical equivalence does not imply identical finite-precision evaluation paths.",
+      "hints": [
+        "Inspect operations that subtract close values.",
+        "Compare with a suitable higher-precision or exact reference."
+      ],
+      "limit": "The rewrite is justified on this positive domain and addresses one cancellation mechanism; general numerical stability needs broader analysis.",
+      "source": [
+        "SymPy · Numerical evaluation",
+        "https://docs.sympy.org/latest/modules/evalf.html"
+      ],
+      "minutes": 9,
+      "kind": "Exact symbolic investigation",
+      "module": 7,
+      "code": "45-rewrite-a-cancellation-prone-calculation.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "precision-starts-with-the-input",
+      "title": "Precision starts with the input",
+      "short": "Construct high-precision decimal inputs before irreversible low-precision evaluation.",
+      "goal": "Construct high-precision decimal inputs before irreversible low-precision evaluation.",
+      "explain": [
+        "Requesting more digits does not manufacture information that an input has already lost. A Python float such as 0.1 is an approximate binary number. Passing it to a high-precision constructor preserves that already-rounded value with additional representation, rather than recovering an exact decimal tenth.",
+        "A decimal string can specify the intended digits directly, while Rational(1,10) expresses an exact mathematical tenth. Choose between them based on what the input means. An instrument’s stated uncertainty still limits an interpretation even if its printed reading has many digits.",
+        "Compare errors relative to an exact tenth using fifty-digit arithmetic. This separates input construction from later numerical evaluation. When a formula is sensitive to its inputs, input uncertainty and arithmetic error both deserve explicit checks."
+      ],
+      "refresher": {
+        "title": "Significant information",
+        "body": "An input representation carries a finite amount of information. Extra output digits cannot recover digits discarded earlier.",
+        "tex": "0.1=\\frac1{10}\\quad\\text{exactly as a decimal, but not exactly in binary floating point}",
+        "example": "Float(\"0.1\",50) starts from decimal text at the requested precision. Float(0.1,50) starts from the already rounded Python float."
+      },
+      "predict": "Will Float(0.1,50) and Float(\"0.1\",50) necessarily encode the same fifty-digit value?",
+      "look": "The text-based Float is still finite-precision arithmetic. Rational is the exact mathematical reference, not a claim of exact physical measurement.",
+      "change": "Try an input with twenty supplied decimal digits using a string and an ordinary Python numeric literal.",
+      "question": "What is the best way to preserve a supplied long decimal literal for high-precision arithmetic?",
+      "options": [
+        "Convert it to a Python float first.",
+        "Pass its original decimal text with an appropriate precision.",
+        "Round it to two places and request 80 digits later."
+      ],
+      "correct": 1,
+      "feedback": "Construct the input before low-precision rounding occurs. The resulting numerical accuracy is still limited by the source information.",
+      "hints": [
+        "Identify the first irreversible rounding step.",
+        "Keep the original digits as text until constructing the high-precision number."
+      ],
+      "limit": "Arbitrary precision addresses arithmetic representation, not unknown measurement errors or an incorrect mathematical model.",
+      "source": [
+        "SymPy · Numerical evaluation",
+        "https://docs.sympy.org/latest/modules/evalf.html"
+      ],
+      "minutes": 8,
+      "kind": "Exact symbolic investigation",
+      "module": 7,
+      "code": "46-precision-starts-with-the-input.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "export-an-expression-as-code",
+      "title": "Export an expression as code",
+      "short": "Inspect generated C code and separate printing from compilation and validation.",
+      "goal": "Inspect generated C code and separate printing from compilation and validation.",
+      "explain": [
+        "A symbolic derivation can produce an implementation in another language. SymPy code printers translate supported expressions into source text. The output remains a representation that needs a host function, declarations, libraries and tests in the target environment.",
+        "The example generates a C expression for a simple formula and its derivative. The browser is running Python here; it is not compiling or benchmarking C. The printed code may use functions such as pow whose declarations and linking requirements belong to the target toolchain.",
+        "Retain the symbolic expression, its assumptions and reference values alongside generated code. Before deploying it, compile in the intended environment and compare numerical behaviour over the supported range. Code generation transfers a formula; it does not establish units, input validity or numerical stability automatically."
+      ],
+      "refresher": {
+        "title": "One formula, several representations",
+        "body": "Mathematical notation, a SymPy expression and C source can describe the same rule using different syntax and arithmetic conventions.",
+        "tex": "f(x)=x^2+\\frac13,\\qquad f^{\\prime}(x)=2x",
+        "example": "A C printer may emit pow(x, 2)+1.0/3.0. That source text still needs compilation before it becomes an executed C calculation."
+      },
+      "predict": "Does seeing generated C text mean that C has been compiled or run in this lesson?",
+      "look": "Only the symbolic Python calculation is executed. The C text is a generated artefact for later validation.",
+      "change": "Generate code for exp(-x) and identify any standard-library function the target implementation needs.",
+      "question": "Which step is still needed after printing target-language source?",
+      "options": [
+        "Compilation and numerical validation in the intended target environment.",
+        "Assuming it is already faster than Python.",
+        "Discarding the symbolic source and domain."
+      ],
+      "correct": 0,
+      "feedback": "Printing is one stage in an implementation workflow. Execution, performance and correctness claims require actual target-side evidence.",
+      "hints": [
+        "Distinguish a string of source from a running program.",
+        "Validate with the compiler and libraries you intend to use."
+      ],
+      "limit": "This lesson does not compile C or make performance claims; complex code-generation systems require more tooling and tests.",
+      "source": [
+        "SymPy · Code printers",
+        "https://docs.sympy.org/latest/modules/printing.html"
+      ],
+      "minutes": 8,
+      "kind": "Exact symbolic investigation",
+      "module": 7,
+      "code": "47-export-an-expression-as-code.py",
+      "track": "core",
+      "capstone": false
+    },
+    {
+      "slug": "publish-a-checked-symbolic-investigation",
+      "title": "Publish a checked symbolic investigation",
+      "short": "Export an investigation linking a question, assumptions, derivation and independent checks.",
+      "goal": "Export an investigation linking a question, assumptions, derivation and independent checks.",
+      "explain": [
+        "A reproducible symbolic investigation preserves the question, permitted inputs, exact source, chosen transformations and verification. A short final expression is useful only when its assumptions and interpretation remain visible.",
+        "Choose one of the starter tasks in the code: a bounded optimisation, an initial-value ODE or a probability integral. Each starts from an authored teaching model and includes a check. You can replace the starter entirely when your own question needs a different model.",
+        "Use the report fields to explain your reasoning before exporting the exact run and a Markdown record. Distinguish symbolic checks from numerical spot checks, and both from evidence that a model describes reality. A result that exposes a missing assumption or leaves a question unresolved is a valid outcome to document."
+      ],
+      "refresher": {
+        "title": "A checked result has a boundary",
+        "body": "A mathematical conclusion applies under stated assumptions. A verification should address the original question rather than only the final printed form.",
+        "tex": "\\text{question}\\;\\longrightarrow\\;\\text{assumptions}\\;\\longrightarrow\\;\\text{derivation}\\;\\longrightarrow\\;\\text{checks}",
+        "example": "For an optimum, record the domain and boundary analysis. For an ODE, check the equation and initial condition. For a density, check support and total mass."
+      },
+      "predict": "Could a correct symbolic manipulation still answer the wrong modelling question?",
+      "look": "The source records the starter model and its restrictions. Your report supplies the question and justification for using it.",
+      "change": "Complete a report for one starter, then change the assumptions and describe which checks must change.",
+      "question": "What makes a final symbolic result meaningfully reproducible?",
+      "options": [
+        "A screenshot of the shortest formula alone.",
+        "The final decimal with no input record.",
+        "The source, assumptions, domain, versions, checks and interpretation preserved together."
+      ],
+      "correct": 2,
+      "feedback": "Those records let another person examine both the calculation and the claim it supports.",
+      "hints": [
+        "Ask what another person would need to rerun and challenge the result.",
+        "Preserve the original model and the verification, not just the answer."
+      ],
+      "limit": "Starter models are authored examples. Mathematical checks do not establish empirical validity, and an independent project takes longer than this guided initial pass.",
+      "source": [
+        "SymPy · Introductory tutorial: basic operations",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/basic_operations.html"
+      ],
+      "minutes": 10,
+      "kind": "Reproducible investigation with authored starter models",
+      "module": 7,
+      "code": "48-publish-a-checked-symbolic-investigation.py",
+      "track": "core",
+      "capstone": true
+    }
+  ],
+  "applications": [
+    {
+      "slug": "design-an-open-box",
+      "title": "Design an open box",
+      "short": "Combine algebra, constrained optimisation and numerical plotting in a checked design.",
+      "goal": "Combine algebra, constrained optimisation and numerical plotting in a checked design.",
+      "explain": [
+        "Cutting equal squares from the corners of a rectangular sheet and folding the sides produces an ideal open box. Its volume depends on the cut size. The sheet dimensions below are invented teaching inputs in centimetres, and material thickness is ignored.",
+        "Derive the volume, state the permitted cut interval, find stationary candidates and compare the feasible interior with limiting boundaries. An unconstrained algebraic root outside the interval is not a possible cut. Keep the exact optimum before approximating it for a practical reading.",
+        "Plot the volume over the full feasible interval as an interpretation aid, while retaining the derivative and boundary checks as mathematical evidence. Extend the report with tolerances, thickness, manufacturing constraints or cost only when the model states how those affect the objective."
+      ],
+      "refresher": {
+        "title": "A volume from changing dimensions",
+        "body": "Box volume is height times length times width. Folding a cut of size x removes x from both ends of each original sheet dimension.",
+        "tex": "V(x)=x(12-2x)(8-2x),\\qquad0<x<4",
+        "example": "The width becomes zero at x=4, so that endpoint is not a useful box. A stationary point beyond 4 cannot be a feasible design."
+      },
+      "predict": "Can the larger algebraic stationary root be used as a cut even if it exceeds the sheet’s half-width?",
+      "look": "The plot includes degenerate endpoints for context. The actual box domain is open, and the reported optimum lies strictly inside it.",
+      "change": "Change the sheet to 15 by 9 cm and update the domain and boundary checks along with the formula.",
+      "question": "A manufacturing rule requires cuts in half-centimetre increments. What must change?",
+      "options": [
+        "Choose the continuous optimum without considering the rule.",
+        "Evaluate admissible discrete cuts, using the continuous result only as useful context.",
+        "Assume rounding to the nearest cut always proves the best feasible volume."
+      ],
+      "correct": 1,
+      "feedback": "The feasible action set has changed. Compare the permitted discrete choices rather than silently applying an unconstrained continuous answer.",
+      "hints": [
+        "List the cuts the manufacturing rule permits.",
+        "Evaluate their actual objective values."
+      ],
+      "limit": "The sheet is invented and ideal: thickness, fold radius, tolerances, waste and structural strength are omitted.",
+      "source": [
+        "SymPy · Calculus tutorial",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/calculus.html"
+      ],
+      "minutes": 14,
+      "kind": "Integrated design with invented dimensions",
+      "module": 8,
+      "code": "workshop-design-an-open-box.py",
+      "track": "application",
+      "capstone": true
+    },
+    {
+      "slug": "check-a-projectile-model",
+      "title": "Check a projectile model",
+      "short": "Derive, verify and plot an ideal vertical trajectory with a physical time domain.",
+      "goal": "Derive, verify and plot an ideal vertical trajectory with a physical time domain.",
+      "explain": [
+        "An ideal vertical launch with constant downward acceleration gives a quadratic height curve. The model below starts at ground height with upward speed v0. The acceleration parameter g is positive, and the minus sign establishes the chosen upward-positive coordinate convention.",
+        "Find the nonzero return-to-ground time and the apex time, then verify acceleration and initial conditions. The zero root is the launch event, not a second completed flight. Restrict the plotted physical flight to the interval from launch to return.",
+        "The numerical values are invented teaching choices. Treat 9.81 as a modelling convention for g here, not an infinitely precise environmental measurement. Air resistance, changing gravity, obstacles and uncertainty need explicit additions before this becomes an appropriate prediction for a real experiment."
+      ],
+      "refresher": {
+        "title": "A trajectory has a time domain",
+        "body": "A quadratic formula can be evaluated beyond the physical event it models. A return to ground can define the end of the intended flight.",
+        "tex": "h(t)=v_0t-\\frac12gt^2,\\quad t_{\\rm return}=\\frac{2v_0}{g},\\quad t_{\\rm apex}=\\frac{v_0}{g}",
+        "example": "The roots of height are t=0 and t=2v₀/g. The derivative vanishes halfway between them, at the apex."
+      },
+      "predict": "Should the root t=0 be reported as the completed flight’s return time?",
+      "look": "The symbolic checks and the plotted interval address different parts of the model: the differential rule, initial state and physical observation boundary.",
+      "change": "Add an initial height h0>0. Re-solve the ground equation and justify which root represents a future landing.",
+      "question": "A valid algebraic time root is negative. What does that imply for a model restricted to t≥0?",
+      "options": [
+        "It can be excluded from the physical future-time question, with that restriction stated.",
+        "It must be changed to its absolute value.",
+        "Every other root is automatically wrong."
+      ],
+      "correct": 0,
+      "feedback": "A domain restriction can exclude a mathematical root. Taking an absolute value instead changes the equation’s solution.",
+      "hints": [
+        "Keep algebraic validity separate from physical admissibility.",
+        "Check the stated time origin and allowed interval."
+      ],
+      "limit": "This ideal one-dimensional trajectory omits drag and parameter uncertainty and has not been validated against measurements.",
+      "source": [
+        "SymPy · Calculus tutorial",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/calculus.html"
+      ],
+      "minutes": 14,
+      "kind": "Integrated model with invented launch inputs",
+      "module": 8,
+      "code": "workshop-check-a-projectile-model.py",
+      "track": "application",
+      "capstone": true
+    },
+    {
+      "slug": "plan-a-circuit-threshold-time",
+      "title": "Plan a circuit threshold time",
+      "short": "Derive a threshold-crossing formula from an ideal response and check it by substitution.",
+      "goal": "Derive a threshold-crossing formula from an ideal response and check it by substitution.",
+      "explain": [
+        "An ideal RC circuit provides a simple model where symbolic derivation, solving and numerical plotting reinforce one another. Starting with zero capacitor voltage, its charging response approaches a constant input V on time scale R*C.",
+        "Solve for the time to reach half the final voltage, using positive parameters and a nonnegative physical time. Substitute the derived time into the original response to verify the threshold. The symbolic result shows which parameter combinations influence the timing and which cancel.",
+        "The selected resistance, capacitance and voltage are invented demonstration inputs. Component tolerances would create uncertainty in the crossing time even when the algebra is exact. Use the report to distinguish the ideal result, the numerical illustration and any evidence needed for a practical timing specification."
+      ],
+      "refresher": {
+        "title": "A threshold solves an equation",
+        "body": "A crossing time is an input t for which the response reaches a specified level. It must lie in the permitted time domain.",
+        "tex": "V(1-e^{-t/(RC)})=\\frac V2\\quad\\Longrightarrow\\quad t=RC\\log2",
+        "example": "Because V>0, it cancels from this half-voltage equation. Doubling R with C fixed doubles the ideal crossing time."
+      },
+      "predict": "Will doubling V alone change the time to reach one half of that same V in the ideal model?",
+      "look": "The timing formula is independent of V for this relative threshold. That does not mean every absolute voltage threshold has the same property.",
+      "change": "Replace V/2 with a fixed threshold of 2 volts. State conditions on V for a positive finite crossing.",
+      "question": "For an absolute threshold above the final voltage V, what does the ideal monotone response imply?",
+      "options": [
+        "A guaranteed finite positive crossing.",
+        "No finite crossing within the stated ideal charging model.",
+        "A requirement to ignore the threshold value."
+      ],
+      "correct": 1,
+      "feedback": "The response approaches V from below. A threshold above that limit is outside its reachable range under these assumptions.",
+      "hints": [
+        "Inspect the response’s initial value and long-time limit.",
+        "Compare the threshold with that reachable interval."
+      ],
+      "limit": "The ideal response and invented components omit tolerances, parasitics, load effects and hardware validation.",
+      "source": [
+        "SymPy · Solve an ordinary differential equation",
+        "https://docs.sympy.org/latest/guides/solving/solve-ode.html"
+      ],
+      "minutes": 14,
+      "kind": "Integrated ideal circuit with invented components",
+      "module": 8,
+      "code": "workshop-plan-a-circuit-threshold-time.py",
+      "track": "application",
+      "capstone": true
+    },
+    {
+      "slug": "benchmark-a-monte-carlo-estimate",
+      "title": "Benchmark a Monte Carlo estimate",
+      "short": "Use an exact symbolic expectation to check a seeded simulation under the same model.",
+      "goal": "Use an exact symbolic expectation to check a seeded simulation under the same model.",
+      "explain": [
+        "Symbolic calculation can provide a reference for a numerical simulation. The comparison is meaningful only if both methods use the same inputs, domain and target quantity. Here radius is uniformly distributed between one and two, and area is pi times radius squared.",
+        "Integrate over the stated uniform density to obtain exact mean area and variance. Then generate independent radius draws, transform each into area, and estimate the mean and its Monte Carlo standard error. The standard error describes numerical variability of the estimated mean, not the spread of individual areas.",
+        "A discrepancy larger than expected prompts inspection of the model translation or calculation. Agreement checks an implementation under this authored probability model; it does not establish that real radii are uniform. Preserve the seed, draw count, exact target, actual result and assumptions in the report."
+      ],
+      "refresher": {
+        "title": "Spread of outcomes versus error of a mean",
+        "body": "Outcome variance describes different possible areas. For independent finite-variance draws, the mean’s standard error is sample SD divided by square root of draw count.",
+        "tex": "E[A]=\\int_1^2\\pi r^2\\,dr=\\frac{7\\pi}3,\\qquad\\operatorname{MCSE}(\\bar A)\\approx\\frac{s_A}{\\sqrt n}",
+        "example": "More draws refine the simulated mean. They do not narrow the model’s distribution of possible individual areas."
+      },
+      "predict": "Will increasing simulation draws reduce uncertainty about whether real radii follow the assumed uniform model?",
+      "look": "The histogram describes possible areas, while MCSE concerns the average of the simulated areas. Exact and numerical results share the same authored model.",
+      "change": "Increase draw count by a factor of four and repeat with several seeds. Compare MCSE rather than expecting every estimate to move monotonically closer.",
+      "question": "A simulated mean agrees closely with the exact model mean. What does that support?",
+      "options": [
+        "That the assumed input distribution must describe real measurements.",
+        "That the sampling and calculation agree with this model reference to the assessed precision.",
+        "That one million individual areas are nearly identical."
+      ],
+      "correct": 1,
+      "feedback": "A reference comparison checks implementation under assumptions. Empirical model validation requires separate evidence.",
+      "hints": [
+        "Separate “does the code implement this model?” from “does this model describe reality?”",
+        "Identify what the exact integral assumes."
+      ],
+      "limit": "Independent uniform radii and finite moments are assumed. Agreement cannot validate those assumptions against reality.",
+      "source": [
+        "SymPy · Calculus tutorial",
+        "https://docs.sympy.org/latest/tutorials/intro-tutorial/calculus.html"
+      ],
+      "minutes": 14,
+      "kind": "Exact model reference and seeded teaching simulation",
+      "module": 8,
+      "code": "workshop-benchmark-a-monte-carlo-estimate.py",
+      "track": "application",
+      "capstone": true
+    }
+  ]
+}
