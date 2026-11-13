@@ -27,3 +27,25 @@ Results appear after execution, with clear provenance and recoverable error/Stop
 states. Course modules are native disclosures; search opens matching modules and
 module deep links reveal their contents. Mathematical refreshers remain optional,
 readable disclosures where the course provides them.
+
+## Mathematical representation and concept visuals
+
+Keep mathematical notation and executable Python distinct. Typeset mathematical
+expressions in explanations, questions and feedback; style literal Python with
+inline code, including incorrect Python answer options where operator syntax is
+being assessed. Never turn a Python XOR distractor into a mathematically correct
+superscript. Retain the large reading scale and optional prerequisite refreshers.
+
+Each lesson receives a mathematical illustration that explains its particular
+idea: geometry, a graph, an interval, a transformation or a dependency diagram.
+Illustrations are generated from explicit mathematical models during the build,
+with stated domains, captions and accessible descriptions; they are reference
+illustrations, separate from the learner's actual output. Use responsive variants
+so figure labels remain readable on phones. The first lesson also visualises an
+eligible returned square expression after execution, so changing its constant
+changes the geometric interpretation. Preserve the exact result and provenance.
+
+Group code and results into one coherent experiment area. Keep text output and
+the published reference available with explicit labels and compact spacing.
+Visual hierarchy should come from meaningful representations and restrained
+section structure, without restoring duplicate goal panels or navigation bars.

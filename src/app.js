@@ -1,3 +1,5 @@
+import {renderRich} from './rich-text.mjs';
+import {areaModelSvg} from './area-model.mjs';
 import katex from './vendor/katex.mjs';
 // Copyright © 2026 Christopher Snow
 import {attachEditor} from './editor.mjs';
@@ -107,6 +109,7 @@ function initializeOverview({lessons,applications}){
   $('import-progress').value='';
  });
 }
+const rich=text=>renderRich(text,tex=>katex.renderToString(tex,{displayMode:false,throwOnError:false,trust:false,strict:'warn'}));
 function initializeLesson(lesson){
  const slug=lesson.slug;
  function renderMaths(records){
@@ -145,7 +148,7 @@ function initializeLesson(lesson){
  function stale(){
   if(!lastRun)return;
   const changed=$('code').value!==lastRun.source || csv!==lastRun.input_csv;
-  $('output-provenance').textContent=changed?'Code or input changed. Output and run export still describe the previous execution. Run again to update.':`Output from your completed ${lastRun.error?'erroring':'successful'} execution at ${new Date(lastRun.executed_at).toLocaleTimeString()}.`;
+  $('output-provenance').textContent=changed?'Code or input changed. Output and run export still describe the previous execution. Run again to update.':`${lastRun.error?'Error recorded':'Executed successfully'} at ${new Date(lastRun.executed_at).toLocaleTimeString()}.`;
   $('output-provenance').classList.toggle('stale',changed);
  }
  $('code').addEventListener('input',()=>{put(draftKey('code'),$('code').value);stale()});
@@ -180,7 +183,7 @@ function initializeLesson(lesson){
   const fail=message=>{
    if(runRevision!==revision)return;
    terminate('Python could not finish. Check the message, then edit or run again.');
-   $('run-result').hidden=false;$('output').textContent=message;$('output').classList.add('error');$('plots').replaceChildren();$('symbolic-output').replaceChildren();$('output').closest('details').open=true;
+   $('run-result').hidden=false;$('output').textContent=message;$('output').classList.add('error');$('plots').replaceChildren();$('symbolic-output').replaceChildren();$('result-visual').hidden=true;$('result-visual').replaceChildren();$('output').closest('details').open=true;
    $('output-provenance').textContent='Execution failed before a complete result could be recorded. Previous completed run export, if any, is unchanged.';
   };
   timer=setTimeout(()=>fail('Python initialization exceeded two minutes. Check your connection and run again.'),120000);
@@ -196,12 +199,18 @@ function initializeLesson(lesson){
    if(data.type!=='result')return;
    clearTimeout(timer);controls(false);
    $('run-result').hidden=false;
-   const {stdout,error,figures,versions,maths=[]}=data.value;
-   lastRun={schema:1,course:'sympy-lab',lesson:slug,executed_at:new Date().toISOString(),source,input_csv:input,input_name:inputName,stdout,error,symbolic_results:maths,figures_svg_base64:figures,versions,environment:{user_agent:navigator.userAgent,timing_scope:'Local browser Pyodide; see executed source for boundaries.'}};
+   const {stdout,error,figures,versions,maths=[],visual=null}=data.value;
+   lastRun={schema:1,course:'sympy-lab',lesson:slug,executed_at:new Date().toISOString(),source,input_csv:input,input_name:inputName,stdout,error,symbolic_results:maths,visual_model:visual,figures_svg_base64:figures,versions,environment:{user_agent:navigator.userAgent,timing_scope:'Local browser Pyodide; see executed source for boundaries.'}};
    $('output').textContent=(stdout||'No text was printed.')+(error?'\n'+error:'');
    $('output').classList.toggle('error',!!error);
-   $('output').closest('details').open=!!error;
+   $('output').closest('details').open=!!error||!maths.length;
    renderMaths(maths);
+   const visualRegion=$('result-visual');visualRegion.replaceChildren();visualRegion.hidden=!visual;
+   if(visual){
+    const figure=document.createElement('figure');figure.innerHTML=areaModelSvg(visual,320);
+    const caption=document.createElement('figcaption');caption.textContent=visual.caption;
+    figure.append(caption);visualRegion.append(figure);
+   }
    clearPlotUrls();
    $('plots').replaceChildren(...figures.map((svg,i)=>{
     const figure=document.createElement('figure');figure.className='worked-figure';
@@ -232,7 +241,7 @@ function initializeLesson(lesson){
   put(draftKey('quiz'),JSON.stringify({answer,correct,at:new Date().toISOString()}));
   const feedback=$('quiz-feedback');feedback.replaceChildren();feedback.classList.toggle('incorrect',!correct);
   const title=document.createElement('b');title.textContent=correct?'That reasoning fits.':'Reconsider the comparison.';
-  const text=document.createElement('span');text.textContent=lesson.feedback;
+  const text=document.createElement('span');text.innerHTML=rich(lesson.feedback);
   feedback.append(title,text);feedback.focus({preventScroll:true});
  });
  if($('export-report'))$('export-report').addEventListener('click',()=>{

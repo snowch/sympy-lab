@@ -52,7 +52,7 @@ try:
         assert page.locator('.katex-error').count()==0
         assert page.locator('.lesson-row h4').first.evaluate('e=>parseFloat(getComputedStyle(e).fontSize)')>=17
         assert 'Sora' in page.locator('h1').evaluate('e=>getComputedStyle(e).fontFamily')
-        assert page.evaluate('getComputedStyle(document.documentElement).backgroundColor')=='rgb(246, 249, 247)'
+        assert page.evaluate('getComputedStyle(document.documentElement).backgroundColor')=='rgb(250, 251, 248)'
         page.screenshot(path=str(RESULTS/'overview-desktop.png'),full_page=True)
         page.locator('#search').fill('fractions')
         assert 0<page.locator('.lesson-row:visible').count()<52
@@ -64,7 +64,7 @@ try:
         visit(page,BASE+'lessons/'+LESSONS[0]['slug']+'.html')
         assert not page.locator('#maths-refresher').evaluate('e=>e.open')
         page.locator('#maths-refresher summary').click()
-        assert page.locator('#maths-refresher .katex-mathml').count()==1
+        assert page.locator('#maths-refresher .katex-mathml').count()>=1
         assert page.locator('.refresher-example').is_visible()
         page.reload();page.wait_for_selector('html[data-ready=true]')
         assert page.locator('#maths-refresher').evaluate('e=>e.open')
@@ -91,7 +91,11 @@ try:
             assert len(actual_tex)==len(record['maths'])
             for tex,native in zip(actual_tex,record['maths']):compare(tex,native['latex'],lesson['slug'])
             assert page.locator('#plots img').count()==len(record['figures'])
-            if i==0:page.screenshot(path=str(RESULTS/'lesson-desktop.png'),full_page=True)
+            if i==0:
+                assert page.locator('#result-visual svg').is_visible()
+                assert 'x plus 1' in page.locator('#result-visual svg').get_attribute('aria-label')
+                assert page.locator('.answer-option code').all_text_contents()==['(x+3)**2','x+3**2','(x+3)^2']
+                page.screenshot(path=str(RESULTS/'lesson-desktop.png'),full_page=True)
             if i==43:
                 with page.expect_popup() as popup:page.locator('#plots a').click()
                 popup.value.wait_for_load_state();assert popup.value.url.startswith('blob:');popup.value.close()
@@ -159,7 +163,7 @@ try:
         print('PASS error/Stop recovery, feedback and saved drafts/refresher state',flush=True)
         page.locator('#theme').click();page.reload()
         assert page.locator('html').get_attribute('data-theme')=='dark'
-        assert page.evaluate('getComputedStyle(document.documentElement).backgroundColor')=='rgb(16, 28, 23)'
+        assert page.evaluate('getComputedStyle(document.documentElement).backgroundColor')=='rgb(17, 27, 27)'
         page.screenshot(path=str(RESULTS/'lesson-dark.png'),full_page=True)
         for width in [390,320]:
             page.set_viewport_size({'width':width,'height':844})
@@ -169,6 +173,8 @@ try:
                 assert page.locator('.explanation p').first.evaluate('e=>parseFloat(getComputedStyle(e).fontSize)')>=18
                 page.locator('#maths-refresher').evaluate('e=>e.open=false')
                 no_overflow(page,(width,lesson['slug'],'closed'))
+                clipped=page.locator('.concept-figure svg:visible').evaluate_all("""svgs=>svgs.flatMap(svg=>{const frame=svg.getBoundingClientRect();return [...svg.querySelectorAll('text')].flatMap(t=>{const r=t.getBoundingClientRect();return r.left<frame.left-1||r.right>frame.right+1||r.top<frame.top-1||r.bottom>frame.bottom+1?[t.textContent]:[]})})""")
+                assert not clipped,('clipped diagram labels',width,lesson['slug'],clipped)
                 page.locator('#maths-refresher').evaluate('e=>e.open=true')
                 no_overflow(page,(width,lesson['slug'],'refresher open'))
                 assert page.locator('#maths-refresher .katex-error').count()==0
@@ -178,6 +184,21 @@ try:
             visit(page,BASE);no_overflow(page,('overview',width))
             if width==390:page.screenshot(path=str(RESULTS/'overview-mobile-dark.png'),full_page=True)
         print('PASS every lesson/refresher/worked result at 390px and 320px',flush=True)
+        visit(page,BASE+'lessons/'+LESSONS[0]['slug']+'.html')
+        page.locator('#code').fill((ROOT/'python'/LESSONS[0]['code']).read_text().replace('(x+1)**2','(x+2)**2'))
+        page.locator('#run').click();wait_result(page)
+        assert 'x plus 2' in page.locator('#result-visual svg').get_attribute('aria-label')
+        assert page.locator('#result-visual svg text').all_text_contents().count('2x')==2
+        assert '4' in page.locator('#result-visual svg text').all_text_contents()
+        path=RESULTS/'area-model-run.json';download(page,'#export-run',path)
+        saved=json.loads(path.read_text());assert saved['visual_model']['offset']==2
+        page.locator('#code').fill('print("no labelled expressions")')
+        assert 'previous execution' in page.locator('#output-provenance').inner_text()
+        page.locator('#run').click();wait_result(page)
+        assert not page.locator('#result-visual').is_visible()
+        assert page.locator('#output').is_visible()
+        print('PASS live geometric model follows actual executed expression, export and missing results',flush=True)
+
         page.set_viewport_size({'width':390,'height':844});page.locator('#theme').click()
         visit(page,BASE+'lessons/'+LESSONS[3]['slug']+'.html')
         page.locator('#course-menu-toggle').click();assert page.locator('#course-sidebar').is_visible()
@@ -210,7 +231,10 @@ try:
         static.on('request',lambda req:requests.append(req.url))
         for lesson in ALL:
             response=static.goto(BASE+'lessons/'+lesson['slug']+'.html');assert response.status==200
-            assert static.locator('.explanation p').first.inner_text()==lesson['explain'][0]
+            assert static.locator('.explanation p').first.inner_text().startswith(re.split(r'[$`]',lesson['explain'][0])[0])
+            assert static.locator('.concept-figure').is_visible()
+            assert static.locator('.concept-figure .katex-error').count()==0
+            assert static.locator('.concept-figure figcaption').inner_text().strip()
             static.locator('#maths-refresher summary').click()
             assert static.locator('.refresher-example').is_visible()
             static.locator('.worked summary').first.click()

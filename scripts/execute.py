@@ -5,12 +5,14 @@ from pathlib import Path
 import sympy,numpy,matplotlib,mpmath
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from display_model import area_model
+from visuals import illustration
 ROOT=Path(__file__).resolve().parents[1]
 plt.rcParams.update({'font.family':'DejaVu Sans','font.size':13,'figure.figsize':(6,3.8),
  'axes.spines.top':False,'axes.spines.right':False,'figure.facecolor':'white','axes.facecolor':'white',
  'axes.labelcolor':'#243f34','text.color':'#243f34','svg.hashsalt':'sympy-lab','savefig.bbox':'tight'})
 
-def execute(lesson):
+def execute(lesson,index=None):
     source=(ROOT/'python'/lesson['code']).read_text()
     namespace={'__name__':'__main__'}
     output=io.StringIO();plt.close('all')
@@ -23,11 +25,12 @@ def execute(lesson):
         image=io.StringIO();plt.figure(number).savefig(image,format='svg',metadata={'Date':None})
         figures.append(image.getvalue())
     plt.close('all')
-    return {'stdout':output.getvalue(),'maths':maths,'figures':figures}
+    return {'stdout':output.getvalue(),'maths':maths,'figures':figures,'visual':area_model(namespace),
+            'illustration':illustration(index,namespace) if index else None}
 
 if __name__=='__main__':
     course=json.loads((ROOT/'src/course.json').read_text())
-    records={l['slug']:execute(l) for l in course['lessons']+course['applications']}
+    records={l['slug']:execute(l,i+1) for i,l in enumerate(course['lessons']+course['applications'])}
     destination=Path(sys.argv[1]) if len(sys.argv)>1 else ROOT/'.cache/worked.json'
     destination.parent.mkdir(parents=True,exist_ok=True)
     destination.write_text(json.dumps({'environment':{'python':platform.python_version(),

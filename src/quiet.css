@@ -73,3 +73,49 @@
 @media(max-width:700px){.site-header nav{flex-wrap:wrap;max-width:100%}}
 
 .storage-error{font-size:1rem;line-height:1.8;color:var(--warning);margin:18px 0}
+/* Mathematical reading surfaces: one visual idea and one cohesive experiment. */
+:root{--paper:#fafbf8;--diagram-one:#d3eade;--diagram-two:#f1d5a4;--diagram-three:#e1dff2;--plot-amber:#9c5815;--plot-violet:#7663a8}
+:root[data-theme=dark]{--paper:#111b1b;--surface:#182726;--surface-soft:#203330;--ink:#e3f2e9;--text:#d4e4dc;--muted:#aec5b8;--line:#354d44;--accent:#95d6b2;--accent-soft:#243f33;--diagram-one:#305a48;--diagram-two:#68502f;--diagram-three:#474462;--plot-amber:#e6b367;--plot-violet:#c5b2e7}
+.site-header{background:var(--surface)}
+.quiet-lesson h1{font-weight:650;letter-spacing:-.045em}.lesson-introduction{border-bottom:1px solid var(--line);padding-bottom:25px}
+.inline-python{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88em;background:var(--accent-soft);color:var(--ink);border-radius:4px;padding:.12em .32em;overflow-wrap:anywhere;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.katex{color:var(--ink)}p>.katex,.prediction h2>.katex{font-size:1.1em}
+.concept-figure{margin:28px 0 30px;border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:20px 24px 22px;overflow:hidden}
+.figure-heading{font-size:.875rem;font-weight:600;color:var(--muted);margin:0 0 4px;letter-spacing:.025em}
+.concept-figure .math-display{margin:4px 0 14px;padding:0;font-size:1.05rem;background:transparent;border:0}
+.concept-figure figcaption,.result-visual figcaption{font-size:.9375rem;line-height:1.7;color:var(--muted);max-width:66ch;margin:4px auto 0}
+.concept-svg{display:block;width:100%;max-width:640px;height:auto;margin:auto;overflow:visible}.concept-narrow{display:none}
+.concept-svg text{font-family:'DM Sans',system-ui,sans-serif;font-size:16px;fill:var(--text)}
+.concept-svg .grid{fill:none;stroke:var(--line);stroke-width:1}.concept-svg .axis{fill:none;stroke:var(--muted);stroke-width:1.3}
+.concept-svg .curve,.concept-svg .circle-outline{fill:none;stroke:var(--accent);stroke-width:3;stroke-linejoin:round;stroke-linecap:round}
+.concept-svg .curve-1,.concept-svg .residual{stroke:var(--plot-amber)}.concept-svg .curve-2{stroke:var(--plot-violet)}.concept-svg .residual{fill:none;stroke-width:2;stroke-dasharray:5 4}
+.concept-svg .point{fill:var(--accent);stroke:var(--surface);stroke-width:1.5}.concept-svg .hole{fill:var(--surface);stroke:var(--accent);stroke-width:2.5}
+.concept-svg .area-fill,.concept-svg .feasible{fill:var(--diagram-one);opacity:.65}.concept-svg .interval{stroke:var(--accent);stroke-width:6}
+.concept-svg .tile{stroke:var(--surface);stroke-width:3;fill:var(--diagram-one)}.concept-svg .tile-1{fill:var(--diagram-two)}.concept-svg .tile-2{fill:var(--diagram-three)}.concept-svg .hist-bar{fill:var(--accent);opacity:.8}
+.concept-area{max-width:340px;margin:0 auto}.area-model{display:block;width:100%;height:auto}
+.math-flow{display:flex;align-items:stretch;list-style:none;padding:12px 0;margin:0;gap:22px}.math-flow>li{flex:1;min-width:0;position:relative;display:flex;flex-direction:column;justify-content:center;padding:12px 0}
+.math-flow>li+li:before{content:'→';position:absolute;left:-19px;top:50%;font-size:1rem;color:var(--muted)}
+.math-flow>li>span{font-size:.875rem;line-height:1.6;color:var(--muted)}.math-flow .math-display{font-size:1rem;margin:4px 0 0}.math-flow .katex-display{margin:.5em 0}.math-flow .katex-display>.katex{text-align:left}
+.lab-workspace{border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden;margin-bottom:30px}
+.lab-workspace .code-cell{border:0;border-radius:0;box-shadow:none}
+.result-cell{margin:0;padding:20px 24px 16px;background:var(--surface);overflow:hidden}
+.output-heading{padding:0;min-height:38px}.output-heading h3{font-size:1rem;font-weight:600}.output-heading button{padding:5px 0;border:0;background:transparent;min-height:36px}
+.output-provenance{font-size:.875rem;margin:0 0 14px;padding:0;color:var(--muted)}
+#symbolic-output{padding:0}.math-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 24px;align-items:start}.math-card{padding:4px 0 10px;min-width:0}.math-card>span{font-size:.875rem;line-height:1.7}.math-card .math-display{padding:0;margin:5px 0 0;font-size:1.2rem}.math-card .katex-display{margin:.3em 0}.math-card .katex-display>.katex{text-align:left}
+.result-visual{border-top:1px solid var(--line);margin-top:8px;padding:10px 0 8px}.result-visual figure{margin:0}.result-visual .area-model{max-width:290px;margin:0 auto}.result-visual figcaption{text-align:center;max-width:50ch}
+.plain-output{margin:4px 0 0}.plain-output>summary,.plain-worked>summary{font-size:.875rem;padding:8px 0;min-height:40px}.plain-output pre{margin-bottom:12px!important}
+.lab-workspace .worked{padding:0 24px;background:var(--surface-soft);border:0;border-top:1px solid var(--line);border-radius:0;margin:0}
+.lab-workspace .worked>summary{font-size:.9375rem;font-weight:500;padding:14px 0;min-height:48px;color:var(--ink)}.worked>p{font-size:.875rem;line-height:1.7;margin:2px 0 16px}.worked .math-results{margin:10px 0}.worked[open]{padding-bottom:16px}
+.observation{margin-top:26px}.observation h2,.change-task h2{font-weight:600}.change-task{border-left:3px solid var(--accent);padding:4px 0 4px 20px;margin:26px 0}.change-task p{margin-bottom:0}
+.answer-option{border:1px solid var(--line);border-radius:8px;padding:13px 16px;margin:10px 0;background:var(--surface);line-height:1.7;gap:14px}.answer-option:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}.answer-option .inline-python{background:transparent;padding:0;font-size:.95em}.answer-option input{margin:0;align-self:center}
+@media(max-width:1100px){.math-flow{flex-direction:column;gap:12px}.math-flow>li{padding:6px 0 6px 17px;border-left:2px solid var(--line)}.math-flow>li+li:before{content:none}.math-flow .math-display{margin:0}}
+@media(max-width:700px){.concept-figure{padding:17px 15px 18px;margin:24px 0;border-radius:10px}.concept-wide{display:none}.concept-narrow{display:block}.concept-svg text{font-size:18px}.concept-figure figcaption,.result-visual figcaption{font-size:.9375rem}.result-cell{padding:17px 16px 12px}.math-results{grid-template-columns:1fr;gap:5px}.math-card .math-display{font-size:1.15rem}.lab-workspace .worked{padding-left:16px;padding-right:16px}.lab-workspace{border-radius:9px}.change-task{padding-left:16px}.answer-option{padding:12px}.math-flow .math-display{font-size:1rem}}
+@media(max-width:700px){.concept-svg text{font-size:20px}}
+
+.math-flow[data-mode=parts]>li+li:before{content:'+'}.math-flow[data-mode=comparison]>li+li:before{content:none}
+@media(max-width:1100px){.math-flow[data-mode=parts]>li+li:before{content:none}}
+
+/* Line patterns and labelled rules keep curve keys usable without colour. */
+.concept-svg .curve-1{stroke-dasharray:8 5}.concept-svg .curve-2{stroke-dasharray:2 5}
+.curve-legend{list-style:none;display:flex;flex-wrap:wrap;gap:6px 24px;margin:0 0 16px;padding:0}
+.curve-legend li{display:flex;align-items:center;gap:9px;min-width:0;max-width:100%}.curve-legend .math-display{font-size:1rem;margin:0;min-width:0}.curve-swatch{width:24px;flex:0 0 24px;border-top:3px solid var(--accent)}.swatch-1{border-top:3px dashed var(--plot-amber)}.swatch-2{border-top:3px dotted var(--plot-violet)}

@@ -6,6 +6,8 @@ Symbolic mathematics, one experiment at a time. A guided path through **48 short
 
 The core moves from exact expressions and domains through algebra, equations, functions, calculus, matrices and small models to numerical Python. Every investigation has a prediction, independent executable source, labelled typeset results, a worked result generated from that source, a change to try, a fresh transfer question, two hints, feedback and a stated limitation.
 
+Each lesson also includes a mathematical illustration: geometry, curves, number lines or a diagram of the transformation. Reference illustrations remain separate from actual run output. The first lesson’s area model updates from the returned square expression when its constant changes.
+
 ## Maths refreshers
 
 Each refresher is closed by default and contains a short plain-language explanation, a typeset equation and a small worked example of the prerequisite idea. Opening state saves with the lesson draft. A prerequisite map points back to the relevant modules. The panels are local reminders, not a claim to replace a full mathematics textbook.
@@ -140,6 +142,9 @@ Open `http://localhost:5173/sympy-lab/`. The Pages-shaped path checks relative a
 - `src/course.json`: lessons, refreshers, transfer questions, hints and references.
 - `python/`: complete independently executable examples; edit these as the source of worked output.
 - `scripts/execute.py`: native text, expression LaTeX and figure generation from exact published source.
+- `scripts/visuals.py`: captioned mathematical reference diagrams; narrow and wide SVG compositions.
+- `scripts/display_model.py`, `src/area-model.mjs`: a bounded geometric representation of eligible actual results.
+- `src/rich-text.mjs`: shared escaped formatting for `$LaTeX$` mathematics and backtick Python syntax.
 - `scripts/layout.mjs`, `scripts/notes.mjs`, `src/style.css`: course, panels, prerequisite map and readable light/dark interface.
 - `src/app.js`, `src/worker.js`, `src/editor.mjs`: local editor, real Python, typesetting, recovery, drafts and exports.
 - `tests/`: mathematical/reference checks and browser evidence.

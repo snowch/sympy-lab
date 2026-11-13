@@ -1,5 +1,7 @@
 import {renderQuietHeader,renderQuietFooter,renderQuietHome,renderQuietLesson} from './quiet.mjs';
 import katex from 'katex';
+import {renderRich} from '../src/rich-text.mjs';
+import {areaModelSvg} from '../src/area-model.mjs';
 // Copyright © 2026 Christopher Snow
 export const esc=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const n=i=>String(i+1).padStart(2,'0');
@@ -10,16 +12,23 @@ export const brand=p=>`<a class="brand" href="${p}index.html">${logo}<span>SymPy
 export const header=p=>renderQuietHeader({p,brand:brand(p),icon,sourceUrl:"https://github.com/snowch/sympy-lab"});
 export const footer=p=>renderQuietFooter({p,brand:brand(p)});
 export const math=tex=>`<div class="math-display">${katex.renderToString(tex,{displayMode:true,throwOnError:true,trust:false,strict:'error'})}</div>`;
+const rich=text=>renderRich(text,tex=>katex.renderToString(tex,{displayMode:false,throwOnError:true,trust:false,strict:'error'}));
 export const mathCards=records=>`<div class="math-results">${records.map(record=>`<div class="math-card"><span>${esc(record.label)}</span>${math(record.latex)}</div>`).join('')}</div>`;
 function demo(record){
  const wanted=['Unrestricted','Real','Positive'];
  return `<div class="symbol-demo"><div class="demo-top"><span><i></i> A SMALL QUESTION WITH A BIG LESSON</span></div><h2>Same square root.<br>Different assumptions.</h2><div class="assumption-forms">${wanted.map((label,i)=>{const result=record.maths.find(x=>x.label===label);return `<div><span>${['Any complex z','Real x','Positive p'][i]}</span>${math(String.raw`\sqrt{${['z','x','p'][i]}^{2}}\;\longrightarrow\;${result.latex}`)}</div>`}).join('')}</div><p class="symbol-insight">Why doesn’t every square root cancel its square?<br><strong>The permitted inputs matter.</strong></p><div class="demo-bottom"><span>Executed SymPy · exact symbolic results</span><a href="lessons/tell-sympy-what-a-symbol-means.html">Explore the idea ${icon('next',15)}</a></div></div>`;
 }
 export function renderHome(course,record){return renderQuietHome({...course,name:"SymPy Lab",description:"Learn symbolic algebra, calculus and modelling with real Python and optional maths refreshers.",example:demo(record),esc,icon});}
+function conceptFigure(record){
+ const v=record.illustration;
+ if(!v)return '';
+ const content=v.kind==='flow'?`<ol class="math-flow" data-mode="${v.mode}">${v.steps.map(([label,tex])=>`<li><span>${esc(label)}</span>${math(tex)}</li>`).join('')}</ol>`:v.kind==='area'?`<div class="concept-area">${areaModelSvg(record.visual,320)}</div>`:`<div class="concept-wide">${v.wide}</div><div class="concept-narrow">${v.narrow}</div>`;
+ return `<figure class="concept-figure" aria-label="Mathematical reference illustration"><div class="figure-heading">${esc(v.title)}</div>${content}${v.formula?math(v.formula):''}${v.legend?.length?`<ul class="curve-legend" aria-label="Curve key">${v.legend.map((tex,k)=>`<li><span class="curve-swatch swatch-${k}" aria-hidden="true"></span>${math(tex)}</li>`).join('')}</ul>`:''}<figcaption>${esc(v.caption)}</figcaption></figure>`;
+}
 export function renderLesson({lesson:l,index:i,lessons,modules,applications=[],code,figures}){
  const sidebar=modules.map((m,k)=>`<details class="nav-module" ${k===l.module?'open':''}><summary><span>${n(k)}</span>${m.title}</summary><ol>${lessons.map((x,j)=>[x,j]).filter(([x])=>x.module===k).map(([x,j])=>`<li><a href="${x.slug}.html" ${j===i?'aria-current="page"':''}><span>${n(j)}</span>${x.title}<small data-read="${x.slug}"></small></a></li>`).join('')}</ol></details>`).join('')+`<details class="nav-module" ${l.track==='application'?'open':''}><summary><span>+</span>Integrated workshops</summary><ol>${applications.map(x=>`<li><a href="${x.slug}.html" ${x.slug===l.slug?'aria-current="page"':''}>${x.title}<small data-read="${x.slug}"></small></a></li>`).join('')}</ol></details>`;
  const sequence=l.track==='application'?applications:lessons;
  const position=sequence.findIndex(x=>x.slug===l.slug);
  const brief=l.capstone?`<section class="report-section" id="report"><div class="eyebrow">YOUR MATHEMATICAL REPORT</div><h2>Make your finding inspectable.</h2><p>Record the question, mathematical assumptions and proposed checks before interpreting the result. After execution, add the derivation, numerical comparison and limits. Export keeps your latest completed run attached to the report.</p><div class="report-fields">${[['question','Question & intended result','What mathematical or modelling question are you trying to answer? What would count as a satisfactory result?'],['plan','Assumptions, domain & method','Symbols, permitted inputs, exact or approximate quantities, chosen method and planned checks.'],['source','Inputs, units & provenance','Authored model, measured inputs or simulation? Units, supplied precision, package versions and source of every numerical input.'],['finding','Derivation & verification','Final expression, identity or residual checks, original-equation substitution, boundary analysis and any numerical comparison.'],['limits','Limitations & next test','Unresolved conditions, missing branches, approximation error, empirical model limits and a useful next check.']].map(([id,label,placeholder])=>`<label for="report-${id}">${label}<textarea id="report-${id}" data-save="report-${id}" placeholder="${placeholder}" rows="3"></textarea></label>`).join('')}</div><button class="button primary" id="export-report">Export investigation .md ${icon('download',17)}</button><p id="report-status" role="status"></p></section>`:'';
- return renderQuietLesson({lesson:l,index:i,lessons,modules,applications:typeof applications==='undefined'?[]:applications,sidebar,capstone:typeof capstone==='undefined'?'':capstone,brief,code,figures,esc,icon,math:typeof math==='undefined'?null:math,mathCards:typeof mathCards==='undefined'?null:mathCards});
+ return renderQuietLesson({lesson:l,index:i,lessons,modules,applications:typeof applications==='undefined'?[]:applications,sidebar,capstone:typeof capstone==='undefined'?'':capstone,brief,code,figures,esc,rich,concept:conceptFigure(l.worked),icon,math:typeof math==='undefined'?null:math,mathCards:typeof mathCards==='undefined'?null:mathCards});
 }

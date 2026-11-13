@@ -18,6 +18,23 @@ def run(lesson,source=None):
         exec(compile(source or (ROOT/'python'/lesson['code']).read_text(),lesson['code'],'exec'),namespace)
     plt.close('all');return namespace,stream.getvalue()
 class CourseTests(unittest.TestCase):
+    def test_area_model_tracks_source_and_respects_geometric_scope(self):
+        import sys
+        sys.path.insert(0,str(ROOT/'scripts'))
+        from display_model import area_model
+        for offset in [1,2,6]:
+            x=sp.Symbol('x');model=area_model({'results':{'Original':(x+offset)**2}})
+            self.assertEqual(model['offset'],offset)
+            self.assertEqual(model['expanded_latex'],sp.latex(sp.expand((x+offset)**2)))
+            self.assertIn('nonnegative',model['caption'])
+        for expression in [x**3,(x-1)**2,(x+sp.Rational(1,2))**2,(x+sp.Symbol('y'))**2]:
+            self.assertIsNone(area_model({'results':{'Original':expression}}))
+        self.assertIsNone(area_model({}))
+        negative=sp.Symbol('n',negative=True)
+        self.assertIsNone(area_model({'results':{'Original':(negative+1)**2}}))
+        imaginary=sp.Symbol('i',imaginary=True)
+        self.assertIsNone(area_model({'results':{'Original':(imaginary+1)**2}}))
+
     @classmethod
     def setUpClass(cls):
         cls.runs={l['slug']:run(l) for l in ALL}

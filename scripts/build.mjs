@@ -9,13 +9,16 @@ const {lessons,modules,applications}=course,all=[...lessons,...applications];
 await fs.rm('dist',{recursive:true,force:true});await fs.mkdir('dist/lessons',{recursive:true});
 execFileSync('python3',['scripts/execute.py'],{stdio:'inherit'});
 const worked=JSON.parse(await fs.readFile('.cache/worked.json','utf8'));
-const assets={};for(const file of ['app.js','style.css','worker.js','editor.mjs'])assets[file]=await fs.readFile('src/'+file,'utf8');
+const assets={};for(const file of ['app.js','style.css','worker.js','editor.mjs','rich-text.mjs','area-model.mjs'])assets[file]=await fs.readFile('src/'+file,'utf8');
+assets['worker.js']=assets['worker.js'].replace('const displayHelper = null;', 'const displayHelper = '+JSON.stringify(await fs.readFile('scripts/display_model.py','utf8'))+';');
 assets['style.css']+='\n'+await fs.readFile('src/quiet.css','utf8');
 const version=createHash('sha256').update(Object.values(assets).join('\n')).digest('hex').slice(0,12);
 for(const[file,content]of Object.entries(assets)){
  await fs.writeFile('dist/'+file,content);
  const dot=file.lastIndexOf('.'),name=file.slice(0,dot)+'.'+version+file.slice(dot);
- const published=file==='app.js'?content.replace("'./editor.mjs'","'./editor."+version+".mjs'").replace("'worker.js'","'worker."+version+".js'"):content;
+ let published=content;
+ for(const module of ['editor.mjs','rich-text.mjs','area-model.mjs'])published=published.replaceAll("'./"+module+"'","'./"+module.replace('.', '.'+version+'.')+"'");
+ if(file==='app.js')published=published.replace("'worker.js'","'worker."+version+".js'");
  await fs.writeFile('dist/'+name,published);
 }
 await fs.mkdir('dist/vendor',{recursive:true});
