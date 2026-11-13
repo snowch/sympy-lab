@@ -15,3 +15,15 @@ Representation: show editable Python, labelled typeset symbolic results and plai
 Design review before implementation: retain the large-type reading surface and recoverable worker editor from the existing labs; give this course its own green/ink palette, mathematical visual introduction and clear prerequisite route. Keep the refresher optional, with a readable equation and a worked example. Preserve keyboard controls, local drafts, exact-source exports, stop/reset, mobile contents and Pages-relative assets. Review optional panels closed and open at 320/390px and 200% text size.
 
 Evidence: author review and executable/browser checks are not learner validation. No study with learners has been conducted. Follow-up evaluation should observe a learner with rusty algebra using the first expression, assumptions, cancellation and first derivative lessons, including whether the panel answers the missing prerequisite and whether they can transfer the idea without hints.
+
+## Quiet presentation
+
+Keep the learning structure while reducing simultaneous scaffolding. Present one
+plain learning goal followed by explanation, a visible prediction question, the
+experiment and a transfer case. Recording the prediction and keeping field notes
+are optional disclosures; saved text reopens them on return. Progressive hints,
+worked examples and runtime tools stay available beside the relevant activity.
+Results appear after execution, with clear provenance and recoverable error/Stop
+states. Course modules are native disclosures; search opens matching modules and
+module deep links reveal their contents. Mathematical refreshers remain optional,
+readable disclosures where the course provides them.

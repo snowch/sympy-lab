@@ -3,6 +3,7 @@
 import json,math,os,re,subprocess,sys,time
 from pathlib import Path
 from playwright.sync_api import sync_playwright
+from quiet_checks import check_quiet_layout
 ROOT=Path(__file__).resolve().parents[1]
 COURSE=json.loads((ROOT/'src/course.json').read_text())
 LESSONS=COURSE['lessons'];ALL=LESSONS+COURSE['applications'];CAPSTONE=LESSONS[-1]
@@ -15,7 +16,16 @@ def visit(page,url):
 def wait_result(page):
     page.wait_for_function("document.querySelector('#status').textContent.startsWith('Completed') || /error|could not/.test(document.querySelector('#status').textContent)",timeout=150000)
     assert page.locator('#status').inner_text().startswith('Completed'),page.locator('#status').inner_text()+'\n'+page.locator('#output').text_content()
+def open_optional(page,identifier):
+    details=page.locator('#'+identifier)
+    if not details.evaluate('e=>e.open'):details.locator(':scope > summary').click()
+
+def restore_example(page):
+    open_optional(page,'editor-tools')
+    page.locator('#restore').click()
+
 def download(page,selector,path):
+    if selector=='#download-code':open_optional(page,'editor-tools')
     with page.expect_download() as result:page.locator(selector).click()
     result.value.save_as(path)
 def compare(actual,expected,label):
@@ -58,6 +68,10 @@ try:
         assert page.locator('.refresher-example').is_visible()
         page.reload();page.wait_for_selector('html[data-ready=true]')
         assert page.locator('#maths-refresher').evaluate('e=>e.open')
+        assert not page.locator('#run-result').is_visible()
+        assert not page.locator('#stop').is_visible()
+        assert not page.locator('#export-run').is_visible()
+        assert page.locator('.outcome,.on-this-page,.mobile-course-bar').count()==0
         assert page.locator('.explanation p').first.evaluate('e=>parseFloat(getComputedStyle(e).fontSize)')>=20
         assert page.locator('#code').evaluate('e=>parseFloat(getComputedStyle(e).fontSize)')>=16
         assert page.locator('#code').evaluate('e=>getComputedStyle(e).lineHeight')==page.locator('.code-gutter').evaluate('e=>getComputedStyle(e).lineHeight')
@@ -117,14 +131,19 @@ try:
         assert 'deliberate test error' in page.locator('#output').inner_text()
         page.locator('#code').fill('while True: pass');page.locator('#run').click()
         page.wait_for_function("document.querySelector('#status').textContent==='Running your Python…'",timeout=30000)
+        assert page.locator('#stop').is_visible()
         page.locator('#stop').click();assert 'Stopped' in page.locator('#status').inner_text()
-        page.locator('#restore').click();page.locator('#run').click();wait_result(page)
+        assert page.evaluate('document.activeElement.id')=='run'
+        restore_example(page);page.locator('#run').click();wait_result(page)
         page.locator('#quiz button').click();assert 'Choose an answer' in page.locator('#quiz-feedback').inner_text()
         page.locator('input[name=answer][value="1"]').check();page.locator('#quiz button').click()
         assert 'Reconsider' in page.locator('#quiz-feedback').inner_text()
         page.locator('input[name=answer][value="0"]').check();page.locator('#quiz button').click()
         assert 'reasoning fits' in page.locator('#quiz-feedback').inner_text()
-        page.locator('#prediction').fill('My saved prediction');page.locator('#notes').fill('A note to preserve')
+        open_optional(page,'prediction-notes')
+        page.locator('#prediction').fill('My saved prediction')
+        open_optional(page,'lesson-notes')
+        page.locator('#notes').fill('A note to preserve')
         page.locator('#code').fill(page.locator('#code').input_value()+'\n# saved draft')
         page.locator('#mark-read').check()
         download(page,'#download-code',RESULTS/'downloaded.py')
@@ -198,6 +217,7 @@ try:
             assert static.locator('.worked .katex-mathml').count()==len(WORKED[lesson['slug']]['maths'])
         assert not any('/engine/' in url for url in requests)
         assert errors==[],errors
+        check_quiet_layout(browser,ROOT,BASE,LESSONS)
         browser.close()
         print('PASS: 52 real Wasm sources; native text/LaTeX agreement; all refresher panels; reports and provenance; error/Stop recovery; drafts/progress; 320/390px and 200% reflow; both themes; no-JavaScript reading.',flush=True)
 finally:

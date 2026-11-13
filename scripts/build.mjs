@@ -10,6 +10,7 @@ await fs.rm('dist',{recursive:true,force:true});await fs.mkdir('dist/lessons',{r
 execFileSync('python3',['scripts/execute.py'],{stdio:'inherit'});
 const worked=JSON.parse(await fs.readFile('.cache/worked.json','utf8'));
 const assets={};for(const file of ['app.js','style.css','worker.js','editor.mjs'])assets[file]=await fs.readFile('src/'+file,'utf8');
+assets['style.css']+='\n'+await fs.readFile('src/quiet.css','utf8');
 const version=createHash('sha256').update(Object.values(assets).join('\n')).digest('hex').slice(0,12);
 for(const[file,content]of Object.entries(assets)){
  await fs.writeFile('dist/'+file,content);
