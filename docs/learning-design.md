@@ -49,3 +49,14 @@ Group code and results into one coherent experiment area. Keep text output and
 the published reference available with explicit labels and compact spacing.
 Visual hierarchy should come from meaningful representations and restrained
 section structure, without restoring duplicate goal panels or navigation bars.
+
+## 2026-11-14 — prerequisite repairs and illustrated entry
+
+Keep the essential route readable with optional panels closed. The homepage
+will pair one clear starting action with a bespoke course illustration: an
+experiment notebook for Scientific Method, possible-event tickets for Monte
+Carlo and an algebra area model for SymPy. The scene is an explanatory course
+identity, not an execution result or measured evidence. Use crisp scalable
+vectors, readable text, labelled shapes and a restrained shared composition;
+stack artwork below the introduction on phones and retain progress/search,
+keyboard controls, reduced-motion support and independent deployment.

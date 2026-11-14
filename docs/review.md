@@ -119,3 +119,29 @@ Code, actual symbolic results, text output and the executed reference share one 
 Review covered first-lesson tablet/phone screenshots before and after running, plus narrow light/dark concept screenshots for cancellation, curve intersections, gradients, diagonalisation, covariance, box geometry and Monte Carlo. A label-bounds audit found and corrected graph axis headings and an unnecessarily long scientific-notation tick. Diagram labels are checked inside their SVG bounds. Eight long reference equations were split across lines on narrow screens; a 320px audit confirms every visible concept equation fits without horizontal scrolling. Curve keys name each rule and use line patterns as well as colour. The native suite also checks the live area representation against exact symbolic expansion and refuses incompatible domains. Existing Wasm, error/Stop, export, draft, theme, keyboard, no-JavaScript and reflow coverage is retained. Browser evidence is under `test-results/` and is uploaded by the existing Pages workflow.
 
 These illustrations and author/browser checks have not been evaluated in a learner study. Static reference diagrams do not change when a learner edits a model; executed plots and the first lesson’s live area model are explicitly separate.
+
+## 2026-11-14 — illustrated course introduction
+
+Applied the repository learning-design and UX skills before and after the
+homepage work. The new original SVG shows an algebra notebook and pencil, with
+a square partitioned into x², x, x and 1. The two unit-width strips have equal
+width/height, and the corner is a square. Its accessible description identifies
+nonnegative area lengths. The user-provided Common Ground screenshot guided
+the composition; the artwork and code are original.
+
+A deep green hero pairs that scene with the course promise and existing
+Start/Continue, before-start and prerequisite-map links. It stacks after the
+text on phones and preserves course search, module links and saved progress.
+Mathematical results, optional refreshers and lesson editor/output behaviour
+remain in their established reading flow. The vector is embedded locally and
+uses text/shapes with no remote image dependency or animation.
+
+Verification: all eight native tests passed across 52 standalone sources. The
+complete real-Wasm suite checked native text/LaTeX agreement, all refreshers,
+live area models, reports, drafts, progress, error/Stop recovery, both themes,
+320/390px, 200% text and JavaScript-free reading. Link checks passed for 54 pages
+and 3,760 relative links/fragments. Rebuilt after final illustration/styling
+refinements and repeated focused hero and quiet-layout checks. Captured the
+three heroes at 320/390/820/1440px and checked text enlargement and artwork label
+bounds. Inspected phone/tablet/desktop and dark-theme captures. Local evidence
+is in test-results/hero-*.png; these checks do not establish learner outcomes.

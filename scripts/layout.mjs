@@ -1,3 +1,4 @@
+import {heroIllustration} from './hero.mjs';
 import {renderQuietHeader,renderQuietFooter,renderQuietHome,renderQuietLesson} from './quiet.mjs';
 import katex from 'katex';
 import {renderRich} from '../src/rich-text.mjs';
@@ -18,7 +19,7 @@ function demo(record){
  const wanted=['Unrestricted','Real','Positive'];
  return `<div class="symbol-demo"><div class="demo-top"><span><i></i> A SMALL QUESTION WITH A BIG LESSON</span></div><h2>Same square root.<br>Different assumptions.</h2><div class="assumption-forms">${wanted.map((label,i)=>{const result=record.maths.find(x=>x.label===label);return `<div><span>${['Any complex z','Real x','Positive p'][i]}</span>${math(String.raw`\sqrt{${['z','x','p'][i]}^{2}}\;\longrightarrow\;${result.latex}`)}</div>`}).join('')}</div><p class="symbol-insight">Why doesn’t every square root cancel its square?<br><strong>The permitted inputs matter.</strong></p><div class="demo-bottom"><span>Executed SymPy · exact symbolic results</span><a href="lessons/tell-sympy-what-a-symbol-means.html">Explore the idea ${icon('next',15)}</a></div></div>`;
 }
-export function renderHome(course,record){return renderQuietHome({...course,name:"SymPy Lab",description:"Learn symbolic algebra, calculus and modelling with real Python and optional maths refreshers.",example:demo(record),esc,icon});}
+export function renderHome(course,record){return renderQuietHome({...course,hero:heroIllustration(),headline:"Make the maths make sense.",name:"SymPy Lab",description:"Learn symbolic algebra, calculus and modelling with real Python and optional maths refreshers.",example:demo(record),esc,icon});}
 function conceptFigure(record){
  const v=record.illustration;
  if(!v)return '';
