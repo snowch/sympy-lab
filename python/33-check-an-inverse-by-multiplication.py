@@ -3,11 +3,14 @@
 import sympy as sp
 
 A = sp.Matrix([[2,1],[1,1]])
-inverse = A.inv()
-singular = sp.Matrix([[1,2],[2,4]])
-results = {"Determinant of A": A.det(), "Inverse": inverse,
-           "Inverse check": inverse*A,
-           "Dependent-row determinant": singular.det()}
+determinant = A.det()
+results = {"Determinant of A": determinant}
+if determinant == 0:
+    results["Inverse"] = "No inverse"
+else:
+    inverse = A.inv()
+    results["Inverse"] = inverse
+    results["Inverse check"] = inverse * A
 
 
 for label, value in results.items():

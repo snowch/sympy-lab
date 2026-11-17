@@ -3,11 +3,14 @@
 import sympy as sp
 
 x = sp.symbols("x",real=True)
-original = (x**2-1)/(x-1)
+hole = 1
+denominator = x - hole
+original = (x**2 - hole**2) / denominator
 reduced = sp.cancel(original)
-results = {"Original": original, "Cancelled": reduced,
-           "Excluded input": sp.FiniteSet(1),
-           "Original at 1": original.subs(x,1), "Reduced at 1": reduced.subs(x,1)}
+results = {"Original denominator": denominator, "Cancelled formula": reduced,
+           "Excluded input": sp.solveset(denominator, x, domain=sp.S.Reals),
+           f"Original at {hole}": "Undefined",
+           f"Cancelled formula at {hole}": reduced.subs(x, hole)}
 
 
 for label, value in results.items():

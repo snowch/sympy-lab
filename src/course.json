@@ -401,9 +401,9 @@
       "short": "Simplify a rational expression while retaining its original excluded inputs.",
       "goal": "Simplify a rational expression while retaining its original excluded inputs.",
       "explain": [
-        "Cancelling common factors can turn a complicated rational expression into a simpler formula. However, a factor that appears in the denominator excludes values where that denominator is zero. Removing its visible occurrence does not restore those inputs to the original problem.",
-        "For (x squared minus one) divided by (x minus one), cancellation produces $x+1$. The original expression is undefined at $x=1$; the simplified polynomial is defined there. The formulas agree wherever the original is defined.",
-        "Keep the original denominator or a separate domain note when transforming a model. Later, a limit can describe the value approached near an excluded point, but a limit is not the original expression’s value at that point. Domain bookkeeping is part of the answer."
+        "Cancelling a common factor can simplify a fraction. The domain is the set of inputs where the original fraction is defined. It excludes any input that makes the original denominator zero.",
+        "The code starts with $x^2-1$ divided by $x-1$. Cancelling gives $x+1$ for every input in the original domain. The original is undefined at $x=1$, where the cancelled polynomial evaluates to 2.",
+        "Python keeps the original denominator and uses `solveset` to find where it is zero for real $x$. The `hole` setting chooses the excluded value and the input for the two evaluation results."
       ],
       "refresher": {
         "title": "Division by zero and removable holes",
@@ -412,8 +412,9 @@
         "example": "At $x=2$ both expressions equal 3. At $x=1$ the original becomes 0/0, while the polynomial equals 2."
       },
       "predict": "Does cancellation prove that the original fraction is defined at $x=1$?",
-      "look": "nan marks the indeterminate direct substitution here. The reduced expression supplies a continuation, not a repair of the original domain.",
-      "change": "Try `(x**2-4)/(x-2)`, and record the excluded value before cancelling.",
+      "prepare": "Select Run Python with the code unchanged.",
+      "look": "Find Excluded input, Original at 1 and Cancelled formula at 1. Both formulas agree at every permitted input. Only the cancelled polynomial has a value at 1.",
+      "change": "In the editor, change `hole = 1` to `hole = 2`. Run Python again. Which input is excluded now? Compare the two evaluation results at that input.",
       "question": "A transformed expression agrees with the original except at a cancelled denominator zero. What should a report include?",
       "options": [
         "The simpler formula and the original exclusion.",
@@ -1089,9 +1090,9 @@
       "short": "Distinguish a limiting value from direct evaluation and compare one-sided limits.",
       "goal": "Distinguish a limiting value from direct evaluation and compare one-sided limits.",
       "explain": [
-        "A limit describes the value approached as an input moves towards a point through permitted nearby values. The function need not be defined at that point. This differs from directly substituting the point into the expression.",
-        "SymPy limit can specify approach from the right or left. A two-sided real limit requires those approaches to agree. Infinite one-sided limits with opposite signs do not combine into one finite value.",
-        "For sin(x)/x at zero, direct substitution gives an indeterminate expression while the limiting value is one. The reciprocal 1/x illustrates a different behaviour: its left and right limits diverge in opposite directions. Read the direction and domain beside every limit result."
+        "A limit describes the value a function approaches as the input moves towards a point. Direct substitution asks for the function’s value at the point itself. When substituting gives zero over zero, the printed `nan` means the expression has no value there.",
+        "A one-sided limit approaches from smaller inputs on the left or larger inputs on the right. A two-sided limit exists when the two approaches give the same value.",
+        "The code uses the same expression for both approaches. In `sp.limit`, `dir='-'` approaches from the left and `dir='+'` approaches from the right."
       ],
       "refresher": {
         "title": "Approaching versus arriving",
@@ -1100,8 +1101,9 @@
         "example": "For small positive and negative $x$ in radians, $\\sin(x)/x$ approaches $1$. The original fraction remains undefined at zero."
       },
       "predict": "Must an undefined direct substitution imply that no finite limit exists?",
-      "look": "The reciprocal limits disagree. The limit of sin(x)/x and its missing point are separate facts.",
-      "change": "Compute left and right limits of $|x|/x$ at zero and explain why there is no common two-sided value.",
+      "prepare": "Select Run Python with the code unchanged.",
+      "look": "Compare Direct at zero with Limit from the left and Limit from the right. Direct substitution gives $0/0$, which is undefined. Both approaches give 1, so the two-sided limit is 1.",
+      "change": "In the editor, replace `sp.sin(x)/x` with `sp.Abs(x)/x` on the `expression` line. `sp.Abs(x)` gives the magnitude of $x$. Run Python again. Compare the left and right limits. Do they agree?",
       "question": "A function’s left and right limits at a point are different. What follows?",
       "options": [
         "Their average is the two-sided limit.",
@@ -1433,9 +1435,9 @@
       "short": "Use a determinant and an exact product to establish invertibility in a small example.",
       "goal": "Use a determinant and an exact product to establish invertibility in a small example.",
       "explain": [
-        "A square matrix is invertible when its transformation can be undone uniquely. Its determinant is nonzero exactly when an inverse exists over the usual field of scalars. A zero determinant signals dependent directions.",
-        "For a small exact matrix, inv returns the inverse and multiplication checks that the composition is the identity. Perform the check with the original matrix rather than trusting the appearance of reciprocal-looking entries.",
-        "Computing an explicit inverse is not the default way to solve a large numerical system. Appropriate factorisation-based solvers usually serve that task better. Here, exact inversion is a compact way to understand reversibility, singularity and the meaning of the identity matrix."
+        "A square matrix is invertible when its transformation can be undone uniquely. The determinant is a number calculated from the matrix. If it is zero, the matrix is singular and has no inverse. A singular matrix sends some distinct inputs to the same output, so that output cannot tell them apart.",
+        "The code checks the determinant before calling `A.inv()` to find the inverse. Multiplying the inverse by the original matrix gives the identity matrix, which leaves every vector unchanged.",
+        "These are small exact matrices. Large numerical systems usually use a solver that factors the matrix and avoids computing the inverse explicitly."
       ],
       "refresher": {
         "title": "The identity transformation",
@@ -1444,8 +1446,9 @@
         "example": "Multiplying a vector by $A$ and then by $A^{-1}$ restores that vector when the inverse exists. A zero determinant rules this out."
       },
       "predict": "Can a matrix with dependent rows have a two-sided inverse?",
-      "look": "The exact product is the identity matrix. The dependent-row example has determinant zero.",
-      "change": "Change the bottom-right entry of `A` to `sp.Rational(1,2)`. Predict singularity before attempting inversion.",
+      "prepare": "Select Run Python with the code unchanged.",
+      "look": "Find Determinant of A and Inverse check. The determinant is 1. The product in Inverse check has ones on the diagonal and zeroes elsewhere.",
+      "change": "In the editor, replace the bottom-right `1` in `A` with `sp.Rational(1,2)`, which represents exactly one half. Run Python again. What do Determinant of A and Inverse tell you about the edited matrix?",
       "question": "What does a nonzero determinant establish for a square exact matrix?",
       "options": [
         "Every entry must be positive.",

@@ -60,3 +60,19 @@ identity, not an execution result or measured evidence. Use crisp scalable
 vectors, readable text, labelled shapes and a restrained shared composition;
 stack artwork below the introduction on phones and retain progress/search,
 keyboard controls, reduced-motion support and independent deployment.
+
+## 2026-11-17 — edited experiments and recovery
+
+Use basic Python assignment to expose one change per activity. In lesson 9,
+vary the value that makes the denominator zero. The learner should be able
+to identify that exclusion even when the cancelled polynomial evaluates there.
+In lesson 25, change the function and compare both approaches to zero for that
+same function. In lesson 33, change one matrix entry and use the determinant
+to decide whether to report the inverse product. The existing transfer cases
+ask learners to apply the domain, agreement and invertibility rules to fresh
+mathematical situations.
+
+Start each investigation with a visible cue to run the published example.
+Keep keyboard focus predictable, offer recovery for the latest replaced draft
+and show execution errors alongside any successful mathematical result.
+Run and report exports should describe that successful execution.

@@ -15,7 +15,7 @@ def visit(page,url):
     page.goto(url);page.wait_for_selector('html[data-ready=true]')
 def wait_result(page):
     page.wait_for_function("document.querySelector('#status').textContent.startsWith('Completed') || /error|could not/.test(document.querySelector('#status').textContent)",timeout=150000)
-    assert page.locator('#status').inner_text().startswith('Completed'),page.locator('#status').inner_text()+'\n'+page.locator('#output').text_content()
+    assert page.locator('#status').inner_text().startswith('Completed'),page.locator('#status').inner_text()+'\n'+page.locator('#error-summary').text_content()
 def open_optional(page,identifier):
     details=page.locator('#'+identifier)
     if not details.evaluate('e=>e.open'):details.locator(':scope > summary').click()
@@ -71,6 +71,12 @@ try:
         assert not page.locator('#run-result').is_visible()
         assert not page.locator('#stop').is_visible()
         assert not page.locator('#export-run').is_visible()
+        assert not page.locator('#run-error').is_visible()
+        initial_code=page.locator('#code').input_value()
+        page.locator('#code').press('Tab')
+        assert page.evaluate('document.activeElement.id')=='run'
+        assert page.locator('#code').input_value()==initial_code
+        assert 'Ctrl+Enter' in page.locator('#editor-help').inner_text()
         assert page.locator('.outcome,.on-this-page,.mobile-course-bar').count()==0
         assert page.locator('.explanation p').first.evaluate('e=>parseFloat(getComputedStyle(e).fontSize)')>=20
         assert page.locator('#code').evaluate('e=>parseFloat(getComputedStyle(e).fontSize)')>=16
@@ -104,6 +110,32 @@ try:
         page.locator('#run').click();wait_result(page)
         assert 'fresh namespace' in page.locator('#output').text_content()
         print('PASS fresh namespace and real symbolic/plot output',flush=True)
+        # Follow the published variations from their actual pages.
+        variations=[
+            (LESSONS[8], 'hole = 1', 'hole = 2',
+             ['Excluded input: {1}', 'Original at 1: Undefined', 'Cancelled formula at 1: 2'],
+             ['Excluded input: {2}', 'Original at 2: Undefined', 'Cancelled formula at 2: 4']),
+            (LESSONS[24], 'sp.sin(x)/x', 'sp.Abs(x)/x',
+             ['Limit from the left: 1', 'Limit from the right: 1', 'Two-sided limit: 1'],
+             ['Limit from the left: -1', 'Limit from the right: 1', 'Two-sided limit: Does not exist']),
+            (LESSONS[32], '[[2,1],[1,1]]', '[[2,1],[1,sp.Rational(1,2)]]',
+             ['Determinant of A: 1', 'Inverse check: Matrix([[1, 0], [0, 1]])'],
+             ['Determinant of A: 0', 'Inverse: No inverse']),
+        ]
+        for lesson,old,new,baseline,edited in variations:
+            visit(page,BASE+'lessons/'+lesson['slug']+'.html')
+            assert page.locator('.editor-prepare').inner_text()=='Select Run Python with the code unchanged.'
+            assert page.locator('.editor-prepare').bounding_box()['y']<page.locator('#code-editor').bounding_box()['y']
+            source=page.locator('#code').input_value()
+            page.locator('#run').click();wait_result(page)
+            assert all(item in page.locator('#output').text_content() for item in baseline)
+            assert old in source
+            page.locator('#code').fill(source.replace(old,new,1))
+            page.locator('#run').click();wait_result(page)
+            assert all(item in page.locator('#output').text_content() for item in edited)
+            assert page.locator('#symbolic-output .katex-error').count()==0
+            assert not page.locator('#run-error').is_visible()
+        print('PASS published cancellation, limits and inverse edits',flush=True)
         # Exercise all three capstone starters, then preserve the exact last run.
         visit(page,BASE+'lessons/'+CAPSTONE['slug']+'.html')
         original=page.locator('#code').input_value()
@@ -124,19 +156,35 @@ try:
         report=(RESULTS/'investigation.md').read_text()
         assert 'changed after this run' in report and 'Symbolic results (LaTeX)' in report
         assert 'task = "integral"' in report and 'total probability one' in report
-        print('PASS all capstone starters and exact-source run/report exports',flush=True)
-        # A Python error opens text details; Stop kills a runaway worker.
+        maths=page.locator('#symbolic-output').inner_html()
+        page.locator('#code').fill("print('failed attempt output')\nraise ValueError('failed attempt')")
+        page.locator('#run').click()
+        page.wait_for_function("document.querySelector('#status').textContent.includes('reported an error')",timeout=150000)
+        assert 'failed attempt' in page.locator('#error-summary').inner_text()
+        assert page.locator('#symbolic-output').inner_html()==maths
+        assert page.locator('#output').text_content()==record['stdout']
+        download(page,'#export-run',RESULTS/'run-after-error.json')
+        assert json.loads((RESULTS/'run-after-error.json').read_text())==record
+        download(page,'#export-report',RESULTS/'investigation-after-error.md')
+        report=(RESULTS/'investigation-after-error.md').read_text()
+        assert old_source in report and record['symbolic_results'][0]['latex'] in report
+        assert 'failed attempt' not in report
+        print('PASS capstone starters and preservation of successful run and report after error',flush=True)
+        # A failed first run has separate details. Stop releases a runaway worker.
         visit(page,BASE+'lessons/'+LESSONS[0]['slug']+'.html')
         page.locator('#code').fill("print('before failure')\nraise ValueError('deliberate test error')")
         page.locator('#run').click()
         page.wait_for_function("document.querySelector('#status').textContent.includes('reported an error')",timeout=150000)
-        assert page.locator('#output').is_visible()
-        assert 'before failure' in page.locator('#output').inner_text()
-        assert 'deliberate test error' in page.locator('#output').inner_text()
-        page.locator('#code').fill('while True: pass');page.locator('#run').click()
+        assert not page.locator('#run-result').is_visible()
+        assert not page.locator('#export-run').is_visible()
+        assert 'deliberate test error' in page.locator('#error-summary').inner_text()
+        open_optional(page,'error-details')
+        assert 'before failure' in page.locator('#error-trace').inner_text()
+        page.locator('#code').fill('while True: pass');page.locator('#run').press('Enter')
         page.wait_for_function("document.querySelector('#status').textContent==='Running your Python…'",timeout=30000)
         assert page.locator('#stop').is_visible()
-        page.locator('#stop').click();assert 'Stopped' in page.locator('#status').inner_text()
+        assert page.evaluate('document.activeElement.id')=='stop'
+        page.locator('#stop').press('Enter');assert 'Stopped' in page.locator('#status').inner_text()
         assert page.evaluate('document.activeElement.id')=='run'
         restore_example(page);page.locator('#run').click();wait_result(page)
         page.locator('#quiz button').click();assert 'Choose an answer' in page.locator('#quiz-feedback').inner_text()
@@ -158,6 +206,13 @@ try:
         assert '# saved draft' in page.locator('#code').input_value()
         assert page.locator('#mark-read').is_checked()
         assert page.locator('#maths-refresher').evaluate('e=>e.open')
+        assert page.locator('#saved-draft-note').is_visible()
+        restore_example(page)
+        assert page.locator('#code').input_value()==initial_code
+        page.reload();page.wait_for_selector('html[data-ready=true]')
+        open_optional(page,'editor-tools');page.locator('#recover-draft').click()
+        assert '# saved draft' in page.locator('#code').input_value()
+        assert page.evaluate('document.activeElement.id')=='code'
         page.locator('#code').evaluate('e=>{e.scrollTop=50;e.scrollLeft=20;e.dispatchEvent(new Event("scroll"))}')
         assert page.locator('#code').evaluate('e=>e.scrollLeft')==page.locator('#code-highlight').evaluate('e=>e.scrollLeft')
         print('PASS error/Stop recovery, feedback and saved drafts/refresher state',flush=True)
@@ -193,9 +248,14 @@ try:
         assert '4' in page.locator('#result-visual svg text').all_text_contents()
         path=RESULTS/'area-model-run.json';download(page,'#export-run',path)
         saved=json.loads(path.read_text());assert saved['visual_model']['offset']==2
+        page.locator('#code').fill('raise ValueError("keep the successful visual")')
+        assert 'last successful run' in page.locator('#output-provenance').inner_text()
+        page.locator('#run').click()
+        page.wait_for_function("document.querySelector('#status').textContent.includes('reported an error')",timeout=150000)
+        assert 'x plus 2' in page.locator('#result-visual svg').get_attribute('aria-label')
         page.locator('#code').fill('print("no labelled expressions")')
-        assert 'previous execution' in page.locator('#output-provenance').inner_text()
         page.locator('#run').click();wait_result(page)
+        assert not page.locator('#run-error').is_visible()
         assert not page.locator('#result-visual').is_visible()
         assert page.locator('#output').is_visible()
         print('PASS live geometric model follows actual executed expression, export and missing results',flush=True)
@@ -227,6 +287,7 @@ try:
         visit(second,BASE+'lessons/'+LESSONS[0]['slug']+'.html')
         assert second.locator('#notes').input_value()=='A note to preserve'
         assert second.locator('#maths-refresher').evaluate('e=>e.open')
+        assert '# saved draft' in second.evaluate("localStorage.getItem('syl:v1:draft:your-first-symbolic-expression:restore-backup')")
         # Avoid smooth-scroll timing races in the separate static reader.
         reading=browser.new_context(java_script_enabled=False,reduced_motion='reduce');static=reading.new_page();requests=[]
         static.on('request',lambda req:requests.append(req.url))

@@ -101,6 +101,14 @@
 .result-cell{margin:0;padding:20px 24px 16px;background:var(--surface);overflow:hidden}
 .output-heading{padding:0;min-height:38px}.output-heading h3{font-size:1rem;font-weight:600}.output-heading button{padding:5px 0;border:0;background:transparent;min-height:36px}
 .output-provenance{font-size:.875rem;margin:0 0 14px;padding:0;color:var(--muted)}
+.experiment>.editor-prepare,.experiment>#saved-draft-note{font-size:1rem;line-height:1.7;margin:0 0 12px}
+#editor-help{margin:0;padding:8px 16px 4px;background:var(--code);color:var(--code-text);font-size:.875rem;line-height:1.65}
+.editor-tools [hidden],.lab-workspace .run-error[hidden]{display:none}
+.lab-workspace .run-error{padding:16px 24px;background:var(--surface-soft);border-bottom:1px solid var(--line)}
+.run-error h3,.run-error summary{font-size:1rem}
+.run-error p{margin:4px 0 10px;overflow-wrap:anywhere}
+.run-error pre{margin:0;max-height:300px;overflow:auto}
+@media(max-width:700px){.lab-workspace .run-error{padding:16px}}
 #symbolic-output{padding:0}.math-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 24px;align-items:start}.math-card{padding:4px 0 10px;min-width:0}.math-card>span{font-size:.875rem;line-height:1.7}.math-card .math-display{padding:0;margin:5px 0 0;font-size:1.2rem}.math-card .katex-display{margin:.3em 0}.math-card .katex-display>.katex{text-align:left}
 .result-visual{border-top:1px solid var(--line);margin-top:8px;padding:10px 0 8px}.result-visual figure{margin:0}.result-visual .area-model{max-width:290px;margin:0 auto}.result-visual figcaption{text-align:center;max-width:50ch}
 .plain-output{margin:4px 0 0}.plain-output>summary,.plain-worked>summary{font-size:.875rem;padding:8px 0;min-height:40px}.plain-output pre{margin-bottom:12px!important}
