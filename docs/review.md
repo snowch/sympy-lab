@@ -145,3 +145,28 @@ refinements and repeated focused hero and quiet-layout checks. Captured the
 three heroes at 320/390/820/1440px and checked text enlargement and artwork label
 bounds. Inspected phone/tablet/desktop and dark-theme captures. Local evidence
 is in test-results/hero-*.png; these checks do not establish learner outcomes.
+## Exercise directions and successful-run recovery — 17 November 2026
+
+Applied the local learning-design and UX skills. The cancellation exercise
+uses one hole setting and finds the zeros of the original denominator before
+interpreting the cancelled polynomial. The edited limit feeds both one-sided
+calculations. The inverse exercise checks the determinant before inversion and
+reports a singular matrix as a mathematical result. Each learner-facing edit
+names a line or value and asks the learner to explain the resulting output.
+[Simplification](https://docs.sympy.org/latest/tutorials/intro-tutorial/simplification.html) · [Calculus](https://docs.sympy.org/latest/tutorials/intro-tutorial/calculus.html) · [Matrices](https://docs.sympy.org/latest/tutorials/intro-tutorial/matrices.html)
+
+Tab reaches Run from the editor. Keyboard activation moves focus to Stop and
+returns focus to Run when execution ends. Restore example keeps the most
+recently replaced code for recovery, including after reload or progress
+import. Execution errors have a separate message and optional traceback.
+Successful text, typeset results, diagrams, plots and exports describe the
+last successful execution.
+
+Chromium walkthroughs followed the original and edited examples at phone and
+desktop widths, checked reflow in both themes, and exercised draft recovery and
+keyboard Run and Stop. After a deliberate capstone error, the typeset result
+and JSON stayed identical and the Markdown still contained the exact successful
+source and stdout, including source with internal Markdown fences. The
+browser suite also verifies the three edits, prior result preservation,
+portable progress and the reading path without JavaScript. These are functional
+and author checks. Learning effectiveness remains unmeasured.

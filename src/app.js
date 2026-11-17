@@ -97,7 +97,7 @@ function initializeOverview({lessons,applications}){
    const record=JSON.parse(await file.text());
    if(record.course!=='sympy-lab'||record.schema!==1||!record.data||typeof record.data!=='object'||Array.isArray(record.data))throw new Error('Not a version 1 SymPy Lab progress file.');
    const slugs=new Set([...lessons,...applications].map(l=>l.slug));
-   const fields=new Set(['code','prediction','notes','quiz','report-question','report-plan','report-source','report-finding','report-limits','refresher']);
+   const fields=new Set(['code','restore-backup','prediction','notes','quiz','report-question','report-plan','report-source','report-finding','report-limits','refresher']);
    const entries=Object.entries(record.data);
    for(const[key,value]of entries){
     const [type,slug,field,...extra]=key.split(':');
@@ -130,12 +130,14 @@ function initializeLesson(lesson){
  refresher.open=get(`draft:${slug}:refresher`)==='true';
  refresher.addEventListener('toggle',()=>put(`draft:${slug}:refresher`,refresher.open));
  const initialCode=$('code').value;
- let worker=null,timer=null,busy=false,lastRun=null,csv=null,csvName=null,revision=0;
+ let worker=null,timer=null,busy=false,lastSuccessfulRun=null,revision=0;
  let plotUrls=[];
  function clearPlotUrls(){for(const url of plotUrls)URL.revokeObjectURL(url);plotUrls=[]}
  const initialQuiz=get(`draft:${slug}:quiz`);
  const draftKey=id=>`draft:${slug}:${id}`;
  $('code').value=get(draftKey('code'),initialCode);
+ let recoverableDraft=get(draftKey('restore-backup'),null);
+ $('saved-draft-note').hidden=$('code').value===initialCode;
  const refreshEditor=attachEditor($('code'));
  document.querySelectorAll('[data-save]').forEach(el=>{
   el.value=get(draftKey(el.dataset.save));
@@ -145,46 +147,96 @@ function initializeLesson(lesson){
  if(!storageAvailable){$('storage-error').hidden=false;$('storage-error').textContent='Browser storage is unavailable. Download your code or export a run/report before leaving.';}
  $('mark-read').checked=get('read:'+slug)==='true';
  $('mark-read').addEventListener('change',()=>{put('read:'+slug,$('mark-read').checked);updateReadMarks()});
- function stale(){
-  if(!lastRun)return;
-  const changed=$('code').value!==lastRun.source || csv!==lastRun.input_csv;
-  $('output-provenance').textContent=changed?'Code or input changed. Output and run export still describe the previous execution. Run again to update.':`${lastRun.error?'Error recorded':'Executed successfully'} at ${new Date(lastRun.executed_at).toLocaleTimeString()}.`;
-  $('output-provenance').classList.toggle('stale',changed);
+ function updateProvenance(){
+  if(!lastSuccessfulRun)return;
+  const changed=$('code').value!==lastSuccessfulRun.source;
+  $('output-provenance').textContent=busy
+   ?'A new run is in progress. This result is from the last successful run.'
+   :changed
+    ?'The code changed. The result and export show the last successful run.'
+    :`Last successful run at ${new Date(lastSuccessfulRun.executed_at).toLocaleTimeString()}.`;
+  $('output-provenance').classList.toggle('stale',changed||busy);
  }
- $('code').addEventListener('input',()=>{put(draftKey('code'),$('code').value);stale()});
+ function updateRecovery(){
+  $('recover-draft').hidden=recoverableDraft===null||recoverableDraft===$('code').value;
+ }
+ function showCode(code){
+  const previous=$('code').value;
+  let canSave=true;
+  if(previous!==initialCode&&previous!==code){
+   recoverableDraft=previous;
+   canSave=put(draftKey('restore-backup'),previous);
+  }
+  $('code').value=code;
+  refreshEditor();
+  if(canSave)put(draftKey('code'),code);
+  $('saved-draft-note').hidden=true;
+  updateRecovery();
+  updateProvenance();
+  $('editor-tools').open=false;
+  $('code').focus();
+ }
+ updateRecovery();
+ $('code').addEventListener('input',()=>{
+  put(draftKey('code'),$('code').value);
+  updateRecovery();
+  updateProvenance();
+ });
  $('code').addEventListener('keydown',event=>{
-  if(event.key==='Tab'&&!event.shiftKey){event.preventDefault();const start=event.target.selectionStart,end=event.target.selectionEnd;event.target.setRangeText('    ',start,end,'end');event.target.dispatchEvent(new Event('input'))}
   if((event.ctrlKey||event.metaKey)&&event.key==='Enter'){event.preventDefault();if(!busy)run()}
  });
- $('restore').addEventListener('click',()=>{$('code').value=initialCode;refreshEditor();put(draftKey('code'),initialCode);stale();$('status').textContent='Published example restored. Run to get fresh output.'});
+ $('restore').addEventListener('click',()=>{
+  showCode(initialCode);
+  $('status').textContent=recoverableDraft===null
+   ?'Published code is ready. Select Run Python.'
+   :'Published code is ready. Use Recover draft in Tools to get your code back.';
+ });
+ $('recover-draft').addEventListener('click',()=>{
+  if(recoverableDraft===null)return;
+  showCode(recoverableDraft);
+  $('status').textContent='Draft recovered. Select Run Python to run this code.';
+ });
  $('download-code').addEventListener('click',()=>download(slug+'.py',$('code').value,'text/x-python'));
  $('export-run').addEventListener('click',()=>{
-  if(!lastRun)return;
+  if(!lastSuccessfulRun)return;
   const notes={prediction:$('prediction').value,notes:$('notes').value};
-  download(slug+'-run.json',JSON.stringify({...lastRun,notes},null,2));
+  download(slug+'-run.json',JSON.stringify({...lastSuccessfulRun,notes},null,2));
  });
  function controls(running){
   const returnFocus=!running&&document.activeElement===$('stop');
   busy=running;document.querySelector('.experiment').classList.toggle('is-running',running);$('code-editor').setAttribute('aria-busy',String(running));$('run').disabled=running;$('stop').disabled=!running;$('stop').hidden=!running;$('restore').disabled=running;
-  if($('csv-upload'))$('csv-upload').disabled=running;
-  if($('clear-csv'))$('clear-csv').disabled=running||csv===null;
+  $('recover-draft').disabled=running;
   if(returnFocus)$('run').focus({preventScroll:true});
  }
  function terminate(message){
   revision++;clearTimeout(timer);worker?.terminate();worker=null;controls(false);$('status').textContent=message;
-  $('output-provenance').textContent=lastRun?'Execution stopped. The visible output and export still describe the previous completed run.':'Execution stopped before a complete result was recorded.';
+  updateProvenance();
  }
- $('stop').addEventListener('click',()=>terminate('Stopped. No result was saved for the cancelled run. Run again to restart Python.'));
+ function showRunError(message,stdout=''){
+  const traceback=message.trim();
+  const details=[stdout.trimEnd(),traceback].filter(Boolean).join('\n\n');
+  $('error-summary').textContent=traceback.split('\n').at(-1)||'Python could not finish.';
+  $('error-trace').textContent=details;
+  $('error-details').hidden=!details.includes('\n');
+  $('run-error').hidden=false;
+  updateProvenance();
+ }
+ $('stop').addEventListener('click',()=>terminate('Stopped. Select Run Python to start a fresh run.'));
  async function run(){
   if(busy)return;
-  const source=$('code').value,input=csv,inputName=csvName,runRevision=++revision;
-  $('editor-tools').open=false;controls(true);$('status').textContent='Loading Python and SymPy. First run can take a moment…';
-  if(lastRun)$('output-provenance').textContent='A new execution is in progress. The visible output still belongs to the previous run.';
+  const source=$('code').value,runRevision=++revision;
+  const runWasFocused=document.activeElement===$('run');
+  $('editor-tools').open=false;
+  $('run-error').hidden=true;
+  $('error-details').open=false;
+  controls(true);
+  if(runWasFocused)$('stop').focus({preventScroll:true});
+  $('status').textContent=worker?'Starting your Python…':'Loading Python and SymPy. This can take a moment…';
+  updateProvenance();
   const fail=message=>{
    if(runRevision!==revision)return;
    terminate('Python could not finish. Check the message, then edit or run again.');
-   $('run-result').hidden=false;$('output').textContent=message;$('output').classList.add('error');$('plots').replaceChildren();$('symbolic-output').replaceChildren();$('result-visual').hidden=true;$('result-visual').replaceChildren();$('output').closest('details').open=true;
-   $('output-provenance').textContent='Execution failed before a complete result could be recorded. Previous completed run export, if any, is unchanged.';
+   showRunError(message);
   };
   timer=setTimeout(()=>fail('Python initialization exceeded two minutes. Check your connection and run again.'),120000);
   if(!worker){try{worker=new Worker(new URL('worker.js',root))}catch(error){fail(error.message);return}}
@@ -198,12 +250,16 @@ function initializeLesson(lesson){
    if(data.type==='error'){fail(data.message);return}
    if(data.type!=='result')return;
    clearTimeout(timer);controls(false);
-   $('run-result').hidden=false;
    const {stdout,error,figures,versions,maths=[],visual=null}=data.value;
-   lastRun={schema:1,course:'sympy-lab',lesson:slug,executed_at:new Date().toISOString(),source,input_csv:input,input_name:inputName,stdout,error,symbolic_results:maths,visual_model:visual,figures_svg_base64:figures,versions,environment:{user_agent:navigator.userAgent,timing_scope:'Local browser Pyodide; see executed source for boundaries.'}};
-   $('output').textContent=(stdout||'No text was printed.')+(error?'\n'+error:'');
-   $('output').classList.toggle('error',!!error);
-   $('output').closest('details').open=!!error||!maths.length;
+   if(error){
+    $('status').textContent='Python reported an error. Check the error message before running again.';
+    showRunError(error,stdout);
+    return;
+   }
+   $('run-result').hidden=false;
+   lastSuccessfulRun={schema:1,course:'sympy-lab',lesson:slug,executed_at:new Date().toISOString(),source,input_csv:null,input_name:null,stdout,error:null,symbolic_results:maths,visual_model:visual,figures_svg_base64:figures,versions,environment:{user_agent:navigator.userAgent,timing_scope:'Local browser Pyodide; see executed source for boundaries.'}};
+   $('output').textContent=stdout||'No text was printed.';
+   $('output').closest('details').open=!maths.length;
    renderMaths(maths);
    const visualRegion=$('result-visual');visualRegion.replaceChildren();visualRegion.hidden=!visual;
    if(visual){
@@ -222,10 +278,10 @@ function initializeLesson(lesson){
     link.href=url;link.target='_blank';link.rel='noopener';link.textContent='Open full-size figure ↗';
     caption.append(link);figure.append(image,caption);return figure;
    }));
-   $('status').textContent=error?'Python reported an error. Edit the code and run again.':'Completed. Inspect the output, then change one thing.';
-   $('export-run').disabled=false;$('export-run').hidden=false;stale();
+   $('status').textContent='Completed. Inspect the output, then change one thing.';
+   $('export-run').disabled=false;$('export-run').hidden=false;updateProvenance();
   };
-  worker.postMessage({source,csv:input});
+  worker.postMessage({source});
  }
  $('run').addEventListener('click',run);
  window.addEventListener('pagehide',()=>{clearTimeout(timer);worker?.terminate();clearPlotUrls()});
@@ -245,17 +301,23 @@ function initializeLesson(lesson){
   feedback.append(title,text);feedback.focus({preventScroll:true});
  });
  if($('export-report'))$('export-report').addEventListener('click',()=>{
+  function codeBlock(language,text){
+   const longest=(text.match(/`+/g)||[]).reduce((length,run)=>Math.max(length,run.length),2);
+   const fence='`'.repeat(longest+1);
+   return `${fence}${language}\n${text}\n${fence}`;
+  }
   const fields=[['question','Question & intended result'],['plan','Assumptions, domain & method'],['source','Inputs, units & provenance'],['finding','Derivation & verification'],['limits','Limitations & next check']];
   const body=['# SymPy Lab · Investigation',`Exported ${new Date().toISOString()}`];
   for(const[id,label]of fields)body.push(`## ${label}\n\n${$('report-'+id).value||'[Not recorded]'}`);
   body.push('## Execution record');
-  if(lastRun){
-   body.push(`Executed ${lastRun.executed_at}. Versions: ${JSON.stringify(lastRun.versions)}`);
-   body.push('### Exact executed Python\n\n```python\n'+lastRun.source+'\n```');
-   body.push('### Actual output\n\n```text\n'+lastRun.stdout+(lastRun.error||'')+'\n```');
-   if(lastRun.symbolic_results?.length)body.push('### Symbolic results (LaTeX)\n\n'+lastRun.symbolic_results.map(r=>r.label+':\n\n$$\n'+r.latex+'\n$$').join('\n\n'));
-   if($('code').value!==lastRun.source)body.push('The editor changed after this run. The record preserves the completed execution.');
-  }else body.push('No execution recorded on this page. Worked results are separate from your own execution.');
+  if(lastSuccessfulRun){
+   const {executed_at,versions,source,stdout,symbolic_results}=lastSuccessfulRun;
+   body.push(`Last successful run at ${executed_at}. Runtime versions ${JSON.stringify(versions)}`);
+   body.push('### Exact executed Python\n\n'+codeBlock('python',source));
+   body.push('### Actual output\n\n'+codeBlock('text',stdout));
+   if(symbolic_results.length)body.push('### Symbolic results (LaTeX)\n\n'+symbolic_results.map(r=>r.label+'\n\n$$\n'+r.latex+'\n$$').join('\n\n'));
+   if($('code').value!==source)body.push('The editor changed after this run. The record preserves the last successful execution.');
+  }else body.push('No successful execution was recorded on this page. Worked results are available in the lesson.');
   body.push('## Field notes\n\n'+($('notes').value||'[Not recorded]'));
   download('sympy-investigation.md',body.join('\n\n')+'\n','text/markdown');
   $('report-status').textContent='Investigation exported. Save the run JSON alongside it to preserve figures and structured symbolic results.';
