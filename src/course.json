@@ -1183,7 +1183,7 @@
       ],
       "refresher": {
         "title": "An implicit relationship",
-        "body": "An equation can constrain x and y `together` without selecting one y for each x. A circle generally has an upper and a lower branch.",
+        "body": "An equation can constrain x and y together without selecting one y for each x. A circle generally has an upper and a lower branch.",
         "tex": "x^2+y^2=25\\quad\\Longrightarrow\\quad\\frac{dy}{dx}=-\\frac{x}{y}\\quad(y\\ne0)",
         "example": "At $(3,4)$ the slope is $-3/4$. At $(5,0)$ this slope formula divides by zero, reflecting a vertical tangent."
       },
@@ -1829,7 +1829,7 @@
       ],
       "refresher": {
         "title": "Variance, covariance and local change",
-        "body": "Variance is squared spread. Covariance describes joint variation; it is not the same as standard deviation.",
+        "body": "Variance is the average squared departure from the mean. Covariance averages the product of two inputs’ departures from their means, so it can be positive, negative or zero.",
         "tex": "\\operatorname{Cov}(f(X))\\approx J\\,\\Sigma\\,J^T",
         "example": "For one output $y\\approx ax+b$, the variance is $a^2$ times the input variance. Multiple outputs can share covariance through common inputs."
       },
@@ -1873,8 +1873,8 @@
       "refresher": {
         "title": "A rule and its implementation",
         "body": "A formula defines an input-output relationship. A numerical function implements that rule with a particular argument order and arithmetic.",
-        "tex": "f(x,a)=ax^2+1,\\qquad f(3,2)=19",
-        "example": "Swapping the inputs gives $f(2,3)=13$. The same two numbers can produce a different answer when their roles change."
+        "tex": "f(x,a,b)=ax^2+b,\\qquad f(3,2,1)=19",
+        "example": "Swapping the first two inputs gives $f(2,3,1)=13$. Keeping the constant 1 fixed isolates the effect of the argument order."
       },
       "predict": "Will the callable infer argument roles from the numeric values passed to it?",
       "look": "`Inputs in order (x,a,b)` gives the order of the numerical function’s arguments. `Numerical result` and `Exact substitution` agree at that point. The swapped row changes the inputs.",
@@ -2261,7 +2261,7 @@
       ],
       "refresher": {
         "title": "Spread of outcomes versus error of a mean",
-        "body": "Outcome variance describes different possible areas. For independent finite-variance draws, the mean’s standard error is sample SD divided by square root of draw count.",
+        "body": "Outcome variance describes how individual areas vary. To estimate the standard error of the mean for independent draws with finite variance, divide the sample standard deviation by the square root of the draw count.",
         "tex": "E[A]=\\int_1^2\\pi r^2\\,dr=\\frac{7\\pi}3,\\qquad\\operatorname{MCSE}(\\bar A)\\approx\\frac{s_A}{\\sqrt n}",
         "example": "More draws refine the simulated mean. They do not narrow the model’s distribution of possible individual areas."
       },

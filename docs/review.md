@@ -170,3 +170,12 @@ source and stdout, including source with internal Markdown fences. The
 browser suite also verifies the three edits, prior result preservation,
 portable progress and the reading path without JavaScript. These are functional
 and author checks. Learning effectiveness remains unmeasured.
+
+
+## Course-wide check of wording, edits and state
+
+The [wording and interface audit](copy-audit.md) records the opening and closing
+checks across all 54 routes, their literal editor changes, evidence and
+limits. This review applied the learning-design and UX skills again to the
+essential route with optional panels closed, each source-to-output comparison
+and the state of earlier drafts and results after a rejected write or run.
