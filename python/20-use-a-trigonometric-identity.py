@@ -1,5 +1,5 @@
 # Copyright © 2026 Christopher Snow
-# Exact symbolic investigation. Authored teaching example.
+# Exact angle conversion and numerical comparison. Authored teaching example.
 import sympy as sp
 
 theta = sp.symbols("theta",real=True)

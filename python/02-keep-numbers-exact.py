@@ -1,5 +1,5 @@
 # Copyright © 2026 Christopher Snow
-# Exact symbolic investigation. Authored teaching example.
+# Exact fraction and floating-point approximation. Authored teaching example.
 import sympy as sp
 
 exact = sp.Rational(1,3)

@@ -1,5 +1,5 @@
 # Copyright © 2026 Christopher Snow
-# Exact symbolic investigation. Authored teaching example.
+# Symbolic formula and numerical evaluation. Authored teaching example.
 import sympy as sp
 
 x,a,b = sp.symbols("x a b",real=True)

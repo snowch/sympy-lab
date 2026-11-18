@@ -1,5 +1,5 @@
 # Copyright © 2026 Christopher Snow
-# Exact symbolic investigation. Authored teaching example.
+# Symbolic calculation with generated C source. Authored teaching example.
 import sympy as sp
 
 x = sp.symbols("x",real=True)

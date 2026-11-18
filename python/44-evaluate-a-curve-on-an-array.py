@@ -1,5 +1,5 @@
 # Copyright © 2026 Christopher Snow
-# Exact symbolic investigation. Authored teaching example.
+# Symbolic curve and sampled numerical values. Authored teaching example.
 import sympy as sp
 
 import numpy as np

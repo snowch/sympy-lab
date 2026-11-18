@@ -1,5 +1,5 @@
 # Copyright © 2026 Christopher Snow
-# Exact symbolic investigation. Authored teaching example.
+# Numerical roots with original residual checks. Authored teaching example.
 import sympy as sp
 
 x = sp.symbols("x")

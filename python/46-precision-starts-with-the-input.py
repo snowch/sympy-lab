@@ -1,5 +1,5 @@
 # Copyright © 2026 Christopher Snow
-# Exact symbolic investigation. Authored teaching example.
+# Written decimal, exact fraction and floating-point values. Authored teaching example.
 import sympy as sp
 
 python_input = 0.1
