@@ -57,7 +57,7 @@ def check_quiet_layout(browser,root,base,lessons):
     reader=blocked.new_page();reader.goto(base+'lessons/'+lessons[0]['slug']+'.html')
     reader.wait_for_selector('html[data-ready=true]')
     assert reader.locator('#storage-error').is_visible()
-    assert 'storage is unavailable' in reader.locator('#storage-error').inner_text()
+    assert 'could not open your saved work' in reader.locator('#storage-error').inner_text()
     assert reader.locator('#run').is_enabled()
     blocked.close()
     print('PASS quiet default states, 820/1024px tablet/sidebar layouts, optional tools, module search and deep links.',flush=True)

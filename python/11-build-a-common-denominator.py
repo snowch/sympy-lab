@@ -7,7 +7,8 @@ original = 1/x+1/(x+1)
 combined = sp.together(original)
 numerator,denominator = sp.fraction(combined)
 results = {"Combined": combined, "Numerator": numerator,
-           "Denominator": denominator, "Identity check": sp.cancel(combined-original)}
+           "Denominator": denominator, "Identity check": sp.cancel(combined-original),
+           "Excluded real inputs": sp.solveset(denominator, x, domain=sp.S.Reals)}
 
 
 for label, value in results.items():

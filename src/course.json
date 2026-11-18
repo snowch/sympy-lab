@@ -68,8 +68,8 @@
         "example": "At $x=2$, both forms give 9. Squaring each term separately would give 5 and changes the expression."
       },
       "predict": "Will $(x+1)^2$ and $x^2+1$ expand to the same polynomial?",
-      "look": "The result keeps a symbol rather than guessing a number. Both forms include the cross term $2x$: the two rectangles in the area model explain where it comes from.",
-      "change": "Change 1 to 2 inside the brackets. Predict the middle and constant terms before running.",
+      "look": "Read `Original` and `Expanded`. Both keep x as a symbol. In the diagram, the two side rectangles give the middle term $2x$ in the starter’s expanded form.",
+      "change": "In the editor, replace `expression = (x+1)**2` with `expression = (x+2)**2`. Predict the middle and constant terms. Select Run Python and compare `Expanded` and the area diagram with your first result.",
       "question": "Which Python expression means the square of the sum of x and 3?",
       "options": [
         "`(x+3)**2`",
@@ -102,7 +102,7 @@
       "explain": [
         "A rational number is an exact ratio of integers. In ordinary Python, dividing two integers with / produces a floating-point approximation. If that division happens before SymPy receives the value, the exact fraction has already been replaced.",
         "Use `Rational(1,3)` or `S(1)/3` to construct an exact third. SymPy then carries the fraction through algebra without rounding. A `Float` can be useful for approximate measurements, but it represents a different kind of input from an exact rational.",
-        "Compare the two sums below. An approximate result may look convincingly like one on screen while retaining a small numerical difference internally. Choose exactness from the provenance of the input: a mathematical third can be exact; a measured decimal normally has its own uncertainty."
+        "Read the exact input and the nearby value stored after Python division. Compare the stored fraction with the intended fraction by subtracting them. Choose exactness from the provenance of the input: a mathematical third can be exact; a measured decimal normally has its own uncertainty."
       ],
       "refresher": {
         "title": "Fractions as numbers",
@@ -111,8 +111,8 @@
         "example": "Three exact thirds make one. Writing 0.333 three times instead gives 0.999; extra printed digits do not restore the discarded information."
       },
       "predict": "Does passing the already calculated Python value 1/3 to SymPy recover an exact third?",
-      "look": "The stored float corresponds to a nearby binary fraction. Converting that stored value back to an exact fraction exposes the difference; it does not recover the intended third.",
-      "change": "Compare `sp.Rational(\"0.1\")` with `sp.Float(0.1,30)`. Explain why the longer `Float` cannot improve the original Python float.",
+      "look": "Compare `Exact input` with `Approximate Python input`. The latter represents a nearby binary fraction. `Stored fraction minus exact` exposes a difference that may disappear at ordinary display precision.",
+      "change": "Replace `sp.Rational(1,3)` with `sp.Rational(\"0.1\")` and `sp.sympify(1/3)` with `sp.Float(0.1,30)`. Select Run Python. Compare `Exact input`, `Approximate Python input` and `Stored fraction minus exact`. What information was already lost before SymPy received the Python float?",
       "question": "Which input best represents an exact mathematical two sevenths?",
       "options": [
         "`sp.Float(2/7,50)`",
@@ -154,8 +154,8 @@
         "example": "If f is built using a symbol x, later assigning the Python name `x=10` does not replace x inside that already-built symbolic object."
       },
       "predict": "After `x=10`, will an earlier expression built from the symbol x automatically become a number?",
-      "look": "The printed symbol inside expression remains. Explicit substitution uses the saved symbol object.",
-      "change": "Use a different printed label for `positive_x`, then compare `free_symbols` and equality again.",
+      "look": "Read `Existing expression`, `Python name now` and `Remaining symbols`. Assigning 10 to the Python name leaves the earlier expression unchanged. `Explicit replacement` uses the saved symbol object to put 10 into it.",
+      "change": "Replace `positive_x = sp.Symbol(\"x\",positive=True)` with `positive_x = sp.Symbol(\"p\",positive=True)`. Select Run Python. Which symbol remains in `Remaining symbols`, and how do the symbol labels affect `Same labels, same objects?`?",
       "question": "An expression unexpectedly contains two symbols printed as t. What should you inspect?",
       "options": [
         "Only the font used to print t.",
@@ -197,8 +197,8 @@
         "example": "For $x=-3$, $\\sqrt{x^2}=\\sqrt9=3$, while $x$ itself is $-3$. For a positive $x$, $|x|=x$."
       },
       "predict": "Should `sqrt(x**2)` simplify the same way for unrestricted, real and positive symbols?",
-      "look": "The different outputs preserve different sets of permitted inputs.",
-      "change": "Replace `positive=True` with `nonnegative=True`. Then try `negative=True` using a new symbol.",
+      "look": "Compare `Unrestricted`, `Real` and `Assumed p`. The three results describe different permitted inputs. `Real at -3` checks the negative real case.",
+      "change": "In the line that creates `p`, replace `positive=True` with `nonnegative=True`. Select Run Python and read `Assumed p`. Next replace `nonnegative=True` with `negative=True` and select Run Python again. Explain why the final result needs a minus sign.",
       "question": "A formula must work for any real displacement, including negative values. Which reduction is justified?",
       "options": [
         "`sqrt(x**2)` becomes `x`.",
@@ -230,7 +230,7 @@
       "goal": "Replace symbols explicitly and distinguish simultaneous substitution from sequential updates.",
       "explain": [
         "Substitution replaces an expression or symbol inside another expression. It creates a new object; the original expression is unchanged. Use the symbol objects you actually used when constructing the expression.",
-        "Order matters when replacements depend on one another. Sequentially changing x to y and then y to x is not a reliable way to swap their original roles. `simultaneous=True` applies replacements `together` without using one replacement as input to another.",
+        "Order matters when replacements depend on one another. Sequentially changing x to y and then y to x is not a reliable way to swap their original roles. `simultaneous=True` applies replacements together without using one replacement as input to another.",
         "Inspect the original, ordinary sequential replacement and simultaneous swap below. This matters when renaming variables, changing coordinates or substituting several model inputs. Retain a copy of the symbolic formula before inserting particular numbers."
       ],
       "refresher": {
@@ -240,8 +240,8 @@
         "example": "At $x=1$ and $y=3$, $f(x,y)=7$, whereas swapping the input roles gives $f(y,x)=5$."
       },
       "predict": "Will sequential replacements x→y and y→x necessarily swap the two original symbols?",
-      "look": "The original remains $x+2y$. A simultaneous swap preserves the two distinct roles.",
-      "change": "Swap symbols in $\\frac xy$. Compare sequential and simultaneous replacement without assuming the denominator is always nonzero.",
+      "look": "For the starter, `Original` remains $x+2y$. `Sequential` uses one symbol, while `Simultaneous swap` preserves the two distinct roles.",
+      "change": "Replace `expression = x+2*y` with `expression = x/y`. Restrict your swap comparison to nonzero x and y. Select Run Python and compare `Sequential` with `Simultaneous swap`. Which one keeps the original roles distinct after the replacements?",
       "question": "Which operation safely swaps the original roles of a and b?",
       "options": [
         "`expr.subs(a,b).subs(b,a)`",
@@ -283,8 +283,8 @@
         "example": "Rounding $\\sqrt2$ to three significant digits gives 1.41. Squaring that rounded value does not give exactly 2."
       },
       "predict": "Does requesting 40 digits of an exact $\\sqrt2$ require replacing it with a Python float first?",
-      "look": "The exact check is zero before numerical rounding. The two decimal displays approximate the same exact quantity.",
-      "change": "Compare `sp.N(sp.pi,50)` with `sp.N(3.141592653589793,50)`. Explain the input information available in each.",
+      "look": "`Exact substitution` retains $\\sqrt 2+\\pi$. The exact root check is zero before numerical rounding. The two decimal displays approximate the same exact quantity.",
+      "change": "Replace `sp.pi` on the `expression` line with the Python number `3.141592653589793`. Select Run Python. Compare the original and edited `40 significant digits` results. Why do digits printed past the input precision fail to recover the exact sum?",
       "question": "A sensor supplies about four reliable digits. What does printing 50 digits establish?",
       "options": [
         "Fifty reliable digits about the physical quantity.",
@@ -326,8 +326,8 @@
         "example": "The two cross terms are $3x$ and $-2x$, so the coefficient of x is 1. The constant term is -6."
       },
       "predict": "Which form will make the zeros $x=2$ and $x=-3$ easiest to see?",
-      "look": "The zero identity check verifies the algebraic transformation for this polynomial.",
-      "change": "Replace the polynomial by `x**2+1`. Compare factor with `factor(..., extension=sp.I)`.",
+      "look": "Read `Polynomial`, `Factored` and `Expanded again` to check that both forms describe the same polynomial. The zero `Identity check` checks their exact difference.",
+      "change": "Replace `polynomial = x**2+x-6` with `polynomial = x**2+1`. Select Run Python with `factored = sp.factor(polynomial)` unchanged. Then add `, extension=sp.I` inside that factor call and select Run Python again. Read `Factored` and `Identity check`. Which coefficient choices give new factors?",
       "question": "You want to read the coefficient of x cubed. Which representation is usually useful?",
       "options": [
         "A fully expanded polynomial in x.",
@@ -369,8 +369,8 @@
         "example": "For $a=2$ and $b=5$, the two $x$ terms become $7x$. The parameters can remain symbolic while you perform the same grouping."
       },
       "predict": "When collecting in x, must a and b first be assigned numerical values?",
-      "look": "Changing the collection variable changes the visible grouping, not the expression’s value.",
-      "change": "Add `b*x**2` and inspect the coefficient of x squared.",
+      "look": "Compare `Collected in x` with `Collected in a`. The grouping changes, and all the terms still represent the same expression.",
+      "change": "Append `+b*x**2` to the `expression` line. Change `.coeff(x,1)` to `.coeff(x,2)` and its label from `\"Coefficient of x\"` to `\"Coefficient of x squared\"`. Select Run Python. Where does the new coefficient appear in `Collected in x`?",
       "question": "In $(a+b)x+3$, what is the coefficient of x?",
       "options": [
         "x",
@@ -414,7 +414,7 @@
       "predict": "Does cancellation prove that the original fraction is defined at $x=1$?",
       "prepare": "Select Run Python with the code unchanged.",
       "look": "Find Excluded input, Original at 1 and Cancelled formula at 1. Both formulas agree at every permitted input. Only the cancelled polynomial has a value at 1.",
-      "change": "In the editor, change `hole = 1` to `hole = 2`. Run Python again. Which input is excluded now? Compare the two evaluation results at that input.",
+      "change": "Replace `hole = 1` with `hole = 2` in the editor. Select Run Python. Compare `Excluded input`, `Original at 2` and `Cancelled formula at 2`. Which value does the polynomial supply, and why does the original rule still exclude that input?",
       "question": "A transformed expression agrees with the original except at a cancelled denominator zero. What should a report include?",
       "options": [
         "The simpler formula and the original exclusion.",
@@ -445,7 +445,7 @@
       "short": "Rewrite a rational function as a sum of simpler fractions.",
       "goal": "Rewrite a rational function as a sum of simpler fractions.",
       "explain": [
-        "Partial fractions decompose a rational function into simpler denominator pieces. This can expose contributions, poles or terms that are easier to integrate. The decomposition is an identity on the original domain.",
+        "Partial fractions decompose a rational function into simpler denominator pieces. This can expose contributions, inputs where a denominator is zero, or terms that are easier to integrate. The decomposition is an identity on the original domain.",
         "Use `apart` with the intended variable. Treat other symbols as parameters only when the relevant coefficient assumptions support that interpretation. Repeated or irreducible factors can produce different kinds of terms from this first example.",
         "Below, the denominator has factors x and $x+1$. Compare the decomposition with the original by bringing their difference to a common denominator. A zero result verifies the identity away from the poles; it does not make either expression defined at them."
       ],
@@ -456,8 +456,8 @@
         "example": "Combining the right side gives $\\frac{(x+1)-x}{x(x+1)}=\\frac1{x(x+1)}$, for $x\\ne0,-1$."
       },
       "predict": "Will the decomposition preserve the excluded values $x=0$ and $x=-1$?",
-      "look": "The minus sign on the second term is essential. Inspect it before trusting a remembered pattern.",
-      "change": "Use `1/(x*(x+2))` and predict the coefficient of each simple fraction.",
+      "look": "In `Partial fractions` the second term has a minus sign. Use `Difference check` to confirm equality wherever the original fraction is defined.",
+      "change": "Replace `original = 1/(x*(x+1))` with `original = 1/(x*(x+2))`. Select Run Python. Compare the two coefficients in `Partial fractions`, confirm the `Difference check`, and identify both values excluded by the new original denominator.",
       "question": "Why might partial fractions be useful before integration?",
       "options": [
         "They always remove every singularity.",
@@ -489,7 +489,7 @@
       "goal": "Combine rational terms into one inspectable fraction.",
       "explain": [
         "Combining fractions is useful when you want a single numerator, denominator or residual. `together` constructs a common-denominator representation. It serves a different representation goal from partial-fraction decomposition.",
-        "Use fraction to inspect the resulting numerator and denominator. This makes it easier to analyse zeros and excluded inputs separately. A numerator zero is only a valid zero of the rational function where the denominator remains nonzero.",
+        "Use `fraction` to inspect the resulting numerator and denominator. This makes it easier to analyse zeros and excluded inputs separately. A numerator zero is only a valid zero of the rational function where the denominator remains nonzero.",
         "The example combines two terms that do not share a denominator. Verify the result algebraically and inspect the denominator before interpreting any subsequent solver output. Automated simplification can change visible form, so keep the original problem and its domain nearby."
       ],
       "refresher": {
@@ -499,8 +499,8 @@
         "example": "The new numerator is $(x+1)+x$. Values $0$ and $-1$ remain excluded because the original terms are undefined there."
       },
       "predict": "Does the zero of the combined numerator automatically make every denominator input valid?",
-      "look": "fraction separates the representation you supplied. It is not a substitute for tracking the original domain.",
-      "change": "Combine `1/(x-1)+2/(x+1)` and identify both excluded values.",
+      "look": "`Numerator` and `Denominator` separate the combined representation. For this example, `Excluded real inputs` lists the zeros of the combined denominator. Check them against the original denominators before interpreting roots.",
+      "change": "Replace `original = 1/x+1/(x+1)` with `original = 1/(x-1)+2/(x+1)`. Select Run Python. Check the `Numerator`, then compare `Excluded real inputs` with the zeros of both original denominators.",
       "question": "After combining fractions, what should you check before interpreting a numerator root?",
       "options": [
         "Whether the denominator is nonzero there and the original expression is defined.",
@@ -531,8 +531,8 @@
       "short": "Select a targeted transformation and verify the relationship between forms.",
       "goal": "Select a targeted transformation and verify the relationship between forms.",
       "explain": [
-        "There is no single best-looking form of every expression. A factored polynomial, expanded sum and trigonometric identity may each suit a different task. simplify applies broad heuristics; targeted functions express a clearer intention.",
-        "Use `trigsimp` for trigonometric identities, factor for polynomial products and cancel for rational factors. Comparing structure with `==` asks whether objects have the same representation, not whether every algebraically equivalent pair is written identically.",
+        "There is no single best-looking form of every expression. A factored polynomial, expanded sum and trigonometric identity may each suit a different task. `simplify` applies broad heuristics; targeted functions express a clearer intention.",
+        "Use `trigsimp` for trigonometric identities, `factor` for polynomial products and `cancel` for rational factors. Comparing structure with `==` asks whether objects have the same representation, not whether every algebraically equivalent pair is written identically.",
         "For suitable expressions, simplifying their difference to zero is a useful identity check. Failure to reach zero is not a proof of inequality: symbolic equivalence is difficult in general. Combine the check with assumptions and domain reasoning, and distinguish identity from agreement at a few numerical points."
       ],
       "refresher": {
@@ -542,8 +542,8 @@
         "example": "The difference expands to zero for every x. In contrast, $x^2=x$ happens at $x=0$ and $x=1$ but is not an identity."
       },
       "predict": "Can two equivalent polynomial expressions compare unequal with structural `==`?",
-      "look": "Structural comparison and mathematical equivalence answer different questions.",
-      "change": "Compare `x**2` and x at several points, then examine `sp.factor(x**2-x)`.",
+      "look": "`Structural equality` is false for the starter because the expressions have different forms. The zero `Polynomial identity check` shows their difference vanishes for this polynomial.",
+      "change": "Replace `a,b = (x+1)**2,x**2+2*x+1` with `a,b = x**2,x`. Select Run Python. Compare `Differences at x=0, 1, 2` with `Factored difference`. Which inputs agree, and what does the difference say about an identity?",
       "question": "Two formulas match at $x=0$ and $x=1$. What does that establish?",
       "options": [
         "An identity for all complex x.",
@@ -575,8 +575,8 @@
       "goal": "Represent an equality with Eq and verify a computed solution.",
       "explain": [
         "An expression is a mathematical object; an equation states that two expressions are equal. Python assignment binds a name, while `Eq` constructs a symbolic equation. Keep those roles separate when translating a word problem.",
-        "For a first algebraic equation, solve can return a list of candidate values for the specified symbol. Supply that symbol explicitly. The equation below is linear, so rearranging it by hand provides an independent check of the result.",
-        "Substitute each candidate into the original left and right sides, then simplify their difference. This makes verification visible rather than assuming that a printed answer meets every condition. Later lessons use solution sets to express domains and families more explicitly."
+        "For a first algebraic equation, `solve` can return a list of candidate values for the specified symbol. Supply that symbol explicitly. The equation below is linear, so rearranging it by hand provides an independent check of the result.",
+        "Substitute each candidate into the original left and right sides, then simplify their difference. That difference is the residual. This makes verification visible rather than assuming that a printed answer meets every condition. Later lessons use solution sets to express domains and families more explicitly."
       ],
       "refresher": {
         "title": "Keeping an equality balanced",
@@ -585,8 +585,8 @@
         "example": "Subtract 2 from both sides, then divide both sides by the nonzero number 3. Substitution gives $3\\cdot3+2=11$."
       },
       "predict": "Does assigning `equation = ...` itself ask Python to solve the equation?",
-      "look": "`Eq` records a relationship; solve performs the solving operation. The residuals check the original relationship.",
-      "change": "Change the coefficient 3 to 5 and the right side to 12. Predict the exact rational answer.",
+      "look": "`Equation` records the relationship, and `Candidates` lists the values found by the solver. Each entry in `Original residuals` is the original left side minus the right side at that candidate.",
+      "change": "Replace `sp.Eq(3*x+2,11)` with `sp.Eq(5*x+2,11)`. Predict the exact solution. Select Run Python and read `Candidates` and `Original residuals` to check it against both sides.",
       "question": "Which object represents an equation without assigning a value to the symbol x?",
       "options": [
         "`x = 3`",
@@ -628,8 +628,8 @@
         "example": "Every real square is nonnegative, so $x^2=-1$ has no real solution. The values i and -i both square to -1."
       },
       "predict": "Will $x^2+1=0$ have the same solution set over reals and complexes?",
-      "look": "Passing an expression to `solveset` means solving that expression equal to zero.",
-      "change": "Replace +1 with -1, then compare the two domains again.",
+      "look": "Compare `Real solutions` with `Complex solutions`. The solver reads the supplied expression as equal to zero in each chosen domain. The `Complex candidate residuals` evaluate the original expression.",
+      "change": "Replace `expression = x**2+1` with `expression = x**2-1`. Select Run Python. Compare the `Real solutions` and `Complex solutions` sets and use `Complex candidate residuals` to check the revised roots.",
       "question": "What does `EmptySet` from a real-domain solve establish?",
       "options": [
         "No solution in the requested real domain.",
@@ -661,7 +661,7 @@
       "goal": "Interpret linsolve output as a jointly constrained tuple.",
       "explain": [
         "A system requires all its equations to hold at the same time. Solving each equation separately without connecting shared variables can produce incompatible values. `linsolve` handles linear systems and returns a set of ordered solution tuples.",
-        "State the variable order explicitly. A tuple for (x,y) gives the x value first and the y value second, regardless of a story’s naming conventions. Substitute the whole tuple into every original residual to check the system.",
+        "State the variable order explicitly. A tuple for (x,y) gives the x value first and the y value second, regardless of a story’s naming conventions. Substitute the whole tuple into every original residual, the difference between the two sides, to check the system.",
         "The invented ticket problem below has a total count and a total revenue constraint. Its unique solution is exact. Other systems can have no solutions or a family with free parameters; the output set communicates that structure rather than always yielding one pair."
       ],
       "refresher": {
@@ -671,8 +671,8 @@
         "example": "From the first equation $x=10-y$. Substitution gives $20+y=24$, so $y=4$ and $x=6$."
       },
       "predict": "Does a pair satisfying only the total-count equation solve the full system?",
-      "look": "Each zero residual checks one original equation using the same pair.",
-      "change": "Change the revenue 24 to 25, then consider whether the result meets an additional integer ticket-count requirement.",
+      "look": "Read the entries in `Solution tuples (x,y)` in the stated order. In `Checks`, each zero checks one original equation using the same pair.",
+      "change": "In the `residuals` line, replace `2*x+3*y-24` with `2*x+3*y-25`. Select Run Python. Read `Solution tuples (x,y)` and `Checks`. Does the new solution also give two nonnegative integer ticket counts?",
       "question": "For `linsolve(equations,(u,v))`, how should a result tuple (2,5) be read?",
       "options": [
         "$u=5$ and $v=2$.",
@@ -714,8 +714,8 @@
         "example": "Substituting $y=x-1$ gives $2x^2-2x-4=0$. The points are $(-1,-2)$ and $(2,1)$."
       },
       "predict": "Should a solver return only the intersection with positive coordinates when no sign constraint was supplied?",
-      "look": "Every candidate is a full coordinate pair. Both pairs satisfy the equations, even if a later application selects one.",
-      "change": "Replace the radius-squared value 5 with 1 and examine the changed intersections.",
+      "look": "`Intersection points` gives full coordinate pairs. Each pair has two zero residuals in `Original checks`. A later model restriction could exclude one pair.",
+      "change": "In the `residuals` line, replace `x**2+y**2-5` with `x**2+y**2-1`. Select Run Python. Compare `Intersection points` with the first run, then read `Original checks` for both revised coordinate pairs.",
       "question": "A nonlinear solver finds two valid branches. A model permits only positive x. What next?",
       "options": [
         "Apply and document that additional constraint, then verify the retained branch.",
@@ -757,8 +757,8 @@
         "example": "Combining $x^2<4$ with $x\\ge1$ gives $1\\le x<2$. The value 2 is excluded, while 1 is included."
       },
       "predict": "Does $x^2<9$ include either endpoint -3 or 3?",
-      "look": "The strict upper boundary is preserved. Mathematical domains and endpoint inclusion are part of the result.",
-      "change": "Change <9 to <=9 and compare the boundary check at 3.",
+      "look": "Read `Permitted region` as simultaneous conditions on real x. Check `At 1` and `At 3` to confirm which endpoints belong.",
+      "change": "In `reduce_inequalities`, replace `x**2<9` with `x**2<=9`. Select Run Python. Compare `Permitted region` and `At 3` with the first run. Which boundary changed?",
       "question": "What region satisfies $x^2<4$ `together` with $x\\ge1$?",
       "options": [
         "$-2<x<2$ with no other restriction.",
@@ -800,8 +800,8 @@
         "example": "The exact roots are -1, 0 and 1. One numerical search need not reveal all three."
       },
       "predict": "Will one starting guess necessarily find every root of $x^3-x$?",
-      "look": "The deliberately separated guesses find different roots in this example. That is a demonstration, not a general completeness strategy.",
-      "change": "Try cos(x)-x from a starting guess of 1. Check the residual at increased precision.",
+      "look": "Match `Starting guesses` and `Numerical roots` by position. Then read `Residuals` to check the original equation at those roots. The guesses find different roots in this starter. A numerical search can miss roots in other examples.",
+      "change": "Replace `expression = x**3-x` with `expression = sp.cos(x)-x` and `guesses = [-1.2,.1,1.2]` with `guesses = [1]`. Set `prec=35` to `prec=50` in the `nsolve` call and select Run Python. Use `Numerical roots` and `Residuals` to check the candidate for the revised equation.",
       "question": "A single `nsolve` call finds a root. Which claim is justified?",
       "options": [
         "It found a numerical candidate from that setup, subject to verification.",
@@ -843,8 +843,8 @@
         "example": "At $x=2$, $g(f(2))=9$ while $f(g(2))=5$. Function order changes the result."
       },
       "predict": "Do “add one, then square” and “square, then add one” define the same rule?",
-      "look": "Read nested calls from the inside outward. Both rules are defined for all real inputs in this example.",
-      "change": "Replace the rule $f(x)$ with $f(x)=2x$ and repeat. Find an input where the two compositions differ.",
+      "look": "Compare `f after g` with `g after f`. The inner call happens first. The entries `f(g(2))` and `g(f(2))` show the effect of changing order at a shared input.",
+      "change": "Replace `f = sp.Lambda(x,x+1)` with `f = sp.Lambda(x,2*x)`. Select Run Python. Compare `f(g(2))` with `g(f(2))`. Which argument is squared in each order?",
       "question": "In $h(k(x))$, which rule receives x first?",
       "options": [
         "h",
@@ -886,8 +886,8 @@
         "example": "$\\sin(\\pi/6)=1/2$ exactly. Passing the number `30` without conversion asks for sine of thirty radians."
       },
       "predict": "Will `sp.sin(30)` mean sine of thirty degrees?",
-      "look": "The exact angle gives an exact half. Radian conversion is part of the input model.",
-      "change": "Calculate cos(60 degrees) exactly and compare with cos(60 radians).",
+      "look": "`Degree input converted to radians` shows the exact angle. The `Exact value at converted angle` is one half. Treating the same number as radians gives a different angle.",
+      "change": "Replace `degrees = 30` with `degrees = 60` and `trig = sp.sin` with `trig = sp.cos`. Select Run Python. Compare `Exact value at converted angle` with `Approximate value treating the number as radians`. Which input represents a sixth of a full turn?",
       "question": "A table gives angles in degrees. What should happen before using SymPy sin?",
       "options": [
         "Convert each angle to radians explicitly.",
@@ -919,7 +919,7 @@
       "goal": "Use positivity assumptions when expanding logarithms and identify a complex counterexample.",
       "explain": [
         "A logarithm reverses exponentiation, but its domain and branch matter. For positive real inputs, $\\log(ab)=\\log a+\\log b$. Extending that rule carelessly to complex values can change the answer by multiples of $2\\pi i$.",
-        "SymPy uses the principal logarithm for complex inputs. The argument chooses a branch, so identities that are valid for positive real numbers cannot automatically be extended to unrestricted complex symbols. State assumptions before expanding a logarithm.",
+        "SymPy uses the principal logarithm for complex inputs. A branch specifies which value to use when several complex numbers have the same exponential. The principal branch uses a particular angle for each nonzero input. A rule for positive reals can give a different value on that branch. State assumptions before expanding a logarithm.",
         "The counterexample uses $a=b=-1$. The product is one, whose principal log is zero, while each principal log of $-1$ is $i\\pi$. Avoid `force=True` unless you have separately justified the missing conditions and will preserve them in the result."
       ],
       "refresher": {
@@ -929,8 +929,8 @@
         "example": "For $a=b=-1$, $\\log(ab)=\\log1=0$ but the sum of the principal logarithms is $2\\pi i$. Positivity is doing real work in the identity."
       },
       "predict": "Is the real-positive product rule automatically valid for every complex pair?",
-      "look": "A shorter expression is not useful if it silently changes the branch or domain.",
-      "change": "Compare `sp.log(sp.sqrt(z))` for unrestricted $z$ with a positive symbol. State the assumptions beside any rewrite.",
+      "look": "Compare `Unrestricted input rule` with `Positive input rule`. The positivity assumption allows the latter expansion. The two principal-log counterexample results show why multiplication alone does not justify a complex rewrite.",
+      "change": "Replace `power = sp.Rational(1,2)` with `power = 2`. Select Run Python and compare `Unrestricted input rule` with `Positive input rule`. Why can SymPy split off an exponent for a and still keep the log of a power for z?",
       "question": "What justifies splitting $\\log(ab)$ into $\\log a+\\log b$ in this lesson?",
       "options": [
         "The expression contains only two factors.",
@@ -972,8 +972,8 @@
         "example": "At -2 use the first branch and obtain 2. At 0 use the second branch and obtain 0."
       },
       "predict": "Which branch handles $x=0$ when the first condition is $x<0$?",
-      "look": "The fallback supplies a value at the boundary. The displayed Abs form expresses the same real function.",
-      "change": "Make a delivery tariff costing 5 for order value below 20 and zero otherwise. Test exactly 20.",
+      "look": "Read `Inputs and values` as pairs of an input and its result. At 0 the strict first condition is false, so the fallback supplies 0. The rule gives the magnitude of every real input.",
+      "change": "Replace `rule = sp.Piecewise((-x,x<0),(x,True))` with `rule = sp.Piecewise((5,x<20),(0,True))`. Replace `inputs = [-2,0,2]` with `inputs = [19,20,21]`. Select Run Python and use `Inputs and values` to identify the charge at exactly 20.",
       "question": "Two Piecewise conditions both match an input. Which branch is selected?",
       "options": [
         "The first applicable branch.",
@@ -1006,7 +1006,7 @@
       "explain": [
         "A polynomial in x is a finite sum of nonnegative integer powers of x with coefficients. Poly makes the chosen polynomial variable explicit, which matters when other symbols act as parameters.",
         "The degree is the highest power with a nonzero coefficient. A root can occur more than once: multiplicity records how many copies of its factor appear. The roots function returns a mapping from discovered roots to multiplicities for this tractable example.",
-        "Inspect the expanded coefficients, factored expression and root multiplicities `together`. A repeated root may touch rather than cross the horizontal axis in a real plot. General polynomial equations need not have simple radical forms, so do not assume a small explicit roots mapping always describes every possible problem."
+        "Compare the expanded coefficients, factored expression and root multiplicities. A repeated root may touch rather than cross the horizontal axis in a real plot. General polynomial equations need not have simple radical forms, so do not assume a small explicit roots mapping always describes every possible problem."
       ],
       "refresher": {
         "title": "Repeated factors",
@@ -1015,8 +1015,8 @@
         "example": "The polynomial has degree 3. Root 1 has multiplicity 2 and root -2 has multiplicity 1; the multiplicities total 3."
       },
       "predict": "Does a repeated root count only once towards the degree?",
-      "look": "all_coeffs includes zero coefficients for missing intermediate powers. Multiplicity carries information beyond the distinct root list.",
-      "change": "Replace the repeated factor by `(x-1)**3` and predict the new degree and multiplicity.",
+      "look": "`Coefficients, descending powers` includes a zero for any missing power. In `Roots with multiplicities`, each root is paired with the number of times its factor appears.",
+      "change": "Replace `(x-1)**2*(x+2)` on the `expression` line with `(x-1)**3*(x+2)`. Select Run Python and compare `Degree` and `Roots with multiplicities` with the first run. Which root accounts for the extra degree?",
       "question": "A degree-four polynomial has a root with multiplicity three. How much degree does that factor account for?",
       "options": [
         "One.",
@@ -1058,8 +1058,8 @@
         "example": "For $n=4$, the terms are $1+2+3+4=10$, and the formula gives $4\\cdot5/2=10$."
       },
       "predict": "Does `sp.Sum(k,(k,1,4))` include the term $k=4$?",
-      "look": "The sum is $10$ at $n=4$, while the product is $24$. Similar index notation can describe different operations.",
-      "change": "Sum $k^2$ from $1$ to $n$ and verify the formula at $n=3$.",
+      "look": "The starter `Sum at n=4` is 10, while `Finite product at 4` is 24. Similar index notation can describe different operations.",
+      "change": "Replace `term = k` with `term = k**2` and `check_n = 4` with `check_n = 3`. Select Run Python. Compare `Sum at n=3` with the hand calculation 1² + 2² + 3² and connect it to the new `Closed form`.",
       "question": "Before interpreting an infinite-series result, what extra question matters?",
       "options": [
         "Whether the sum has more than one symbol.",
@@ -1103,7 +1103,7 @@
       "predict": "Must an undefined direct substitution imply that no finite limit exists?",
       "prepare": "Select Run Python with the code unchanged.",
       "look": "Compare Direct at zero with Limit from the left and Limit from the right. Direct substitution gives $0/0$, which is undefined. Both approaches give 1, so the two-sided limit is 1.",
-      "change": "In the editor, replace `sp.sin(x)/x` with `sp.Abs(x)/x` on the `expression` line. `sp.Abs(x)` gives the magnitude of $x$. Run Python again. Compare the left and right limits. Do they agree?",
+      "change": "Replace `sp.sin(x)/x` with `sp.Abs(x)/x` on the `expression` line. `sp.Abs(x)` gives the magnitude of x. Select Run Python and compare `Limit from the left`, `Limit from the right` and `Two-sided limit`. What prevents a common limit?",
       "question": "A function’s left and right limits at a point are different. What follows?",
       "options": [
         "Their average is the two-sided limit.",
@@ -1145,8 +1145,8 @@
         "example": "At $x=1$, the function value is $e$ but its derivative is $2e$. These are different quantities."
       },
       "predict": "Will differentiating $e^{x^2}$ give only $e^{x^2}$?",
-      "look": "The inner derivative $2x$ is visible. A second derivative describes change in the slope.",
-      "change": "Change the inner expression to `3*x+1`. Predict the new chain-rule factor.",
+      "look": "Read `Derivative` for the factor $2x$ from the inner derivative. Compare `Value at 1` with `Slope at 1`: they evaluate different expressions at the same input.",
+      "change": "Replace `sp.exp(x**2)` with `sp.exp(3*x+1)` on the `expression` line. Select Run Python and read `Derivative`. Which factor comes from differentiating the new inner expression?",
       "question": "For $\\sin(5x)$, which factor comes from differentiating the inner expression?",
       "options": [
         "x",
@@ -1179,7 +1179,7 @@
       "explain": [
         "Some relationships define a curve without giving y as one global function of x. Implicit differentiation treats y as changing with x while preserving the relationship. SymPy idiff can calculate that derivative from an equation written as a zero residual.",
         "On a circle, differentiating $x^2+y^2-r^2=0$ with respect to $x$ gives $2x+2y\\,dy/dx=0$. Solving for the slope divides by $y$, so the resulting formula requires $y\\ne0$.",
-        "Inspect slopes at two points on a radius-five circle, then note the missing boundary points where $y=0$. A vertical tangent can fail to have a finite $dy/dx$ even though the curve itself remains well defined. Keep the derivative’s domain distinct from the curve’s domain."
+        "Read the slope at the top of the radius-five circle and check that the rightmost point lies on the curve even though the slope formula is undefined there. A vertical tangent can fail to have a finite $dy/dx$ even though the curve itself remains well defined. Keep the derivative’s domain distinct from the curve’s domain."
       ],
       "refresher": {
         "title": "An implicit relationship",
@@ -1188,8 +1188,8 @@
         "example": "At $(3,4)$ the slope is $-3/4$. At $(5,0)$ this slope formula divides by zero, reflecting a vertical tangent."
       },
       "predict": "Does division by $y$ in the formula for $dy/dx$ mean the circle itself disappears at $y=0$?",
-      "look": "The curve check at $(5,0)$ is zero even though its $dy/dx$ formula is not finite there.",
-      "change": "Use the ellipse $x^2+4y^2=16$ and derive its implicit slope.",
+      "look": "The slope at the top is 0. The right point belongs to the curve, where the tangent is vertical and a finite slope is unavailable.",
+      "change": "Replace `residual = x**2+y**2-25` with `residual = x**2+4*y**2-16`. Change `top` to `{x:0,y:2}` and `right` to `{x:4,y:0}` to check the new ellipse at its intercepts. Select Run Python. Check both point tests and compare `Implicit slope` with the circle formula.",
       "question": "What should accompany a slope formula containing division by y?",
       "options": [
         "A claim that every curve point is invalid.",
@@ -1231,8 +1231,8 @@
         "example": "At $(1,2)$, the gradient is $(4,5)$. Its entries refer to $x$ and $y$ respectively."
       },
       "predict": "When taking the partial derivative of $xy$ with respect to $x$, does $y$ also differentiate to one?",
-      "look": "Holding $y$ fixed gives derivative $y$ for $xy$. The vector order must remain attached to its entries.",
-      "change": "Add $3xy$ and predict the change to both gradient components.",
+      "look": "The first `Gradient, order (x,y)` component holds y fixed and the second holds x fixed. The term $xy$ therefore contributes y to the first component and x to the second.",
+      "change": "Append `+3*x*y` to the `expression` line. Select Run Python and compare the first and second entries in `Gradient, order (x,y)`. Which variable is held fixed for each added term?",
       "question": "A function has gradient zero at a point. What has been established?",
       "options": [
         "A stationary-point candidate, requiring classification and any constraint checks.",
@@ -1274,8 +1274,8 @@
         "example": "The definite result is $x^2$ evaluated at $3$ minus $x^2$ evaluated at $0$. The arbitrary constant cancels."
       },
       "predict": "Does the derivative check distinguish $F$ from $F+7$?",
-      "look": "The constant belongs in the indefinite family. The definite integral is a number in this example.",
-      "change": "Integrate $3x^2$ between 0 and 2. Check the antiderivative separately.",
+      "look": "`Antiderivative family` includes the arbitrary constant C. `Derivative residual` checks that differentiating removes it and gives back the rate. `Definite value` gives the separate accumulation over the displayed bounds.",
+      "change": "Replace `rate = 2*x` with `rate = 3*x**2` and `upper = 3` with `upper = 2`. Select Run Python. Read `Definite value` for the interval from 0 to 2 and use `Derivative residual` to check the new antiderivative separately.",
       "question": "What does differentiating an antiderivative verify?",
       "options": [
         "Its additive constant uniquely.",
@@ -1317,8 +1317,8 @@
         "example": "At small $|x|$, the first omitted powers can be small. Farther from zero, the same polynomial may be much less accurate."
       },
       "predict": "Does removeO make a Taylor polynomial exact for every x?",
-      "look": "The error grows between these chosen points. This comparison illustrates locality rather than proving a universal monotonic error law.",
-      "change": "Expand exp(x) around $x=1$ instead of zero. Identify powers of x-1 in the result.",
+      "look": "For the starter, the absolute error is larger at the point two units from the centre. This comparison illustrates locality rather than proving a universal monotonic error law.",
+      "change": "Replace `function = sp.sin(x)` with `function = sp.exp(x)` and `center = 0` with `center = 1`. Select Run Python. Find the powers of x−1 and the order term in `Series`. Compare that result with `Polynomial only` before using it as an approximation.",
       "question": "Which details belong beside a truncated series used in a calculation?",
       "options": [
         "Only the number of printed terms.",
@@ -1360,8 +1360,8 @@
         "example": "The first row gives $1\\cdot3+2\\cdot4=11$. The second gives $0\\cdot3+1\\cdot4=4$."
       },
       "predict": "Will swapping two matrix transformations always leave the same result?",
-      "look": "The transformation nearest the vector acts first. SymPy Matrix multiplication preserves row-column structure.",
-      "change": "Replace v with each coordinate basis vector [1,0] and [0,1]. Relate the outputs to A’s columns.",
+      "look": "Read `A acting on v` and compare `A then B` with `B then A`. In a product applied to a vector, the transformation nearest the vector acts first.",
+      "change": "Replace `v = sp.Matrix([3,4])` with `v = sp.Matrix([1,0])` and select Run Python. Then use `v = sp.Matrix([0,1])` and select Run Python again. Match each `A acting on v` vector to a column of `A`.",
       "question": "For a 2×3 matrix multiplied by a column vector, what input size is required?",
       "options": [
         "2×1.",
@@ -1403,8 +1403,8 @@
         "example": "The second equation repeats the first. Replacing 6 by 7 makes the pair inconsistent, because doubling the first equation must give 6."
       },
       "predict": "Will two written equations in two unknowns necessarily determine one unique pair?",
-      "look": "The family and `EmptySet` describe different mathematical outcomes. Neither is a uniquely solved pair.",
-      "change": "Add an independent equation $x-y=1$ and solve the compatible system again.",
+      "look": "The compatible coefficient and augmented ranks match at 1 and `Solution family` leaves one variable free. In the conflicting example the augmented rank is larger and `Conflicting solutions` is empty.",
+      "change": "Append the equation x−y=1 to the compatible system by replacing `A = sp.Matrix([[1,1],[2,2]])` with `A = sp.Matrix([[1,1],[2,2],[1,-1]])` and `b = sp.Matrix([3,6])` with `b = sp.Matrix([3,6,1])`. Select Run Python. Compare the ranks and `Solution family`. The conflicting example still uses just the first two equations.",
       "question": "A solution family contains a free parameter. What does it mean?",
       "options": [
         "The supplied constraints leave a degree of freedom.",
@@ -1448,7 +1448,7 @@
       "predict": "Can a matrix with dependent rows have a two-sided inverse?",
       "prepare": "Select Run Python with the code unchanged.",
       "look": "Find Determinant of A and Inverse check. The determinant is 1. The product in Inverse check has ones on the diagonal and zeroes elsewhere.",
-      "change": "In the editor, replace the bottom-right `1` in `A` with `sp.Rational(1,2)`, which represents exactly one half. Run Python again. What do Determinant of A and Inverse tell you about the edited matrix?",
+      "change": "Replace the bottom-right `1` in `A` with `sp.Rational(1,2)` for exactly one half. Select Run Python. What do `Determinant of A` and `Inverse` report for the edited matrix?",
       "question": "What does a nonzero determinant establish for a square exact matrix?",
       "options": [
         "Every entry must be positive.",
@@ -1490,8 +1490,8 @@
         "example": "For $A=\\begin{pmatrix}2&1\\\\1&2\\end{pmatrix}$, the vector $(1,1)$ becomes $(3,3)$. Its eigenvalue is $3$, and $(2,2)$ is another eigenvector on the same line."
       },
       "predict": "Must every eigenvector returned by another implementation have exactly the same scale?",
-      "look": "Compare eigenspaces or verified directions rather than requiring one particular vector normalisation.",
-      "change": "Verify the direction [1,-1] and identify its eigenvalue.",
+      "look": "Read `Eigenspace bases` as one list of basis vectors per eigenvalue. The starter `Eigen residual` is a zero vector, so the chosen direction satisfies the eigenvector equation. Any nonzero multiple represents the same line.",
+      "change": "Replace `v = sp.Matrix([1,1])` with `v = sp.Matrix([1,-1])`. Check `Eigenspace bases` from your first run to choose the eigenvalue. Set `eigenvalue = 3` to `eigenvalue = 1` and select Run Python. Does `Eigen residual` verify that direction?",
       "question": "Why is the zero vector excluded from the eigenvector definition?",
       "options": [
         "It has too many coordinates.",
@@ -1533,8 +1533,8 @@
         "example": "The middle $P^{-1}P$ factors cancel in repeated multiplication. The formula requires an invertible P and a valid decomposition."
       },
       "predict": "Can you use a diagonal-power formula without first establishing a valid eigenvector basis?",
-      "look": "Both residual matrices are exactly zero. The Jordan-style example does not admit a complete eigenvector basis.",
-      "change": "Change the power to 10 and keep the reconstruction check. Then inspect `J.eigenvects()`.",
+      "look": "The two zero residual matrices verify reconstruction and the power calculation. In `J eigenspace basis`, the one eigenvalue has multiplicity two but only one independent eigenvector.",
+      "change": "Replace `power = 5` with `power = 10`. Select Run Python and read `Power residual`. Then read `J eigenspace basis`. Does J provide enough independent eigenvectors for a two-dimensional basis?",
       "question": "A repeated eigenvalue appears. What is needed before claiming diagonalizability?",
       "options": [
         "A full set of independent eigenvectors.",
@@ -1576,8 +1576,8 @@
         "example": "If three points do not lie exactly on one line, a two-parameter line generally leaves nonzero residuals."
       },
       "predict": "Must every residual be zero at a least-squares solution?",
-      "look": "The residual can be nonzero while its projection onto each design column is zero.",
-      "change": "Change the observations to [1,2,3] and predict the residual and squared error.",
+      "look": "The `Observed minus fitted` residual can be nonzero while the `Orthogonality check` is zero. `Squared error` adds the squared residuals and measures the mismatch at the invented observations.",
+      "change": "On the `b` line replace `sp.Matrix([1,2,2])` with `sp.Matrix([1,2,3])`. Select Run Python and compare `Observed minus fitted` and `Squared error` with the first run. Can the fitted line now pass through every invented point?",
       "question": "What does a zero $A^T\\mathrm{residual}$ establish in this full-column-rank example?",
       "options": [
         "The observations were measured without error.",
@@ -1610,7 +1610,7 @@
       "explain": [
         "Optimisation asks for the best value within a stated feasible region. Solving a derivative equal to zero finds interior stationary candidates, but those candidates may be infeasible or may fail to be the desired maximum or minimum.",
         "For a smooth function on a closed bounded interval, examine feasible stationary points and the endpoints. The example maximises $x(10-x)$ on the teaching interval zero to four. Its unconstrained stationary point lies outside that interval.",
-        "Keep the objective, feasible domain and candidate evaluation `together`. A solver cannot infer an omitted budget or physical bound from the variable name. More complex constrained problems can need specialised optimisation methods, but this small case makes the boundary issue visible."
+        "Keep the objective, feasible domain and candidate evaluation together. A solver cannot infer an omitted budget or physical bound from the variable name. More complex constrained problems can need specialised optimisation methods, but this small case makes the boundary issue visible."
       ],
       "refresher": {
         "title": "Interior points and boundaries",
@@ -1619,8 +1619,8 @@
         "example": "The stationary point is $x=5$. On $0\\le x\\le4$ it is not feasible; comparing the feasible boundaries gives the maximum at $x=4$."
       },
       "predict": "Can the derivative-zero point be rejected because the model does not permit that input?",
-      "look": "A mathematically valid stationary point does not become a feasible decision automatically.",
-      "change": "Change the upper bound to 8 in both the candidate list and feasibility condition. Predict whether $x=5$ becomes relevant.",
+      "look": "`Unconstrained stationary points` includes 5, which lies outside the starter’s permitted region. Compare `Feasible candidates` with `Best feasible x` to see which values actually determine the answer.",
+      "change": "Replace `upper = 4` with `upper = 8`. The upper bound applies to the endpoint candidate and the stationary-point filter. Select Run Python. Compare `Feasible candidates` and `Best feasible x` with the first run. Which point becomes available?",
       "question": "An unconstrained optimum violates a physical bound. What should you report?",
       "options": [
         "The unconstrained point as the final decision anyway.",
@@ -1662,8 +1662,8 @@
         "example": "At $t=0$ the formulas give $v_0$ and $s_0$. Differentiating position twice returns $a$."
       },
       "predict": "Does integrating an acceleration determine the initial position without extra information?",
-      "look": "The integration constants encode conditions that acceleration alone does not specify.",
-      "change": "Substitute $s_0=0$, $v_0=5$ and $a=-2$. Solve for the time when velocity first reaches zero, then check its admissible sign.",
+      "look": "`Acceleration residual` checks the derived position. Compare `Initial velocity` and `Initial position` with the symbolic conditions, then read the separate zero-velocity time for the invented parameters.",
+      "change": "Replace the invented inputs `parameters = {s0:0, v0:5, a:-2}` with `parameters = {s0:0, v0:6, a:-3}`. Select Run Python and compare `Time when example velocity is zero` across runs. Which result describes a time after the model starts?",
       "question": "Which information fixes both constants for this second-order position model?",
       "options": [
         "Only the units used for time.",
@@ -1705,8 +1705,8 @@
         "example": "For $k>0$, the half-life is $\\log(2)/k$. Doubling $N_0$ doubles the trajectory but leaves that half-life unchanged."
       },
       "predict": "Will a positive decay rate k make the solution grow or shrink for positive time?",
-      "look": "The check reports whether substitution satisfies the ODE. The initial condition supplies separate information.",
-      "change": "Double k and compare the symbolic half-life and amount at a fixed positive time.",
+      "look": "The `ODE check` reports whether the solution satisfies the original equation. `Initial value` separately checks the condition at time zero. The example rows evaluate decay using an invented rate.",
+      "change": "Replace `rate = sp.Rational(1,10)` with `rate = sp.Rational(1,5)` to double the example decay rate. Select Run Python. Compare `Example half-life, seconds` and `Example fraction at 5 seconds` with the first run.",
       "question": "A general ODE solution contains an arbitrary constant. What typically selects a particular trajectory here?",
       "options": [
         "An initial value at a stated time.",
@@ -1748,8 +1748,8 @@
         "example": "At $t=0$ the voltage is 0. At $t=RC$ it reaches $V(1-e^{-1})$, about 63.2% of the final value."
       },
       "predict": "Will the ideal long-time capacitor voltage depend on R if V is held fixed?",
-      "look": "$RC$ changes how quickly the response approaches V. It does not change the ideal equilibrium in this model.",
-      "change": "Set a nonzero initial voltage in ics and inspect how the transient term changes.",
+      "look": "Read `Time constant` and `Long-time voltage` separately. $RC$ sets the time scale. V is the ideal long-time voltage. `Initial voltage` verifies the condition at time zero.",
+      "change": "Replace `initial = 0` with `initial = V/4`. Select Run Python. Read `Initial voltage` and compare `Charging response` and `Long-time voltage` with the first run. Which part of the solution changed?",
       "question": "What does increasing R with C fixed change in the ideal model?",
       "options": [
         "Only the printed units.",
@@ -1791,8 +1791,8 @@
         "example": "The density reaches 2 at $x=1$, but the probability of an interval is its area, not that endpoint height."
       },
       "predict": "Does a density value of 2 necessarily make the probability model invalid?",
-      "look": "The function is being used as a density only on [0,1]. Outside that interval this model assigns density zero.",
-      "change": "Replace $2x$ with `c*x**2` and solve for c so the total mass on [0,1] equals one.",
+      "look": "`Mass on [0,1]` checks that the density integrates to one. `Mean` and `Variance` describe this authored distribution. The model assigns density zero outside its support.",
+      "change": "Replace `shape = x` with `shape = x**2`. The code chooses the multiplier that makes total probability one. Select Run Python. Read `Scale for unit mass`, verify `Mass on [0,1]` and compare `Mean` with the first run.",
       "question": "How is $P(a<X<b)$ obtained from a continuous density f?",
       "options": [
         "Read f(b) alone.",
@@ -1834,8 +1834,8 @@
         "example": "For one output $y\\approx ax+b$, the variance is $a^2$ times the input variance. Multiple outputs can share covariance through common inputs."
       },
       "predict": "Can area and perimeter be correlated even if length and width errors are independent?",
-      "look": "The off-diagonal entry records shared output variation. All input variances and nominal dimensions are invented.",
-      "change": "Add a justified nonzero off-diagonal input covariance and compare the propagated area variance.",
+      "look": "In the output covariance matrix, the diagonal entries give separate variances. The off-diagonal entries record shared output variation. The first diagonal entry is printed separately as `Approximate area variance`.",
+      "change": "Replace `cross_covariance = 0` with `cross_covariance = sp.Rational(1,100)`. This invented positive covariance is half the product of the two input standard deviations. Select Run Python. Compare `Approximate area variance` with the independent-input result.",
       "question": "When is this first-order result most in need of further checking?",
       "options": [
         "When nonlinear effects are substantial across the input uncertainty range.",
@@ -1848,7 +1848,7 @@
         "Ask whether one local slope represents the whole uncertain region.",
         "Compare with a suitable simulation when curvature matters."
       ],
-      "limit": "This is a local approximation using invented independent input uncertainty, not a calibrated confidence interval for a measured rectangle.",
+      "limit": "This is a local approximation using invented input uncertainty. The starter assumes independent inputs and the edited comparison supplies an assumed covariance.",
       "source": [
         "SymPy · Matrices tutorial",
         "https://docs.sympy.org/latest/tutorials/intro-tutorial/matrices.html"
@@ -1867,7 +1867,7 @@
       "goal": "Use lambdify with an explicit argument order and numerical backend.",
       "explain": [
         "A symbolic expression is useful for derivation; a numerical function is convenient for repeated evaluation. `lambdify` translates a SymPy expression into a callable using a selected numerical library. It does not compile or prove the model automatically.",
-        "State the argument order explicitly. A function created for (x,a) expects x first and a second. Choose a backend such as math for ordinary scalar calls or numpy for array work. Keep the symbolic expression as the derivation and verification record.",
+        "State the argument order explicitly. Here the tuple (x,a,b) gives the order: x first, a second and the constant b third. Choose a backend such as math for ordinary scalar calls or numpy for array work. Keep the symbolic expression as the derivation and verification record.",
         "Compare the numerical result with exact symbolic substitution at a check point. The numerical function generally uses floating-point arithmetic, so agreement is approximate and precision follows that backend. Only `lambdify` expressions you trust; this translation uses generated executable code."
       ],
       "refresher": {
@@ -1877,8 +1877,8 @@
         "example": "Swapping the inputs gives $f(2,3)=13$. The same two numbers can produce a different answer when their roles change."
       },
       "predict": "Will the callable infer argument roles from the numeric values passed to it?",
-      "look": "The argument tuple is an interface contract. The backend determines which numerical operations the callable uses.",
-      "change": "Add a parameter b, update the argument tuple and verify a new check point by exact substitution.",
+      "look": "`Inputs in order (x,a,b)` gives the order of the numerical function’s arguments. `Numerical result` and `Exact substitution` agree at that point. The swapped row changes the inputs.",
+      "change": "Replace `inputs = (3,2,1)` with `inputs = (3,2,4)`. Select Run Python. Compare `Numerical result` with `Exact substitution` and `Swapped x and a`. Which tuple position controls the constant b?",
       "question": "What should accompany a lambdified function in a reproducible calculation?",
       "options": [
         "Only the final decimal output.",
@@ -1920,8 +1920,8 @@
         "example": "Sampling between 0 and 4 shows part of the decay. It does not display every nonnegative input or prove a long-time limit."
       },
       "predict": "Does a plot on 200 points examine every input between the endpoints?",
-      "look": "The figure is generated from your actual numerical evaluation. The exact start value and sampled endpoint have different provenance.",
-      "change": "Plot `sp.sin(x)` over zero to $2\\pi$. Label the horizontal axis in radians and compare two grid sizes.",
+      "look": "The plot comes from the current numerical samples. `Exact starting value` comes from symbolic substitution. `Sampled endpoint` comes from the last point in the floating-point grid.",
+      "change": "Replace `expression = sp.exp(-x)` with `expression = sp.sin(x)` and `end = 4` with `end = 2*sp.pi`. Change the x-axis label string to `\"x (radians)\"`. Select Run Python. Then change `points = 200` to `points = 25` and select Run Python again. Compare the plots, `Grid points` and `Sampled endpoint`.",
       "question": "A plotted curve seems to cross zero once. What further work supports a claim about all roots?",
       "options": [
         "Assume the finite grid has proved uniqueness.",
@@ -1954,7 +1954,7 @@
       "explain": [
         "Subtracting nearly equal numbers can lose significant digits in floating-point arithmetic. Two exactly equivalent symbolic formulas can therefore behave very differently when evaluated numerically. Simplification for readability and reformulation for numerical stability are related but distinct tasks.",
         "For $\\sqrt{x+1}-\\sqrt{x}$ at large positive x, the two square roots are close. Multiplying by the conjugate gives $\\frac1{\\sqrt{x+1}+\\sqrt{x}}$, which avoids subtracting those nearly equal values. The real-positive domain justifies the manipulation here.",
-        "Compare both ordinary scalar implementations with a high-precision reference built from an exact integer input. A successful example demonstrates this specific instability; it is not a general guarantee that every algebraic rewrite improves every calculation. Retain the identity and the numerical check `together`."
+        "Compare both ordinary scalar implementations with a high-precision reference built from an exact integer input. A successful example demonstrates this specific instability; it is not a general guarantee that every algebraic rewrite improves every calculation. Retain the identity and the numerical check together."
       ],
       "refresher": {
         "title": "Rationalising a difference",
@@ -1963,8 +1963,8 @@
         "example": "The numerator after multiplying by the conjugate is $(x+1)-x=1$. The new denominator adds positive quantities instead of subtracting nearly equal ones."
       },
       "predict": "Can two mathematically equal formulas produce different ordinary floating-point answers?",
-      "look": "The direct float calculation can lose the small difference entirely. High-precision evaluation uses the exact input and a separate arithmetic strategy.",
-      "change": "Compare inputs `10**4`, `10**8` and `10**16`. Identify when the direct result becomes unreliable.",
+      "look": "Compare both float evaluations with the `40-digit reference`, which uses the exact input. The direct subtraction loses the small difference entirely at the starter’s input size.",
+      "change": "Replace `sp.Integer(10)**16` on the `exact_input` line with `sp.Integer(10)**4` and select Run Python. Then use exponent `8` and select Run Python again. Compare `Direct float evaluation` and `Rewritten float evaluation` with `40-digit reference` for all three input sizes.",
       "question": "A symbolic identity is established. What remains to check before choosing a numerical implementation?",
       "options": [
         "Floating-point conditioning, stability and the input range.",
@@ -2006,8 +2006,8 @@
         "example": "`Float(\"0.1\",50)` starts from decimal text at the requested precision. `Float(0.1,50)` starts from the already rounded Python float."
       },
       "predict": "Will `Float(0.1,50)` and `Float(\"0.1\",50)` necessarily encode the same fifty-digit value?",
-      "look": "The text-based `Float` is still finite-precision arithmetic. `Rational` is the exact mathematical reference, not a claim of exact physical measurement.",
-      "change": "Try an input with twenty supplied decimal digits using a string and an ordinary Python numeric literal.",
+      "look": "Both Float rows have 50-digit arithmetic. `Python-input error` measures the difference after starting with a rounded binary float. `Text-input error` measures the difference after starting with the written decimal. `Exact decimal fraction` supplies the common reference.",
+      "change": "Replace `python_input = 0.1` with `python_input = 0.12345678901234567890` and `decimal_text = \"0.1\"` with `decimal_text = \"0.12345678901234567890\"`. Select Run Python. Compare `Python-input error` and `Text-input error` against the exact decimal fraction.",
       "question": "What is the best way to preserve a supplied long decimal literal for high-precision arithmetic?",
       "options": [
         "Convert it to a Python float first.",
@@ -2049,8 +2049,8 @@
         "example": "A C printer may emit `pow(x, 2)+1.0/3.0`. That source text still needs compilation before it becomes an executed C calculation."
       },
       "predict": "Does seeing generated C text mean that C has been compiled or run in this lesson?",
-      "look": "Only the symbolic Python calculation is executed. The C text is a generated artefact for later validation.",
-      "change": "Generate code for $e^{-x}$ and identify any standard-library function the target implementation needs.",
+      "look": "Find the generated C in Python text output. The experiment only executed the SymPy derivation and printer in Python. Use the labelled symbolic rows to verify the expression and derivative independently of the generated text.",
+      "change": "Replace `expression = x**2+sp.Rational(1,3)` with `expression = sp.exp(-x)`. Select Run Python and read Python text output. Which C math function appears in the generated `value` and `derivative` lines? Verify the symbolic derivative separately.",
       "question": "Which step is still needed after printing target-language source?",
       "options": [
         "Compilation and numerical validation in the intended target environment.",
@@ -2092,8 +2092,8 @@
         "example": "For an optimum, record the domain and boundary analysis. For an ODE, check the equation and initial condition. For a density, check support and total mass."
       },
       "predict": "Could a correct symbolic manipulation still answer the wrong modelling question?",
-      "look": "The source records the starter model and its restrictions. Your report supplies the question and justification for using it.",
-      "change": "Complete a report for one starter, then change the assumptions and describe which checks must change.",
+      "look": "For the optimisation starter, use `Permitted cut`, `Best interior cut` and `Volume at limiting boundaries` as the model’s evidence. The report records your mathematical question and justification for using that evidence.",
+      "change": "Run the optimisation starter and use `Permitted cut` and `Volume at limiting boundaries` to fill the report’s assumptions and verification fields. In the editor replace `task = \"optimisation\"` with `task = \"ode\"` and select Run Python. Revise the question and method in the report using `ODE check` and `Initial value`. Select Export investigation .md to record the new successful run and your conclusions.",
       "question": "What makes a final symbolic result meaningfully reproducible?",
       "options": [
         "A screenshot of the shortest formula alone.",
@@ -2137,8 +2137,8 @@
         "example": "The width becomes zero at $x=4$, so that endpoint is not a useful box. A stationary point beyond 4 cannot be a feasible design."
       },
       "predict": "Can the larger algebraic stationary root be used as a cut even if it exceeds the sheet’s half-width?",
-      "look": "The plot includes degenerate endpoints for context. The actual box domain is open, and the reported optimum lies strictly inside it.",
-      "change": "Change the sheet to 15 by 9 cm and update the domain and boundary checks along with the formula.",
+      "look": "`Feasible cut interval, cm` excludes the degenerate endpoints shown in the plot. Use `Best cut, exact cm` and `Limiting boundary volumes` to compare the interior optimum with the boundary limits.",
+      "change": "Replace `length,width = 12,8` with `length,width = 15,9`. The code derives the open domain, limiting volumes and plot range from the shorter side. Select Run Python. Compare `Feasible cut interval, cm`, `Best cut, exact cm` and `Limiting boundary volumes`.",
       "question": "A manufacturing rule requires cuts in half-centimetre increments. What must change?",
       "options": [
         "Choose the continuous optimum without considering the rule.",
@@ -2180,8 +2180,8 @@
         "example": "The roots of height are $t=0$ and $t=2v_0/g$. The derivative vanishes halfway between them, at the apex."
       },
       "predict": "Should the root $t=0$ be reported as the completed flight’s return time?",
-      "look": "The symbolic checks and the plotted interval address different parts of the model: the differential rule, initial state and physical observation boundary.",
-      "change": "Add an initial height $h_0>0$. Re-solve the ground equation and justify which root represents a future landing.",
+      "look": "`Ground roots` includes the launch and return for the starter. The plot spans the ideal flight for the invented inputs. The acceleration and initial-value outputs check separate conditions.",
+      "change": "Replace `initial_height = 0` with `initial_height = 2` for an invented launch from two metres. Select Run Python. Compare `Ground roots`, `Return time, seconds` and `Initial height`. Which root lies after launch? Use `Illustrative return time, seconds` to locate where the curve comes back to zero for the example inputs.",
       "question": "A valid algebraic time root is negative. What does that imply for a model restricted to t≥0?",
       "options": [
         "It can be excluded from the physical future-time question, with that restriction stated.",
@@ -2223,8 +2223,8 @@
         "example": "Because $V>0$, it cancels from this half-voltage equation. Doubling R with C fixed doubles the ideal crossing time."
       },
       "predict": "Will doubling V alone change the time to reach one half of that same V in the ideal model?",
-      "look": "The timing formula is independent of V for this relative threshold. That does not mean every absolute voltage threshold has the same property.",
-      "change": "Replace $V/2$ with a fixed threshold of 2 volts. State conditions on V for a positive finite crossing.",
+      "look": "For the starter threshold V/2, V cancels from `Threshold time`. The calculation requires the threshold to be above zero and below the final voltage. The exact residual checks the crossing equation in that range.",
+      "change": "Replace `threshold = V/2` with `threshold = sp.Integer(2)` for a fixed two-volt threshold. Select Run Python. Compare `Threshold time` and `Conditions for a positive finite crossing` with the first run. What must the final voltage exceed? Check `Threshold residual` and the updated horizontal line.",
       "question": "For an absolute threshold above the final voltage V, what does the ideal monotone response imply?",
       "options": [
         "A guaranteed finite positive crossing.",
@@ -2266,8 +2266,8 @@
         "example": "More draws refine the simulated mean. They do not narrow the model’s distribution of possible individual areas."
       },
       "predict": "Will increasing simulation draws reduce uncertainty about whether real radii follow the assumed uniform model?",
-      "look": "The histogram describes possible areas, while MCSE concerns the average of the simulated areas. Exact and numerical results share the same authored model.",
-      "change": "Increase draw count by a factor of four and repeat with several seeds. Compare MCSE rather than expecting every estimate to move monotonically closer.",
+      "look": "Compare `Simulated mean` with `Exact mean area` for the same authored model. The histogram shows the spread of individual areas. `Estimated MCSE` measures how much the simulated mean would vary across repeated runs.",
+      "change": "Replace `draws = 20000` with `draws = 80000` and select Run Python. Then replace `seed = 2026` with `seed = 2027` and select Run Python again. Compare `Estimated MCSE` and `Simulated mean` with the original run. Which quantity shows the more regular change when the sample size increases?",
       "question": "A simulated mean agrees closely with the exact model mean. What does that support?",
       "options": [
         "That the assumed input distribution must describe real measurements.",

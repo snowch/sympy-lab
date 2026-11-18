@@ -76,3 +76,20 @@ Start each investigation with a visible cue to run the published example.
 Keep keyboard focus predictable, offer recovery for the latest replaced draft
 and show execution errors alongside any successful mathematical result.
 Run and report exports should describe that successful execution.
+
+## Course-wide wording and interface check
+
+The essential route starts with the goal and mathematical context, then asks
+for a prediction before an independent Python run. Read the prepared source
+as a learner who can recognise Python assignments and function calls. Each
+edit identifies the literal input or statement, the command to run it and
+the printed evidence needed to answer the comparison. Fresh cases ask
+learners to apply that reasoning to inputs outside the example.
+
+Check for a change that edits a formula while leaving its old label, reference
+or bounds behind. Preserve original equation and domain checks through
+transformation. Introduce any notation essential to the task in the visible
+route and use the optional refresher to review supporting maths. Keep setup,
+prepared source, mathematical outcomes, runtime errors and the state of saved
+work distinct. The report should export open notes and the previous successful
+execution even when storage or a new run fails.

@@ -4,8 +4,9 @@ import sympy as sp
 
 x = sp.symbols("x")
 expression = x**3-x
-roots = [sp.nsolve(expression,x,guess,prec=35) for guess in [-1.2,.1,1.2]]
-results = {"Roots from three guesses": roots,
+guesses = [-1.2,.1,1.2]
+roots = [sp.nsolve(expression,x,guess,prec=35) for guess in guesses]
+results = {"Starting guesses": guesses, "Numerical roots": roots,
            "Residuals": [expression.evalf(12,subs={x:r}) for r in roots]}
 
 

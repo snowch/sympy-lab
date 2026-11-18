@@ -5,9 +5,10 @@ import sympy as sp
 x,y = sp.symbols("x y",real=True)
 residual = x**2+y**2-25
 slope = sp.idiff(residual,y,x)
-results = {"Implicit slope": slope, "At (3,4)": slope.subs({x:3,y:4}),
-           "At (0,5)": slope.subs({x:0,y:5}),
-           "Curve check at (5,0)": residual.subs({x:5,y:0})}
+top = {x:0,y:5}
+right = {x:5,y:0}
+results = {"Implicit slope": slope, "Top point on curve": residual.subs(top)==0,
+           "Slope at top point": slope.subs(top), "Right point on curve": residual.subs(right)==0}
 
 
 for label, value in results.items():
