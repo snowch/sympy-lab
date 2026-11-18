@@ -66,6 +66,24 @@ class CourseTests(unittest.TestCase):
         ns=self.ns(5)
         self.assertEqual(ns['swapped'],2*ns['x']+ns['y'])
         self.assertNotEqual(ns['swapped'],ns['sequential'])
+    def test_documented_editor_changes(self):
+        edits=json.loads((ROOT/'tests/lesson-edits.json').read_text())
+        self.assertEqual(set(edits),{lesson['slug'] for lesson in ALL})
+        for lesson in ALL:
+            spec=edits[lesson['slug']]
+            source=(ROOT/'python'/lesson['code']).read_text()
+            for replacements in [spec['replace'],*spec['variants']]:
+                with self.subTest(lesson=lesson['slug'],variant=replacements):
+                    revised=source
+                    for old,new in replacements:
+                        self.assertEqual(revised.count(old),1)
+                        revised=revised.replace(old,new,1)
+                    self.assertNotEqual(revised,source)
+                    namespace,output=run(lesson,revised)
+                    self.assertTrue(namespace.get('results'))
+                    self.assertIn('Run Python',lesson['change'])
+                    for label in namespace['results']:
+                        self.assertIn(f'{label}:',output)
     def test_cancelled_domain_and_solver_checks(self):
         ns=self.ns(9)
         self.assertEqual(ns['original'].subs(ns['x'],1),sp.nan)

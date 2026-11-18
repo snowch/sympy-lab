@@ -131,7 +131,7 @@
         "https://docs.sympy.org/latest/tutorials/intro-tutorial/gotchas.html"
       ],
       "minutes": 7,
-      "kind": "Exact symbolic investigation",
+      "kind": "Exact fraction and floating-point approximation",
       "module": 0,
       "code": "02-keep-numbers-exact.py",
       "track": "core",
@@ -283,7 +283,7 @@
         "example": "Rounding $\\sqrt2$ to three significant digits gives 1.41. Squaring that rounded value does not give exactly 2."
       },
       "predict": "Does requesting 40 digits of an exact $\\sqrt2$ require replacing it with a Python float first?",
-      "look": "`Exact substitution` retains $\\sqrt 2+\\pi$. The exact root check is zero before numerical rounding. The two decimal displays approximate the same exact quantity.",
+      "look": "`Substitution before numerical evaluation` retains $\\sqrt 2+\\pi$. The exact root check is zero before numerical rounding. The two decimal displays approximate the same exact quantity.",
       "change": "Replace `sp.pi` on the `expression` line with the Python number `3.141592653589793`. Select Run Python. Compare the original and edited `40 significant digits` results. Why do digits printed past the input precision fail to recover the exact sum?",
       "question": "A sensor supplies about four reliable digits. What does printing 50 digits establish?",
       "options": [
@@ -303,7 +303,7 @@
         "https://docs.sympy.org/latest/modules/evalf.html"
       ],
       "minutes": 7,
-      "kind": "Exact symbolic investigation",
+      "kind": "Exact expression and numerical evaluation",
       "module": 0,
       "code": "06-choose-when-to-approximate.py",
       "track": "core",
@@ -820,7 +820,7 @@
         "https://docs.sympy.org/latest/tutorials/intro-tutorial/solvers.html"
       ],
       "minutes": 8,
-      "kind": "Exact symbolic investigation",
+      "kind": "Numerical roots with original residual checks",
       "module": 2,
       "code": "18-a-numerical-root-needs-a-check.py",
       "track": "core",
@@ -906,7 +906,7 @@
         "https://docs.sympy.org/latest/tutorials/intro-tutorial/simplification.html"
       ],
       "minutes": 7,
-      "kind": "Exact symbolic investigation",
+      "kind": "Exact angle conversion and numerical comparison",
       "module": 3,
       "code": "20-use-a-trigonometric-identity.py",
       "track": "core",
@@ -1868,7 +1868,7 @@
       "explain": [
         "A symbolic expression is useful for derivation; a numerical function is convenient for repeated evaluation. `lambdify` translates a SymPy expression into a callable using a selected numerical library. It does not compile or prove the model automatically.",
         "State the argument order explicitly. Here the tuple (x,a,b) gives the order: x first, a second and the constant b third. Choose a backend such as math for ordinary scalar calls or numpy for array work. Keep the symbolic expression as the derivation and verification record.",
-        "Compare the numerical result with exact symbolic substitution at a check point. The numerical function generally uses floating-point arithmetic, so agreement is approximate and precision follows that backend. Only `lambdify` expressions you trust; this translation uses generated executable code."
+        "Compare the numerical result with exact symbolic substitution at a check point. Both routes agree exactly here because the chosen inputs and operations give integers. For floating-point inputs the precision follows the numerical backend. Only `lambdify` expressions you trust; this translation uses generated executable code."
       ],
       "refresher": {
         "title": "A rule and its implementation",
@@ -1897,7 +1897,7 @@
         "https://docs.sympy.org/latest/modules/utilities/lambdify.html"
       ],
       "minutes": 8,
-      "kind": "Exact symbolic investigation",
+      "kind": "Symbolic formula and numerical evaluation",
       "module": 7,
       "code": "43-turn-a-formula-into-a-numerical-function.py",
       "track": "core",
@@ -1940,7 +1940,7 @@
         "https://docs.sympy.org/latest/modules/utilities/lambdify.html"
       ],
       "minutes": 8,
-      "kind": "Exact symbolic investigation",
+      "kind": "Symbolic curve and sampled numerical values",
       "module": 7,
       "code": "44-evaluate-a-curve-on-an-array.py",
       "track": "core",
@@ -1983,7 +1983,7 @@
         "https://docs.sympy.org/latest/modules/evalf.html"
       ],
       "minutes": 9,
-      "kind": "Exact symbolic investigation",
+      "kind": "Exact identity and floating-point comparison",
       "module": 7,
       "code": "45-rewrite-a-cancellation-prone-calculation.py",
       "track": "core",
@@ -2026,7 +2026,7 @@
         "https://docs.sympy.org/latest/modules/evalf.html"
       ],
       "minutes": 8,
-      "kind": "Exact symbolic investigation",
+      "kind": "Written decimal, exact fraction and floating-point values",
       "module": 7,
       "code": "46-precision-starts-with-the-input.py",
       "track": "core",
@@ -2069,7 +2069,7 @@
         "https://docs.sympy.org/latest/modules/printing.html"
       ],
       "minutes": 8,
-      "kind": "Exact symbolic investigation",
+      "kind": "Symbolic calculation with generated C source",
       "module": 7,
       "code": "47-export-an-expression-as-code.py",
       "track": "core",
