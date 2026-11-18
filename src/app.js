@@ -65,7 +65,12 @@ function initializeOverview({lessons,applications}){
  if(!storageAvailable)$('progress-status').textContent='This browser could not open saved progress.';
  const modules=[...document.querySelectorAll('.module')];
  const savedOpen=new Map();let searching=false;
- const revealModule=()=>{const module=document.getElementById(location.hash.slice(1));if(module?.classList.contains('module'))module.open=true};
+ const revealModule=()=>{
+  let id;
+  try{id=decodeURIComponent(location.hash.slice(1))}catch{return}
+  const module=document.getElementById(id);
+  if(module?.classList.contains('module'))module.open=true;
+ };
  revealModule();window.addEventListener('hashchange',revealModule);
  $('search').addEventListener('input',()=>{
   const words=$('search').value.toLowerCase().trim().split(/\s+/).filter(Boolean);
