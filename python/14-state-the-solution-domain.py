@@ -6,7 +6,7 @@ x = sp.symbols("x")
 expression = x**2+1
 results = {"Real solutions": sp.solveset(expression,x,domain=sp.S.Reals),
            "Complex solutions": sp.solveset(expression,x,domain=sp.S.Complexes),
-           "Check I": expression.subs(x,sp.I)}
+           "Complex candidate residuals": [expression.subs(x,r) for r in sp.solveset(expression,x,domain=sp.S.Complexes)]}
 
 
 for label, value in results.items():

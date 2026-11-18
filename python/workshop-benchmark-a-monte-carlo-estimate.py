@@ -8,12 +8,14 @@ r = sp.symbols("r",real=True)
 area = sp.pi*r**2
 exact_mean = sp.integrate(area,(r,1,2))
 exact_variance = sp.simplify(sp.integrate(area**2,(r,1,2))-exact_mean**2)
-rng = np.random.default_rng(2026)
-radius = rng.uniform(1,2,20000)  # AUTHORED probability model, not measured data
+seed = 2026
+draws = 20000
+rng = np.random.default_rng(seed)
+radius = rng.uniform(1,2,draws)  # AUTHORED probability model, not measured data
 simulated = np.pi*radius**2
 estimate = simulated.mean()
 mcse = simulated.std(ddof=1)/np.sqrt(len(simulated))
-results = {"Exact mean area": exact_mean, "Exact outcome variance": exact_variance,
+results = {"Seed": seed, "Draws": draws, "Exact mean area": exact_mean, "Exact outcome variance": exact_variance,
            "Simulated mean": float(estimate), "Estimated MCSE": float(mcse),
            "Difference in estimated SE units": float((estimate-float(exact_mean))/mcse)}
 plt.hist(simulated,bins=35,color="#176b52",alpha=.85)

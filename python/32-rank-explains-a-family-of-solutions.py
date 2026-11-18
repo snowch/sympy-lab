@@ -8,8 +8,8 @@ b = sp.Matrix([3,6])
 bad_b = sp.Matrix([3,7])
 results = {"Coefficient rank": A.rank(), "Compatible augmented rank": A.row_join(b).rank(),
            "Solution family": sp.linsolve((A,b),(x,y)),
-           "Conflicting augmented rank": A.row_join(bad_b).rank(),
-           "Conflicting solutions": sp.linsolve((A,bad_b),(x,y))}
+           "Conflicting augmented rank": A[:2,:].row_join(bad_b).rank(),
+           "Conflicting solutions": sp.linsolve((A[:2,:],bad_b),(x,y))}
 
 
 for label, value in results.items():

@@ -5,7 +5,8 @@ import sympy as sp
 x = sp.symbols("x",real=True)
 objective = x*(10-x)
 stationary = sp.solve(sp.diff(objective,x),x)
-candidates = [sp.Integer(0),sp.Integer(4)]+[r for r in stationary if 0<=r<=4]
+upper = 4
+candidates = [sp.Integer(0),sp.Integer(upper)]+[r for r in stationary if 0<=r<=upper]
 best = max(candidates,key=lambda r:objective.subs(x,r))
 results = {"Objective": objective, "Unconstrained stationary points": stationary,
            "Feasible candidates": candidates, "Best feasible x": best,

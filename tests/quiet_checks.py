@@ -57,7 +57,41 @@ def check_quiet_layout(browser,root,base,lessons):
     reader=blocked.new_page();reader.goto(base+'lessons/'+lessons[0]['slug']+'.html')
     reader.wait_for_selector('html[data-ready=true]')
     assert reader.locator('#storage-error').is_visible()
-    assert 'storage is unavailable' in reader.locator('#storage-error').inner_text()
+    assert 'could not open your saved work' in reader.locator('#storage-error').inner_text()
     assert reader.locator('#run').is_enabled()
+    reader.goto(base);reader.wait_for_selector('html[data-ready=true]')
+    reader.locator('.portable-progress summary').press('Enter')
+    downloads=[];reader.on('download',lambda item:downloads.append(item))
+    reader.locator('#export-progress').press('Enter')
+    assert 'No file was downloaded.' in reader.locator('#progress-status').inner_text()
+    assert not downloads
     blocked.close()
+    quota=browser.new_context(viewport={'width':390,'height':900})
+    quota.add_init_script("""const store=Storage.prototype.setItem;
+        Storage.prototype.setItem=function(key,value){
+          if(window.blockDrafts && key.startsWith('syl:v1:'))throw new DOMException('Full','QuotaExceededError');
+          return store.call(this,key,value);
+        };""")
+    reader=quota.new_page();reader.goto(base+'lessons/'+lessons[0]['slug']+'.html')
+    reader.wait_for_selector('html[data-ready=true]')
+    code=reader.locator('#code')
+    starter=code.input_value()
+    code.fill(starter+'\n# older saved code')
+    assert not reader.locator('.editor-prepare').is_visible()
+    reader.locator('#lesson-notes summary').press('Enter')
+    reader.locator('#notes').fill('Older saved note')
+    assert 'Notes saved' in reader.locator('#save-note').inner_text()
+    reader.evaluate('window.blockDrafts=true')
+    reader.locator('#notes').fill('Unsaved text')
+    assert 'could not save' in reader.locator('#save-note').inner_text()
+    code.fill(starter+'\n# unsaved edit')
+    assert reader.locator('#storage-error').is_visible()
+    assert 'could not save' in reader.locator('#storage-error').inner_text()
+    reader.locator('#back-to-editor').press('Enter')
+    assert reader.evaluate('document.activeElement.id')=='code'
+    reader.reload();reader.wait_for_selector('html[data-ready=true]')
+    assert code.input_value()==starter+'\n# older saved code'
+    assert reader.locator('#notes').input_value()=='Older saved note'
+    assert reader.locator('#saved-draft-note').is_visible()
+    quota.close()
     print('PASS quiet default states, 820/1024px tablet/sidebar layouts, optional tools, module search and deep links.',flush=True)

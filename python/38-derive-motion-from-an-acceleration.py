@@ -5,7 +5,9 @@ import sympy as sp
 t,a,v0,s0 = sp.symbols("t a v0 s0",real=True)
 velocity = sp.integrate(a,t)+v0
 position = sp.integrate(velocity,t)+s0
-results = {"Velocity": velocity, "Position": position,
+parameters = {s0:0, v0:5, a:-2}  # INVENTED example, SI units
+results = {"Time when example velocity is zero": sp.solve(velocity.subs(parameters),t),
+           "Velocity": velocity, "Position": position,
            "Acceleration residual": sp.diff(position,t,2)-a,
            "Initial velocity": velocity.subs(t,0), "Initial position": position.subs(t,0)}
 

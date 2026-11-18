@@ -1,0 +1,600 @@
+{
+  "your-first-symbolic-expression": {
+    "replace": [
+      [
+        "expression = (x+1)**2",
+        "expression = (x+2)**2"
+      ]
+    ],
+    "variants": []
+  },
+  "keep-numbers-exact": {
+    "replace": [
+      [
+        "sp.Rational(1,3)",
+        "sp.Rational(\"0.1\")"
+      ],
+      [
+        "sp.sympify(1/3)",
+        "sp.Float(0.1,30)"
+      ]
+    ],
+    "variants": []
+  },
+  "a-symbol-is-an-object": {
+    "replace": [
+      [
+        "positive_x = sp.Symbol(\"x\",positive=True)",
+        "positive_x = sp.Symbol(\"p\",positive=True)"
+      ]
+    ],
+    "variants": []
+  },
+  "tell-sympy-what-a-symbol-means": {
+    "replace": [
+      [
+        "positive=True",
+        "nonnegative=True"
+      ]
+    ],
+    "variants": [
+      [
+        [
+          "positive=True",
+          "negative=True"
+        ]
+      ]
+    ]
+  },
+  "substitute-deliberately": {
+    "replace": [
+      [
+        "expression = x+2*y",
+        "expression = x/y"
+      ]
+    ],
+    "variants": []
+  },
+  "choose-when-to-approximate": {
+    "replace": [
+      [
+        "expression = sp.sqrt(x)+sp.pi",
+        "expression = sp.sqrt(x)+3.141592653589793"
+      ]
+    ],
+    "variants": []
+  },
+  "expand-or-factor": {
+    "replace": [
+      [
+        "polynomial = x**2+x-6",
+        "polynomial = x**2+1"
+      ],
+      [
+        "factored = sp.factor(polynomial)",
+        "factored = sp.factor(polynomial, extension=sp.I)"
+      ]
+    ],
+    "variants": [
+      [
+        [
+          "polynomial = x**2+x-6",
+          "polynomial = x**2+1"
+        ]
+      ]
+    ]
+  },
+  "collect-the-terms-you-need": {
+    "replace": [
+      [
+        "expression = a*x+b*x+2*a*x**2+b",
+        "expression = a*x+b*x+2*a*x**2+b+b*x**2"
+      ],
+      [
+        "coeff(x,1)",
+        "coeff(x,2)"
+      ],
+      [
+        "\"Coefficient of x\"",
+        "\"Coefficient of x squared\""
+      ]
+    ],
+    "variants": []
+  },
+  "cancel-with-the-domain-in-view": {
+    "replace": [
+      [
+        "hole = 1",
+        "hole = 2"
+      ]
+    ],
+    "variants": []
+  },
+  "separate-partial-fractions": {
+    "replace": [
+      [
+        "original = 1/(x*(x+1))",
+        "original = 1/(x*(x+2))"
+      ]
+    ],
+    "variants": []
+  },
+  "build-a-common-denominator": {
+    "replace": [
+      [
+        "original = 1/x+1/(x+1)",
+        "original = 1/(x-1)+2/(x+1)"
+      ]
+    ],
+    "variants": []
+  },
+  "simplify-towards-a-goal": {
+    "replace": [
+      [
+        "a,b = (x+1)**2,x**2+2*x+1",
+        "a,b = x**2,x"
+      ]
+    ],
+    "variants": []
+  },
+  "write-an-equation-then-solve-it": {
+    "replace": [
+      [
+        "sp.Eq(3*x+2,11)",
+        "sp.Eq(5*x+2,11)"
+      ]
+    ],
+    "variants": []
+  },
+  "state-the-solution-domain": {
+    "replace": [
+      [
+        "expression = x**2+1",
+        "expression = x**2-1"
+      ]
+    ],
+    "variants": []
+  },
+  "solve-a-linear-system": {
+    "replace": [
+      [
+        "2*x+3*y-24",
+        "2*x+3*y-25"
+      ]
+    ],
+    "variants": []
+  },
+  "solve-a-nonlinear-system": {
+    "replace": [
+      [
+        "x**2+y**2-5",
+        "x**2+y**2-1"
+      ]
+    ],
+    "variants": []
+  },
+  "solve-an-inequality-as-a-region": {
+    "replace": [
+      [
+        "x**2<9",
+        "x**2<=9"
+      ]
+    ],
+    "variants": []
+  },
+  "a-numerical-root-needs-a-check": {
+    "replace": [
+      [
+        "expression = x**3-x",
+        "expression = sp.cos(x)-x"
+      ],
+      [
+        "guesses = [-1.2,.1,1.2]",
+        "guesses = [1]"
+      ],
+      [
+        "prec=35",
+        "prec=50"
+      ]
+    ],
+    "variants": []
+  },
+  "compose-functions-in-the-right-order": {
+    "replace": [
+      [
+        "f = sp.Lambda(x,x+1)",
+        "f = sp.Lambda(x,2*x)"
+      ]
+    ],
+    "variants": []
+  },
+  "use-a-trigonometric-identity": {
+    "replace": [
+      [
+        "degrees = 30",
+        "degrees = 60"
+      ],
+      [
+        "trig = sp.sin",
+        "trig = sp.cos"
+      ]
+    ],
+    "variants": []
+  },
+  "respect-logarithm-branches": {
+    "replace": [
+      [
+        "power = sp.Rational(1,2)",
+        "power = 2"
+      ]
+    ],
+    "variants": []
+  },
+  "define-a-piecewise-rule": {
+    "replace": [
+      [
+        "rule = sp.Piecewise((-x,x<0),(x,True))",
+        "rule = sp.Piecewise((5,x<20),(0,True))"
+      ],
+      [
+        "inputs = [-2,0,2]",
+        "inputs = [19,20,21]"
+      ]
+    ],
+    "variants": []
+  },
+  "read-a-polynomial-and-its-roots": {
+    "replace": [
+      [
+        "(x-1)**2*(x+2)",
+        "(x-1)**3*(x+2)"
+      ]
+    ],
+    "variants": []
+  },
+  "sum-a-family-of-terms": {
+    "replace": [
+      [
+        "term = k",
+        "term = k**2"
+      ],
+      [
+        "check_n = 4",
+        "check_n = 3"
+      ]
+    ],
+    "variants": []
+  },
+  "a-limit-is-not-a-substitution": {
+    "replace": [
+      [
+        "sp.sin(x)/x",
+        "sp.Abs(x)/x"
+      ]
+    ],
+    "variants": []
+  },
+  "differentiate-a-composed-expression": {
+    "replace": [
+      [
+        "sp.exp(x**2)",
+        "sp.exp(3*x+1)"
+      ]
+    ],
+    "variants": []
+  },
+  "differentiate-an-implicit-curve": {
+    "replace": [
+      [
+        "residual = x**2+y**2-25",
+        "residual = x**2+4*y**2-16"
+      ],
+      [
+        "top = {x:0,y:5}",
+        "top = {x:0,y:2}"
+      ],
+      [
+        "right = {x:5,y:0}",
+        "right = {x:4,y:0}"
+      ]
+    ],
+    "variants": []
+  },
+  "take-one-partial-derivative-at-a-time": {
+    "replace": [
+      [
+        "expression = x**2+x*y+y**2",
+        "expression = x**2+x*y+y**2+3*x*y"
+      ]
+    ],
+    "variants": []
+  },
+  "integrate-and-check-by-differentiating": {
+    "replace": [
+      [
+        "rate = 2*x",
+        "rate = 3*x**2"
+      ],
+      [
+        "upper = 3",
+        "upper = 2"
+      ]
+    ],
+    "variants": []
+  },
+  "keep-the-remainder-in-a-series": {
+    "replace": [
+      [
+        "function = sp.sin(x)",
+        "function = sp.exp(x)"
+      ],
+      [
+        "center = 0",
+        "center = 1"
+      ]
+    ],
+    "variants": []
+  },
+  "a-matrix-acts-on-a-vector": {
+    "replace": [
+      [
+        "v = sp.Matrix([3,4])",
+        "v = sp.Matrix([1,0])"
+      ]
+    ],
+    "variants": [
+      [
+        [
+          "v = sp.Matrix([3,4])",
+          "v = sp.Matrix([0,1])"
+        ]
+      ]
+    ]
+  },
+  "rank-explains-a-family-of-solutions": {
+    "replace": [
+      [
+        "A = sp.Matrix([[1,1],[2,2]])",
+        "A = sp.Matrix([[1,1],[2,2],[1,-1]])"
+      ],
+      [
+        "b = sp.Matrix([3,6])",
+        "b = sp.Matrix([3,6,1])"
+      ]
+    ],
+    "variants": []
+  },
+  "check-an-inverse-by-multiplication": {
+    "replace": [
+      [
+        "[[2,1],[1,1]]",
+        "[[2,1],[1,sp.Rational(1,2)]]"
+      ]
+    ],
+    "variants": []
+  },
+  "find-directions-that-keep-their-line": {
+    "replace": [
+      [
+        "v = sp.Matrix([1,1])",
+        "v = sp.Matrix([1,-1])"
+      ],
+      [
+        "eigenvalue = 3",
+        "eigenvalue = 1"
+      ]
+    ],
+    "variants": []
+  },
+  "use-a-different-coordinate-basis": {
+    "replace": [
+      [
+        "power = 5",
+        "power = 10"
+      ]
+    ],
+    "variants": []
+  },
+  "fit-a-small-line-exactly": {
+    "replace": [
+      [
+        "sp.Matrix([1,2,2])",
+        "sp.Matrix([1,2,3])"
+      ]
+    ],
+    "variants": []
+  },
+  "optimise-inside-the-permitted-region": {
+    "replace": [
+      [
+        "upper = 4",
+        "upper = 8"
+      ]
+    ],
+    "variants": []
+  },
+  "derive-motion-from-an-acceleration": {
+    "replace": [
+      [
+        "parameters = {s0:0, v0:5, a:-2}",
+        "parameters = {s0:0, v0:6, a:-3}"
+      ]
+    ],
+    "variants": []
+  },
+  "solve-a-decay-equation": {
+    "replace": [
+      [
+        "rate = sp.Rational(1,10)",
+        "rate = sp.Rational(1,5)"
+      ]
+    ],
+    "variants": []
+  },
+  "derive-a-charging-response": {
+    "replace": [
+      [
+        "initial = 0",
+        "initial = V/4"
+      ]
+    ],
+    "variants": []
+  },
+  "integrate-a-probability-density": {
+    "replace": [
+      [
+        "shape = x",
+        "shape = x**2"
+      ]
+    ],
+    "variants": []
+  },
+  "propagate-small-input-uncertainty": {
+    "replace": [
+      [
+        "cross_covariance = 0",
+        "cross_covariance = sp.Rational(1,100)"
+      ]
+    ],
+    "variants": []
+  },
+  "turn-a-formula-into-a-numerical-function": {
+    "replace": [
+      [
+        "inputs = (3,2,1)",
+        "inputs = (3,2,4)"
+      ]
+    ],
+    "variants": []
+  },
+  "evaluate-a-curve-on-an-array": {
+    "replace": [
+      [
+        "expression = sp.exp(-x)",
+        "expression = sp.sin(x)"
+      ],
+      [
+        "end = 4",
+        "end = 2*sp.pi"
+      ],
+      [
+        "plt.xlabel(\"x, dimensionless\")",
+        "plt.xlabel(\"x (radians)\")"
+      ],
+      [
+        "points = 200",
+        "points = 25"
+      ]
+    ],
+    "variants": [
+      [
+        [
+          "expression = sp.exp(-x)",
+          "expression = sp.sin(x)"
+        ],
+        [
+          "end = 4",
+          "end = 2*sp.pi"
+        ],
+        [
+          "plt.xlabel(\"x, dimensionless\")",
+          "plt.xlabel(\"x (radians)\")"
+        ]
+      ]
+    ]
+  },
+  "rewrite-a-cancellation-prone-calculation": {
+    "replace": [
+      [
+        "sp.Integer(10)**16",
+        "sp.Integer(10)**4"
+      ]
+    ],
+    "variants": [
+      [
+        [
+          "sp.Integer(10)**16",
+          "sp.Integer(10)**8"
+        ]
+      ]
+    ]
+  },
+  "precision-starts-with-the-input": {
+    "replace": [
+      [
+        "python_input = 0.1",
+        "python_input = 0.12345678901234567890"
+      ],
+      [
+        "decimal_text = \"0.1\"",
+        "decimal_text = \"0.12345678901234567890\""
+      ]
+    ],
+    "variants": []
+  },
+  "export-an-expression-as-code": {
+    "replace": [
+      [
+        "expression = x**2+sp.Rational(1,3)",
+        "expression = sp.exp(-x)"
+      ]
+    ],
+    "variants": []
+  },
+  "publish-a-checked-symbolic-investigation": {
+    "replace": [
+      [
+        "task = \"optimisation\"",
+        "task = \"ode\""
+      ]
+    ],
+    "variants": []
+  },
+  "design-an-open-box": {
+    "replace": [
+      [
+        "length,width = 12,8",
+        "length,width = 15,9"
+      ]
+    ],
+    "variants": []
+  },
+  "check-a-projectile-model": {
+    "replace": [
+      [
+        "initial_height = 0",
+        "initial_height = 2"
+      ]
+    ],
+    "variants": []
+  },
+  "plan-a-circuit-threshold-time": {
+    "replace": [
+      [
+        "threshold = V/2",
+        "threshold = sp.Integer(2)"
+      ]
+    ],
+    "variants": []
+  },
+  "benchmark-a-monte-carlo-estimate": {
+    "replace": [
+      [
+        "draws = 20000",
+        "draws = 80000"
+      ]
+    ],
+    "variants": [
+      [
+        [
+          "draws = 20000",
+          "draws = 80000"
+        ],
+        [
+          "seed = 2026",
+          "seed = 2027"
+        ]
+      ]
+    ]
+  }
+}

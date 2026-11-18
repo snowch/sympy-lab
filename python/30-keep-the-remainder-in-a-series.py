@@ -3,11 +3,13 @@
 import sympy as sp
 
 x = sp.symbols("x",real=True)
-expansion = sp.series(sp.sin(x),x,0,7)
+function = sp.sin(x)
+center = 0
+expansion = sp.series(function,x,center,7)
 polynomial = expansion.removeO()
-results = {"Series about zero": expansion, "Polynomial only": polynomial,
-           "Error at 1/10": (sp.sin(x)-polynomial).evalf(10,subs={x:sp.Rational(1,10)}),
-           "Error at 2": (sp.sin(x)-polynomial).evalf(10,subs={x:2})}
+results = {"Series": expansion, "Polynomial only": polynomial,
+           "Error at center + 1/10": (function-polynomial).evalf(10,subs={x:center+sp.Rational(1,10)}),
+           "Error at center + 2": (function-polynomial).evalf(10,subs={x:center+2})}
 
 
 for label, value in results.items():

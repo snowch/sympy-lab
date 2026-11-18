@@ -31,7 +31,7 @@ await fs.writeFile('dist/worked-environment.json',JSON.stringify(worked.environm
 await fs.writeFile('dist/.nojekyll','');
 await fs.writeFile('dist/favicon.svg','<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><rect width="36" height="36" rx="10" fill="#176b52"/><path d="M24 9H12l7 9-7 9h12" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
 const shell=(title,body,p='')=>`<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light dark"><meta name="description" content="Learn SymPy through 48 short Python investigations and four integrated workshops. Optional maths refreshers, exact symbolic results and a clear learning path."><title>${esc(title)} · SymPy Lab</title><link rel="icon" href="${p}favicon.svg"><link rel="stylesheet" href="${p}vendor/katex.min.css"><link rel="stylesheet" href="${p}style.${version}.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('syl:theme')||'light'}catch{}</script><script type="module" src="${p}app.${version}.js"></script></head><body>${header(p)}${body}${footer(p)}</body></html>`;
-await fs.writeFile('dist/index.html',shell('Make the maths make sense',renderHome(course,worked.lessons[lessons[3].slug])));
+await fs.writeFile('dist/index.html',shell('Symbolic maths with Python',renderHome(course,worked.lessons[lessons[3].slug])));
 for(const[i,l]of all.entries()){
  const code=await fs.readFile('python/'+l.code,'utf8'),record=worked.lessons[l.slug],figures=[];
  for(const[j,svg]of record.figures.entries()){

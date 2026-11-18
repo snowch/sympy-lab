@@ -1,14 +1,16 @@
 # Copyright © 2026 Christopher Snow
-# Exact symbolic investigation. Authored teaching example.
+# Exact angle conversion and numerical comparison. Authored teaching example.
 import sympy as sp
 
 theta = sp.symbols("theta",real=True)
 identity = sp.sin(theta)**2+sp.cos(theta)**2
-radians = 30*sp.pi/180
+degrees = 30
+radians = degrees*sp.pi/180
+trig = sp.sin
 results = {"Identity simplified": sp.trigsimp(identity),
-           "Thirty degrees in radians": radians,
-           "Exact sine of thirty degrees": sp.sin(radians),
-           "Thirty radians, approximate": sp.sin(30).evalf(8)}
+           "Degree input converted to radians": radians,
+           "Exact value at converted angle": trig(radians),
+           "Approximate value treating the number as radians": trig(degrees).evalf(8)}
 
 
 for label, value in results.items():

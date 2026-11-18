@@ -4,6 +4,7 @@ import sympy as sp
 
 x,y = sp.symbols("x y")
 expression = x+2*y
+# For the fraction variant, limit the comparison to x != 0 and y != 0.
 sequential = expression.subs([(x,y),(y,x)])
 swapped = expression.subs({x:y,y:x},simultaneous=True)
 results = {"Original": expression, "Sequential": sequential,
