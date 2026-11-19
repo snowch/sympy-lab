@@ -2,6 +2,7 @@
 """Real Wasm mathematics, refresher UX, provenance, recovery and responsive reading."""
 import json,math,os,re,subprocess,sys,time
 from pathlib import Path
+from runtime_startup import check_runtime_startup
 from playwright.sync_api import sync_playwright
 from quiet_checks import check_quiet_layout
 ROOT=Path(__file__).resolve().parents[1]
@@ -304,6 +305,7 @@ try:
         assert not any('/engine/' in url for url in requests)
         assert errors==[],errors
         check_quiet_layout(browser,ROOT,BASE,LESSONS)
+        check_runtime_startup(browser, BASE, LESSONS[0]['slug'])
         browser.close()
         print('PASS: 52 real Wasm sources; native text/LaTeX agreement; all refresher panels; reports and provenance; error/Stop recovery; drafts/progress; 320/390px and 200% reflow; both themes; no-JavaScript reading.',flush=True)
 finally:
