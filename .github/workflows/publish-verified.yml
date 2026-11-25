@@ -45,7 +45,7 @@ jobs:
         run: node scripts/verify-offline-build.mjs dist "$EXPECTED_COMMIT"
       - name: Preserve assets for older open lessons
         env:
-          PUBLISHED_https://snowch.github.io/sympy-lab/: https://snowch.github.io/sympy-lab/
+          PUBLISHED_COURSE_URL: https://snowch.github.io/sympy-lab/
         run: node scripts/retain-for-publish.mjs
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v3
