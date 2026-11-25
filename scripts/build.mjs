@@ -1,3 +1,4 @@
+import {buildOffline} from './offline.mjs';
 // Copyright © 2026 Christopher Snow
 import fs from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
@@ -30,7 +31,7 @@ await fs.cp('python','dist/python',{recursive:true});
 await fs.writeFile('dist/worked-environment.json',JSON.stringify(worked.environment,null,2));
 await fs.writeFile('dist/.nojekyll','');
 await fs.writeFile('dist/favicon.svg','<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><rect width="36" height="36" rx="10" fill="#176b52"/><path d="M24 9H12l7 9-7 9h12" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
-const shell=(title,body,p='')=>`<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light dark"><meta name="description" content="Learn SymPy through 48 short Python investigations and four integrated workshops. Optional maths refreshers, exact symbolic results and a clear learning path."><title>${esc(title)} · SymPy Lab</title><link rel="icon" href="${p}favicon.svg"><link rel="stylesheet" href="${p}vendor/katex.min.css"><link rel="stylesheet" href="${p}style.${version}.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('syl:theme')||'light'}catch{}</script><script type="module" src="${p}app.${version}.js"></script></head><body>${header(p)}${body}${footer(p)}</body></html>`;
+const shell=(title,body,p='')=>`<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="reading-state-managed" content="true"><link rel="stylesheet" href="${p}app-status.css"><link rel="stylesheet" href="${p}runtime-recovery.css"><meta name="color-scheme" content="light dark"><meta name="description" content="Learn SymPy through 48 short Python investigations and four integrated workshops. Optional maths refreshers, exact symbolic results and a clear learning path."><title>${esc(title)} · SymPy Lab</title><link rel="icon" href="${p}favicon.svg"><link rel="stylesheet" href="${p}vendor/katex.min.css"><link rel="stylesheet" href="${p}style.${version}.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('syl:theme')||'light'}catch{}</script><script type="module" src="${p}app.${version}.js"></script></head><body>${header(p)}${body}${footer(p)}</body></html>`;
 await fs.writeFile('dist/index.html',shell('Symbolic maths with Python',renderHome(course,worked.lessons[lessons[3].slug])));
 for(const[i,l]of all.entries()){
  const code=await fs.readFile('python/'+l.code,'utf8'),record=worked.lessons[l.slug],figures=[];
@@ -42,6 +43,9 @@ for(const[i,l]of all.entries()){
 }
 await fs.writeFile('dist/field-notes.html',shell('Field notes & maths map',renderNotes(course)));
 execFileSync('python3',['scripts/prepare-runtime.py'],{stdio:'inherit'});
+for(const name of ["offline.mjs", "release-contract.mjs", "release-metadata.mjs", "media-range.mjs", "experiment-state.mjs", "runtime-recovery.mjs", "runtime-recovery.css", "app-status.css"])await fs.copyFile('src/'+name,'dist/'+name);
+const commit=process.env.COURSE_COMMIT||execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
+await buildOffline('dist',{commit,date:new Date().toISOString().slice(0,10)});
 await fs.rm('.preview/sympy-lab',{recursive:true,force:true});await fs.mkdir('.preview/sympy-lab',{recursive:true});
 await fs.cp('dist','.preview/sympy-lab',{recursive:true});
 console.log(`Built ${lessons.length} lessons, ${applications.length} workshops, field notes and a self-hosted SymPy runtime.`);

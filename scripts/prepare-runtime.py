@@ -26,8 +26,16 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
     manifest=list(pool.map(get,sorted(needed)))
 dest=root/'dist/engine'/lock['info']['version']; dest.mkdir(parents=True,exist_ok=True)
 for file in engine.iterdir():
-    if file.is_file() and file.name not in ['package.json','README.md']:
+    if file.is_file() and file.name not in ['package.json','README.md'] and file.suffix!='.html':
         shutil.copyfile(file,dest/file.name)
+# A local package failure must not cause a silent retry on jsDelivr.
+for name in ['pyodide.js','pyodide.mjs']:
+    loader=dest/name
+    if loader.exists():
+        text=loader.read_text()
+        original='n.setCdnUrl(`https://cdn.jsdelivr.net/pyodide/v${d.version}/full/`)'
+        if text.count(original)!=1: raise ValueError('Review changed Pyodide fallback before publishing')
+        loader.write_text(text.replace(original,'n.setCdnUrl(r.indexURL)'))
 for item in manifest: shutil.copyfile(cache/item['file'],dest/item['file'])
 (root/'dist/runtime-manifest.json').write_text(json.dumps({'pyodide':'0.27.7','packages':manifest},indent=2)+'\n')
 print('Self-hosted pinned runtime:', ', '.join(f'{p["name"]} {p["version"]}' for p in manifest))

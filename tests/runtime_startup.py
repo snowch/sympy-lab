@@ -3,7 +3,7 @@ from urllib.parse import urljoin
 
 
 def check_runtime_startup(browser, base, lesson):
-    context = browser.new_context()
+    context = browser.new_context(service_workers="block")
     context.add_init_script("""
       window.workerMessages = [];
       window.workerStarts = 0;
@@ -67,7 +67,7 @@ def check_runtime_startup(browser, base, lesson):
     finally:
         context.close()
 
-    context = browser.new_context()
+    context = browser.new_context(service_workers="block")
     context.add_init_script("""
       Object.defineProperty(navigator, 'connection', {value: {saveData:true}});
       window.workerStarts = 0;
@@ -88,7 +88,9 @@ def check_runtime_startup(browser, base, lesson):
         page.wait_for_function("document.querySelector('#status').textContent.startsWith('Stopped')")
         context.route(worker_script, lambda route: route.fulfill(status=503, body='Unavailable'))
         page.locator('#run').click()
-        page.wait_for_selector('#run-error', timeout=30000)
+        page.wait_for_selector('#runtime-recovery-dialog', timeout=30000)
+        assert page.locator('#runtime-recovery-dialog').evaluate('(node)=>node.matches(":modal")')
+        page.keyboard.press('Escape')
         assert page.locator('#run-result').is_hidden()
         assert page.locator('#run').is_enabled()
         context.unroute(worker_script)

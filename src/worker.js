@@ -15,9 +15,10 @@ plt.rcParams.update({'font.family':'DejaVu Sans','font.size':13,'figure.figsize'
 }
 self.onmessage=async({data})=>{
  if(data.type!=='prepare'&&data.type!=='run')return;
+ let phase='prepare';
  try{
   ready ||= initialize();
-  const py=await ready;
+  const py=await ready;phase='execution';
   if(data.type==='prepare'){
    postMessage({type:'prepared'});
    return;
@@ -54,5 +55,5 @@ for _number in plt.get_fignums():
 plt.close('all')
 json.dumps({'visual':area_model(_namespace),'stdout':_buffer.getvalue(),'error':_failure,'maths':_math,'figures':_images,'versions':{'python':platform.python_version(),'pyodide':'0.27.7','sympy':sympy.__version__,'mpmath':mpmath.__version__,'numpy':numpy.__version__,'matplotlib':matplotlib.__version__}})`);
   postMessage({type:'result',value:JSON.parse(value)});
- }catch(error){postMessage({type:data.type==='prepare'?'prepare-error':'error',message:String(error.message||error)})}
+ }catch(error){postMessage({type:data.type==='prepare'?'prepare-error':'error',message:String(error.message||error),category:phase==='prepare'?'asset':'execution'})}
 };
