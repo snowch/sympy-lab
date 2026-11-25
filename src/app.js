@@ -1,3 +1,4 @@
+import {registerReading,completeReadingSetup,experimentFilesUnavailable} from './experiment-state.mjs';
 import {renderRich} from './rich-text.mjs';
 import {areaModelSvg} from './area-model.mjs';
 import katex from './vendor/katex.mjs';
@@ -82,6 +83,7 @@ if(course){
  if($('search'))initializeOverview(course);
  const lesson=[...course.lessons,...course.applications].find(l=>l.slug===document.querySelector('[data-slug]')?.dataset.slug);
  if(lesson)initializeLesson(lesson);
+ await completeReadingSetup();
  document.documentElement.dataset.ready='true';
 }
 function initializeOverview({lessons,applications}){
@@ -287,6 +289,30 @@ function initializeLesson(lesson){
   if(returnFocus)$('run').focus({preventScroll:true});
  }
  let pythonPrepared=false, preparationTimer;
+ function renderSuccessfulRun(){if(!lastSuccessfulRun)return;const {stdout,figures_svg_base64:figures,symbolic_results:maths=[],visual_model:visual=null}=lastSuccessfulRun;
+   $('run-result').hidden=false;
+   $('output').textContent=stdout||'No text was printed.';
+   $('output').closest('details').open=!maths.length||slug==='export-an-expression-as-code';
+   renderMaths(maths);
+   const visualRegion=$('result-visual');visualRegion.replaceChildren();visualRegion.hidden=!visual;
+   if(visual){
+    const figure=document.createElement('figure');figure.innerHTML=areaModelSvg(visual,320);
+    const caption=document.createElement('figcaption');caption.textContent=visual.caption;
+    figure.append(caption);visualRegion.append(figure);
+   }
+   clearPlotUrls();
+   $('plots').replaceChildren(...figures.map((svg,i)=>{
+    const figure=document.createElement('figure');figure.className='worked-figure';
+    const image=document.createElement('img');image.className='plot';
+    const bytes=Uint8Array.from(atob(svg),c=>c.charCodeAt(0));
+    const url=URL.createObjectURL(new Blob([bytes],{type:'image/svg+xml'}));plotUrls.push(url);
+    image.src=url;image.alt=`Plot ${i+1} from your actual Python execution. Read its labelled axes and the text output together.`;
+    const caption=document.createElement('figcaption'),link=document.createElement('a');
+    link.href=url;link.target='_blank';link.rel='noopener';link.textContent='Open full-size figure ↗';
+    caption.append(link);figure.append(image,caption);return figure;
+   }));
+
+ }
  function disposePython(){
   clearTimeout(preparationTimer);
   worker?.terminate();
@@ -345,9 +371,10 @@ function initializeLesson(lesson){
   if(runWasFocused)$('stop').focus({preventScroll:true});
   $('status').textContent=pythonPrepared?'Starting your Python…':'Loading Python and SymPy. This can take a moment…';
   updateProvenance();
-  const fail=message=>{
+  const fail=(message,category='asset')=>{
    if(runRevision!==revision)return;
    terminate('Python could not finish. Check the message, then edit or run again.');
+   if(category==='asset'){experimentFilesUnavailable('Run Python');return;}
    showRunError(message);
   };
   timer=setTimeout(()=>fail('Python initialization exceeded two minutes. Check your connection and run again.'),120000);
@@ -358,9 +385,9 @@ function initializeLesson(lesson){
    if(data.type==='running'){
     pythonPrepared=true;
     clearTimeout(timer);$('status').textContent='Running your Python…';
-    timer=setTimeout(()=>fail('Execution exceeded 45 seconds and was stopped. Reduce the work or fix a loop, then run again.'),45000);return;
+    timer=setTimeout(()=>fail('Execution exceeded 45 seconds and was stopped. Reduce the work or fix a loop, then run again.','execution'),45000);return;
    }
-   if(data.type==='error'){fail(data.message);return}
+   if(data.type==='error'){fail(data.message,data.category||'asset');return}
    if(data.type!=='result')return;
    clearTimeout(timer);controls(false);
    const {stdout,error,figures,versions,maths=[],visual=null}=data.value;
@@ -369,28 +396,8 @@ function initializeLesson(lesson){
     showRunError(error,stdout);
     return;
    }
-   $('run-result').hidden=false;
    lastSuccessfulRun={schema:1,course:'sympy-lab',lesson:slug,executed_at:new Date().toISOString(),source,input_csv:null,input_name:null,stdout,error:null,symbolic_results:maths,visual_model:visual,figures_svg_base64:figures,versions,environment:{user_agent:navigator.userAgent,timing_scope:'Local browser Pyodide; see executed source for boundaries.'}};
-   $('output').textContent=stdout||'No text was printed.';
-   $('output').closest('details').open=!maths.length||slug==='export-an-expression-as-code';
-   renderMaths(maths);
-   const visualRegion=$('result-visual');visualRegion.replaceChildren();visualRegion.hidden=!visual;
-   if(visual){
-    const figure=document.createElement('figure');figure.innerHTML=areaModelSvg(visual,320);
-    const caption=document.createElement('figcaption');caption.textContent=visual.caption;
-    figure.append(caption);visualRegion.append(figure);
-   }
-   clearPlotUrls();
-   $('plots').replaceChildren(...figures.map((svg,i)=>{
-    const figure=document.createElement('figure');figure.className='worked-figure';
-    const image=document.createElement('img');image.className='plot';
-    const bytes=Uint8Array.from(atob(svg),c=>c.charCodeAt(0));
-    const url=URL.createObjectURL(new Blob([bytes],{type:'image/svg+xml'}));plotUrls.push(url);
-    image.src=url;image.alt=`Plot ${i+1} from your actual Python execution. Read its labelled axes and the text output together.`;
-    const caption=document.createElement('figcaption'),link=document.createElement('a');
-    link.href=url;link.target='_blank';link.rel='noopener';link.textContent='Open full-size figure ↗';
-    caption.append(link);figure.append(image,caption);return figure;
-   }));
+   renderSuccessfulRun();
    $('status').textContent='Completed. Inspect the result below.';
    $('export-run').disabled=false;$('export-run').hidden=false;updateProvenance();
   };
@@ -449,13 +456,23 @@ function initializeLesson(lesson){
   $('report-status').textContent=lastSuccessfulRun?'Investigation exported. Use Export run to keep figures and structured symbolic results alongside it.':'Report text exported. It contains no successful run yet.';
  });
  controls(false);
+ registerReading('python-lesson',{
+  isBusy:()=>busy,
+  save:()=>{cancelPreparation();disposePython();return {lastSuccessfulRun,recoverableDraft,quizFeedback:$('quiz-feedback').innerHTML,quizIncorrect:$('quiz-feedback').classList.contains('incorrect'),runError:$('run-error').hidden?null:Object.fromEntries(['error-summary','error-input','error-trace','error-details'].filter(id=>$(id)).map(id=>[id,{text:id==='error-details'?null:$(id).textContent,hidden:$(id).hidden}]))};},
+  restore:saved=>{  recoverableDraft=saved.recoverableDraft;refreshEditor();updateRecovery();
+   if(saved.lastSuccessfulRun){lastSuccessfulRun=saved.lastSuccessfulRun;renderSuccessfulRun();$('export-run').disabled=false;$('export-run').hidden=false;$('status').textContent='Saved earlier result. Select Run Python to use the current code.';}
+   $('quiz-feedback').innerHTML=saved.quizFeedback||'';$('quiz-feedback').classList.toggle('incorrect',!!saved.quizIncorrect);
+   $('mark-read').checked=get('read:'+slug)==='true';updateReadMarks();controls(false);updateProvenance();
+   if(saved.runError){for(const [id,value]of Object.entries(saved.runError)){const node=$(id);if(node){if(value.text!==null)node.textContent=value.text;node.hidden=value.hidden;}}$('run-error').hidden=false;}
+  }
+ });
 }
 
 document.addEventListener('click',event=>{
  for(const details of document.querySelectorAll('.header-help[open],.editor-tools[open]'))if(!details.contains(event.target))details.open=false;
 });
 document.addEventListener('keydown',event=>{
- if(event.key!=='Escape')return;
+ if(event.key!=='Escape'||document.querySelector('dialog:modal'))return;
  const open=[...document.querySelectorAll('.header-help[open],.editor-tools[open]')];
  const target=open.find(d=>d.contains(document.activeElement))||open.at(-1);
  if(target){target.open=false;target.querySelector('summary').focus()}
