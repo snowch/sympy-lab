@@ -43,7 +43,7 @@ for(const[i,l]of all.entries()){
 }
 await fs.writeFile('dist/field-notes.html',shell('Field notes & maths map',renderNotes(course)));
 execFileSync('python3',['scripts/prepare-runtime.py'],{stdio:'inherit'});
-for(const name of ["offline.mjs", "release-contract.mjs", "release-metadata.mjs", "media-range.mjs", "experiment-state.mjs", "runtime-recovery.mjs", "runtime-recovery.css", "app-status.css"])await fs.copyFile('src/'+name,'dist/'+name);
+for(const name of ["offline.mjs", "header-controls.mjs", "header-controls.LICENSE.txt", "release-contract.mjs", "release-metadata.mjs", "media-range.mjs", "experiment-state.mjs", "runtime-recovery.mjs", "runtime-recovery.css", "app-status.css"])await fs.copyFile('src/'+name,'dist/'+name);
 const commit=process.env.COURSE_COMMIT||execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
 await buildOffline('dist',{commit,date:new Date().toISOString().slice(0,10)});
 await fs.rm('.preview/sympy-lab',{recursive:true,force:true});await fs.mkdir('.preview/sympy-lab',{recursive:true});
